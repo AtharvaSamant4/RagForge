@@ -2002,3 +2002,116 @@ dd {
     display: inline-flex;
   }
 }
+
+.model-name,
+.model-id {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.strategy-compare {
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+  margin-top: 20px;
+  font-size: 0.85rem;
+}
+.strategy-compare > summary {
+  cursor: pointer;
+  color: var(--teal);
+  margin-bottom: 14px;
+}
+.comparison-result {
+  border-top: 1px solid var(--border);
+  padding-top: 15px;
+  margin-top: 20px;
+}
+.comparison-result details {
+  padding: 10px 0;
+}
+.comparison-result summary {
+  cursor: pointer;
+}
+.comparison-result p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Browser QA: legible task states and mobile access to every route/action. */
+.mobile-section-picker {
+  display: none;
+}
+.status,
+.sidebar nav button,
+.source summary strong {
+  font-size: 0.875rem;
+}
+.info-line,
+.upload-zone > span,
+.document-name small,
+.metric > small,
+.chat-disclaimer,
+.source small,
+.footer {
+  font-size: 0.75rem;
+}
+.answer-text,
+.user-question p,
+.chat-composer textarea,
+.form-panel p {
+  font-size: 1rem;
+}
+@media (max-width: 700px) {
+  .sidebar nav {
+    display: none;
+  }
+  .mobile-section-picker {
+    display: flex;
+    margin-bottom: 0;
+    font-size: 0.875rem;
+  }
+  .table-scroll table,
+  .table-scroll tbody {
+    display: block;
+    width: 100%;
+  }
+  .table-scroll thead {
+    display: none;
+  }
+  .table-scroll tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    padding: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .table-scroll td {
+    display: block;
+    border: 0;
+    padding: 8px;
+    min-width: 0;
+  }
+  .table-scroll td:first-child {
+    grid-column: 1 / -1;
+  }
+  .table-scroll td:nth-child(3)::before {
+    content: "Chunks: ";
+    color: var(--muted);
+  }
+  .table-scroll td:nth-child(4)::before {
+    content: "Size: ";
+    color: var(--muted);
+  }
+  .table-scroll .actions {
+    justify-content: flex-end;
+  }
+  .document-name {
+    min-width: 0;
+    width: 100%;
+  }
+  .document-name strong {
+    font-size: 0.875rem;
+  }
+  .page-heading p,
+  .info-line,
+  .upload-zone > span {
+    font-size: 0.8125rem;
+  }
+}

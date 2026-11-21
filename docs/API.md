@@ -44,6 +44,10 @@ console.log(await response.json());
 
 The response includes `answer`, `refused`, `latency_ms`, `conversation_id`, `citations` and `retrieved`. Each source includes `document_id`, `document_name`, `chunk_id`, locator (`page`, `row`, paragraph, or section plus character offsets), source text and evidence score. Citations add a number and an exact quote. Evidence scores are retrieval signals, not probabilities or confidence percentages.
 
+Milestone 2 adds `retrieval_latency_ms`, `generation_latency_ms`, `embedding_model` and `answer_kind` (`source_extract`, `qualified`, or `refused`). A qualified answer can include citations while `refused=true`, because evidence exists but individual eligibility or conflicting policy details remain unresolved. Empty evidence refusals have no citations.
+
+`GET /pipeline` and `/status` expose the active embedding profile, indexed identities, index generation and compatibility state. Incompatible or incomplete controlled indexes return HTTP 409 before any retrieval mode executes. Owner-only `POST /retrieval/compare` accepts `{ "question": "..." }` and returns real passages and retrieval latency for vector, keyword and hybrid strategies without generation or conversation writes. `POST /reindex` captures a new model/generation, cancels superseded leases and preserves source files. See SEMANTIC_MODELS.md for migration and recovery details.
+
 `POST /query/stream` accepts the same JSON and emits SSE `sources`, `delta` and `done` events. Generation and quote validation finish before answer deltas are emitted; this is response delivery streaming, not provider token streaming. Failures before streaming return normal error JSON.
 
 ```sh

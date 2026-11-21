@@ -14,9 +14,11 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
     throw new Error(
       typeof body.detail === "string"
         ? body.detail
-        : Array.isArray(body.detail)
-          ? body.detail.map((x: { msg: string }) => x.msg).join("; ")
-          : `Request failed (${response.status})`,
+        : body.detail?.message
+          ? body.detail.message
+          : Array.isArray(body.detail)
+            ? body.detail.map((x: { msg: string }) => x.msg).join("; ")
+            : `Request failed (${response.status})`,
     );
   }
   return response.json();

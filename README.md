@@ -2,7 +2,9 @@
 
 A working foundation for turning documents into private, tested knowledge APIs: FastAPI, Next.js/TypeScript, PostgreSQL/pgvector, durable ingestion, cited answers and an embeddable assistant.
 
-The default runs without external AI credentials. Local feature-hashing embeddings match vocabulary and extractive generation returns exact supporting sentences. These are real retrieval and grounding implementations with limited semantic capability. OpenAI embedding and Responses adapters are available when explicitly configured. No paid calls are needed for the demo or tests.
+The default runs a real pretrained **all-MiniLM-L6-v2** model on CPU through ONNX Runtime: 384 dimensions, pinned weights/tokenizer, Apache-2.0 model license, and persistent model caching. Answers quote supporting source text. Lexical feature hashing remains available for baseline comparisons; OpenAI adapters are opt-in. No paid calls are needed for the demo, benchmarks or tests.
+
+Milestone 2 lives on `feat/semantic-benchmarks-qa`; it has not been merged into `main`. See [measured benchmarks](docs/BENCHMARKS.md), [browser QA](docs/BROWSER_QA.md), and [model/index compatibility](docs/SEMANTIC_MODELS.md).
 
 ## Start with Docker
 
@@ -16,6 +18,25 @@ docker compose up --build
 On Windows PowerShell use `Copy-Item .env.example .env` for the first command. Open **http://localhost:3000**. API documentation: **http://localhost:8000/docs**. The API applies Alembic migrations before startup; the worker starts after the API is healthy. PostgreSQL uses pgvector HNSW and GIN full-text indexes. Data and uploads persist in named volumes. `docker compose down` stops services and keeps data. Do not remove volumes unless you intend to delete data.
 
 Change the example PostgreSQL password and review [security requirements](docs/SECURITY.md) before changing loopback bindings or exposing this system to the internet. This repository has not been publicly deployed.
+
+The first semantic startup downloads about 91 MB of pinned model/tokenizer files. The worker initializes the model before claiming jobs; initial uploads may remain queued during this download. The shared `model_cache` named volume survives restarts. For explicit prefetch after startup:
+
+```sh
+docker compose exec api python -m app.model_cache
+```
+
+After prefetch, set `MODEL_LOCAL_FILES_ONLY=true` for offline operation. A missing or corrupt cache produces a visible provider error; there is no silent lexical fallback.
+
+To run the feature branch beside the existing MVP without changing its data, use a separate Compose project and ports (PowerShell):
+
+```powershell
+$env:API_PORT='8010'
+$env:WEB_PORT='3010'
+$env:APP_ORIGINS='http://localhost:3010'
+docker compose -p ragforge-m2 up --build -d
+```
+
+Open http://localhost:3010. This is the isolated stack used for milestone verification. Its volumes are separate from `ragforge`.
 
 ## Start locally without Docker
 
@@ -56,6 +77,10 @@ npm --prefix frontend run dev
 
 SQLite is configured by default and supports one worker. PostgreSQL is required for multiple workers. There is no Redis dependency: the durable database queue commits jobs and document state together. See [architecture and decisions](docs/ARCHITECTURE.md).
 
+Optional local prefetch from the repository root: set `PYTHONPATH=backend` (PowerShell: `$env:PYTHONPATH='backend'`) and run `.venv/bin/python -m app.model_cache` with the platform-appropriate Python path. `MODEL_CACHE_DIR` defaults to `data/models`. Limit CPU inference with `EMBEDDING_THREADS` (default 2) and `EMBEDDING_BATCH_SIZE` (default 32).
+
+To retain the original lexical behavior, set `EMBEDDING_PROVIDER=local` before starting both API and worker. Semantic mode is the default for new deployments. Existing source files, users, keys and projects are preserved by migration `0002`.
+
 ## Demonstrate the complete workflow
 
 1. Create an account with a password of at least 12 characters, then create **Acme Knowledge**.
@@ -68,17 +93,31 @@ SQLite is configured by default and supports one worker. PostgreSQL is required 
 8. Delete the PDF, then ask the refund question again. The source is gone from retrieval and the answer is refused. Deletion also clears cached project history and evaluation run outputs so they do not retain deleted passages.
 9. To demonstrate failure handling, upload a malformed file starting with `%PDF-1.7`. It is accepted for processing but visibly fails parsing. **Retry** reruns the stored file; a corrupt source should be deleted and re-uploaded after repair. Retry also recovers transient provider failures after server configuration or connectivity is fixed. Genuine failures never appear as ready.
 
+For a semantic example, upload `benchmarks/corpus/returns.md` and ask **“Can I send something back after two weeks?”** The assistant retrieves the 30-calendar-day return policy and gives a qualified source-based response. It does not assert that an individual return is eligible. **Pipeline** shows the pinned active model, dimensions, index generation, compatibility, CPU/cache settings and a comparison of all three retrieval strategies.
+
 Sample PDF/DOCX files can be recreated with `.venv/bin/python scripts/create_samples.py`.
 
 ## Verification
 
+Prefetch the real model before backend tests. The first command below uses POSIX environment syntax; on PowerShell set `$env:PYTHONPATH='backend'` and `$env:EMBEDDING_PROVIDER='semantic'`, then run the same module with `.\.venv\Scripts\python.exe`.
+
 ```sh
+PYTHONPATH=backend EMBEDDING_PROVIDER=semantic .venv/bin/python -m app.model_cache
 .venv/bin/python -m pytest
 npm --prefix frontend run typecheck
 npm --prefix frontend run build
 # With the app and worker running:
 .venv/bin/python scripts/smoke.py
+# Real desktop + mobile browser workflows; start the app first:
+npm --prefix frontend exec playwright -- install chromium
+npm --prefix frontend run test:e2e
+# Fixture contracts and all 120 unverified benchmark candidates:
+.venv/bin/python benchmarks/run.py --candidates --output benchmarks/results/local.json
 ```
+
+Browser tests default to the isolated stack at port 3010. Set `QA_BASE_URL=http://localhost:3000` to test the default stack instead. The Playwright external-widget fixture opens port 4020 on loopback for the duration of each test. Test accounts and their data are disposable; successful workflows remove their projects. Browser failures may leave only their own fixture projects in the QA database.
+
+Real-model backend tests require the pinned local cache; prefetch with `python -m app.model_cache` first. These tests use local inference, not mocked semantic vectors. The test suite continues to exercise the original lexical path as a regression baseline.
 
 The tests run real parsers, embedding, retrieval, authentication, evaluation and index deletion against an isolated temporary database. They also cover tenant/project boundaries, scoped keys, revocation, unsafe uploads, numeric CSV rejection, job retries and lease recovery, pipeline changes, widget publication, SSE and persisted rate limits. Provider HTTP mocks are confined to adapter tests; no external API calls are made.
 
@@ -99,10 +138,12 @@ EMBEDDING_DIMENSIONS=384
 
 Choose a Responses-compatible model available to your account. The [embedding API](https://developers.openai.com/api/reference/resources/embeddings/methods/create) supports dimensions for third-generation embeddings; the [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create) supplies structured grounded claims. Adapters use exact source quote validation and never silently downgrade a failed hosted request. Uploaded text is sent to the configured provider in hosted mode; usage may be billable. No provider credentials are included.
 
-Use a **fresh database and re-upload sources** when changing embedding provider/model/dimensions; vectors from different models are incompatible and the database vector dimension is fixed at migration time. Generation provider changes do not require reindexing. Advanced retrieval and chunk settings are editable per project in **Pipeline**. Changed chunk settings require **Rebuild index**.
+When switching embedding providers or model identity at the same dimension, restart **both API and worker**, open each project's **Pipeline**, and click **Rebuild index**. Incompatible projects return HTTP 409 for every retrieval mode, including keyword search, until the controlled rebuild finishes. Old source files are retained and chunks are replaced transactionally. Superseded jobs cannot publish stale output. Failed rebuilds remain blocked until repaired/retried or the failing source is removed.
+
+pgvector's column dimension is fixed by the initial migration. A different dimension requires a separate database or an explicit operator-managed vector-column/index migration; the app rejects the mismatch and does not delete data. MiniLM specifically requires 384 dimensions. Generation provider changes do not require reindexing. Chunk setting changes require **Rebuild index**.
 
 ## Scope and limitations
 
 Supported: selectable-text PDF (up to 500 pages), DOCX paragraphs/tables, UTF-8 TXT/Markdown and textual/FAQ CSV. Default file limit: 20 MB; extracted text limit: 2 million characters; 100 projects/user, 100 files/project, 50 eval cases/project. There is no OCR, multimodal ingestion, arbitrary CSV analytics, reranker, semantic optimization claim, standalone code-package export, public cloud deployment, SSO or billing. Conversation history is persistent but questions retrieve independently. SSE sends validated answer deltas after generation rather than native model token streaming. Evaluation is synchronous and bounded.
 
-This is a foundation for production work, not a claim of production readiness. See [security limits](docs/SECURITY.md), [API contracts](docs/API.md) and [design decisions](docs/ARCHITECTURE.md). Branding is configurable with `BRAND_NAME`; the dashboard reads it from the backend.
+This is a foundation for production work, not a claim of production readiness. Semantic similarity is not proof of answerability. Exact citations establish provenance, not truth or entailment; local responses remain source extracts with conservative qualifications. A narrow numeric-conflict check and instruction-request filter do not solve general contradiction detection or prompt injection. See [benchmark limitations](docs/BENCHMARKS.md), [security limits](docs/SECURITY.md), [API contracts](docs/API.md) and [design decisions](docs/ARCHITECTURE.md). Branding is configurable with `BRAND_NAME`; the dashboard reads it from the backend.

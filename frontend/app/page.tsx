@@ -39,6 +39,7 @@ import {
 } from "lucide-react";
 import { api, download } from "./api";
 import { Modal } from "./modal";
+import { PipelineDiagnostics } from "./pipeline-diagnostics";
 import type {
   Case,
   Doc,
@@ -169,6 +170,7 @@ export default function Dashboard() {
     }),
     [origins, setOrigins] = useState(""),
     [widgetToken, setWidgetToken] = useState("");
+  const [widgetReady, setWidgetReady] = useState(false);
   const [usage, setUsage] = useState<{
       queries: number;
       average_latency_ms: number | null;
@@ -249,6 +251,7 @@ export default function Dashboard() {
     setConversationId(null);
     setSecret("");
     setWidgetToken("");
+    setWidgetReady(false);
     setPreview(null);
     setUsage(null);
     setKeys([]);
@@ -312,10 +315,12 @@ export default function Dashboard() {
         }
       }
       if (section === "Deployment") {
+        setWidgetReady(false);
         const w = await api<Widget>(base + "/widget");
         if (active) {
           setWidget(w);
           setOrigins(w.allowed_origins.join("\n"));
+          setWidgetReady(true);
         }
       }
       if (section === "Settings" && project) {
@@ -524,7 +529,9 @@ export default function Dashboard() {
               <strong>
                 {provider === "local"
                   ? "Local mode · no API key needed"
-                  : "Hosted embeddings enabled"}
+                  : provider === "semantic"
+                    ? "Local semantic model · no API key needed"
+                    : "Hosted embeddings enabled"}
               </strong>
               <p>
                 {generation === "extractive"
@@ -575,6 +582,23 @@ export default function Dashboard() {
             <Plus size={17} />
           </button>
         </div>
+        <label className="mobile-section-picker">
+          Workspace section
+          <select
+            value={section}
+            onChange={(e) => {
+              setSection(e.target.value);
+              setError("");
+              setNotice("");
+            }}
+          >
+            {sections.map(([label]) => (
+              <option key={label} value={label}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </label>
         <nav>
           {sections.map(([label, Icon]) => (
             <button
@@ -597,11 +621,11 @@ export default function Dashboard() {
         <div className="sidebar-bottom">
           <div className="local-badge">
             <span />
-            {provider === "local" ? "Local workspace" : "Connected workspace"}
+            {provider === "openai" ? "Connected workspace" : "Local workspace"}
           </div>
           <p>
             {generation === "extractive"
-              ? "Extractive answers · lexical embeddings"
+              ? `Extractive answers · ${provider === "semantic" ? "semantic" : "lexical"} embeddings`
               : "Verified source quotes · hosted generation"}
           </p>
           <button className="profile" disabled={!!busy} onClick={signout}>
@@ -1224,7 +1248,7 @@ export default function Dashboard() {
                         />
                       </label>
                       <label>
-                        Minimum evidence score
+                        Minimum lexical evidence
                         <input
                           type="number"
                           min={0.05}
@@ -1240,6 +1264,28 @@ export default function Dashboard() {
                         />
                       </label>
                     </div>
+                    {provider === "semantic" && (
+                      <label>
+                        Minimum semantic similarity
+                        <input
+                          type="number"
+                          min={0.15}
+                          max={0.9}
+                          step={0.01}
+                          value={pipeline.semantic_min_score ?? 0.32}
+                          onChange={(e) =>
+                            setPipeline({
+                              ...pipeline,
+                              semantic_min_score: Number(e.target.value),
+                            })
+                          }
+                        />
+                        <small>
+                          Retrieval gate, not answer confidence. Lower values
+                          increase recall and may admit irrelevant passages.
+                        </small>
+                      </label>
+                    )}
                     <label className="checkbox">
                       <input
                         type="checkbox"
@@ -1255,6 +1301,10 @@ export default function Dashboard() {
                     </button>
                   </form>
                   <div className="stack">
+                    <PipelineDiagnostics
+                      base={base}
+                      onReindexChange={setReindex}
+                    />
                     <section className="panel form-panel">
                       <div className="panel-heading">
                         <h2>Why this pipeline?</h2>
@@ -1266,7 +1316,9 @@ export default function Dashboard() {
                         <dd>
                           {provider === "local"
                             ? "Local feature hashing · 384 dimensions"
-                            : "OpenAI embeddings"}
+                            : provider === "semantic"
+                              ? "Pinned MiniLM · CPU · 384 dimensions"
+                              : "OpenAI embeddings"}
                         </dd>
                         <dt>Answer provider</dt>
                         <dd>
@@ -1277,15 +1329,16 @@ export default function Dashboard() {
                       </dl>
                       <p className="muted">
                         Provider models are configured by the server operator
-                        through environment variables. Local embeddings match
-                        vocabulary; they do not understand synonyms.
+                        through environment variables. Semantic mode encodes
+                        paraphrases; lexical mode matches vocabulary. Similarity
+                        does not establish that an answer is supported.
                       </p>
                     </section>
                     <section className="panel form-panel">
                       <h2>Index lifecycle</h2>
                       <p>
                         {reindex
-                          ? "Chunk settings changed. Rebuild to apply them to existing sources."
+                          ? "The index needs rebuilding or is still processing. Source files are preserved; incompatible indexes cannot be queried."
                           : "Your chunk settings match the indexed sources."}
                       </p>
                       <button
@@ -1368,14 +1421,19 @@ export default function Dashboard() {
                                   <span>
                                     {m.result.latency_ms.toFixed(0)} ms ·{" "}
                                     {m.result.generation_provider}
+                                    {m.result.retrieval_latency_ms != null &&
+                                      ` · retrieval ${m.result.retrieval_latency_ms.toFixed(0)} ms`}
                                   </span>
                                 </div>
                                 <p className="answer-text">{m.result.answer}</p>
-                                {m.result.refused ? (
+                                {m.result.refused && (
                                   <span className="tag amber">
-                                    Insufficient evidence
+                                    {m.result.answer_kind === "qualified"
+                                      ? "Qualified evidence · eligibility unresolved"
+                                      : "Insufficient evidence"}
                                   </span>
-                                ) : (
+                                )}
+                                {m.result.citations.length > 0 && (
                                   <div className="citations">
                                     {m.result.citations.map((c, j) => (
                                       <SourceCard source={c} key={j} />
@@ -1921,7 +1979,13 @@ export default function Dashboard() {
                   ))}
                 </>
               )}
-              {section === "Deployment" && (
+              {section === "Deployment" && !widgetReady && (
+                <section className="panel form-panel" role="status">
+                  <LoaderCircle className="spin" size={18} /> Loading assistant
+                  settings…
+                </section>
+              )}
+              {section === "Deployment" && widgetReady && (
                 <div className="two-col">
                   <section className="panel form-panel">
                     <h2>Embeddable assistant</h2>
@@ -2284,7 +2348,11 @@ function Metric({
   );
 }
 function integration(language: string, project: string) {
-  const url = `http://localhost:8000/v1/projects/${project}/query`;
+  const origin =
+    typeof window === "undefined"
+      ? "http://localhost:3000"
+      : window.location.origin;
+  const url = `${origin}/api/v1/projects/${project}/query`;
   if (language === "Python")
     return `import os\nimport httpx\n\nresponse = httpx.post(\n    "${url}",\n    headers={"Authorization": "Bearer " + os.environ["RAGFORGE_API_KEY"]},\n    json={"question": "What is our refund policy?"},\n    timeout=120,\n)\nresponse.raise_for_status()\nprint(response.json())`;
   if (language === "JavaScript")

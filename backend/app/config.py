@@ -16,9 +16,14 @@ class Settings(BaseSettings):
     max_upload_mb: int = 20
     max_extracted_chars: int = 2_000_000
     rate_limit_per_minute: int = 60
-    embedding_provider: Literal["local", "openai"] = "local"
+    embedding_provider: Literal["local", "semantic", "openai"] = "semantic"
     generation_provider: Literal["extractive", "openai"] = "extractive"
     embedding_dimensions: int = 384
+    model_cache_dir: Path = Path("./data/models")
+    model_local_files_only: bool = False
+    embedding_batch_size: int = 32
+    embedding_threads: int = 2
+    embedding_cache_size: int = 2048
     openai_api_key: str = ""
     openai_embedding_model: str = "text-embedding-3-small"
     openai_model: str = ""

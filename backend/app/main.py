@@ -22,6 +22,9 @@ from .logging_config import configure_logging
 from .models import APIKey, Chunk, Conversation, Document, EvalCase, EvalRun, Job, LoginSession, Project, QueryRecord, User
 from .providers import ProviderError, embedding_id
 from .retrieval import answer
+from .retrieval import retrieve
+from .embeddings import profile, runtime_stats
+from .indexing import index_status, require_compatible, storage_dimensions
 from .schemas import CaseInput, Credentials, KeyInput, PipelineInput, ProjectInput, QueryInput, RunInput, WidgetInput
 from .security import access, current_user, digest, password_hash, password_valid, rate_limit
 from .worker import enqueue
@@ -126,7 +129,7 @@ def child(db, model, project_id, id_):
 @app.get("/health")
 def health(db: Session = Depends(get_db)):
     db.execute(text("SELECT 1"))
-    return {"status": "ok", "brand": s.brand_name, "embedding_provider": s.embedding_provider, "generation_provider": s.generation_provider, "registration_enabled": s.allow_registration}
+    return {"status": "ok", "brand": s.brand_name, "embedding_provider": s.embedding_provider, "embedding_profile": profile(), "embedding_runtime": runtime_stats(), "generation_provider": s.generation_provider, "registration_enabled": s.allow_registration}
 
 
 def login_response(db, user, response):
@@ -226,6 +229,8 @@ def documents(project_id: str, request: Request, db: Session = Depends(get_db)):
 @app.post("/v1/projects/{project_id}/documents", status_code=202)
 def upload(project_id: str, file: UploadFile, request: Request, db: Session = Depends(get_db)):
     project = access(project_id, request, db, "documents").project
+    project = db.scalar(select(Project).where(Project.id == project_id).with_for_update())
+    require_compatible(db, project, for_upload=True)
     if db.scalar(select(func.count()).select_from(Document).where(Document.project_id == project_id)) >= 100:
         raise HTTPException(409, "Local MVP limit: 100 documents per project")
     content = file.file.read(s.max_upload_mb*1024*1024+1)
@@ -236,7 +241,7 @@ def upload(project_id: str, file: UploadFile, request: Request, db: Session = De
     except ExtractionError as exc:
         raise HTTPException(422, str(exc)) from None
     if project.pipeline.get("auto") and not db.scalar(select(Document.id).where(Document.project_id == project_id).limit(1)):
-        project.pipeline = {**project.pipeline, "strategy": "hybrid", "chunk_size": 100 if kind == "csv" else 180, "overlap": 15 if kind == "csv" else 30}
+        project.pipeline = {**project.pipeline, "strategy": "vector" if s.embedding_provider == "semantic" and db.bind.dialect.name == "sqlite" else "hybrid", "chunk_size": 100 if kind == "csv" else 180, "overlap": 15 if kind == "csv" else 30}
     storage_name = uuid.uuid4().hex + "." + kind
     s.storage_dir.mkdir(parents=True, exist_ok=True)
     path = s.storage_dir / storage_name
@@ -300,7 +305,9 @@ def retry_job(project_id: str, job_id: str, request: Request, db: Session = Depe
         raise HTTPException(409, "Only failed jobs can be retried")
     doc = child(db, Document, project_id, job.document_id)
     job.status, job.attempts, job.error, job.available_at, job.finished_at = "queued", 0, None, time.time(), None
-    job.config, job.pipeline_version = dict(project.pipeline), project.pipeline_version
+    if project.index_profile and project.index_profile.get("id") != embedding_id():
+        raise HTTPException(409, "Model configuration changed. Rebuild the entire project index before retrying individual jobs.")
+    job.config, job.pipeline_version = {**project.pipeline, "_embedding": profile(), "_generation": project.index_generation}, project.pipeline_version
     doc.status, doc.error = "queued", None
     db.commit()
     return job_dict(job)
@@ -310,7 +317,8 @@ def retry_job(project_id: str, job_id: str, request: Request, db: Session = Depe
 def pipeline(project_id: str, request: Request, db: Session = Depends(get_db)):
     project = access(project_id, request, db).project
     versions = list(db.scalars(select(Chunk.pipeline_version).where(Chunk.project_id == project_id).distinct()))
-    return {"config": project.pipeline, "version": project.pipeline_version, "reindex_required": any(v != project.pipeline_version for v in versions), "embedding_provider": s.embedding_provider, "embedding_model": embedding_id(), "generation_provider": s.generation_provider, "generation_model": s.openai_model if s.generation_provider == "openai" else "exact-sentence extraction", "selection_reason": "Defensible heuristic: hybrid combines vocabulary matching and vector ranking; CSV uses smaller row-preserving chunks. This is not an evaluated optimum."}
+    status = index_status(db, project)
+    return {"config": {"semantic_min_score": 0.32, **project.pipeline}, "version": project.pipeline_version, "reindex_required": any(v != project.pipeline_version for v in versions) or not status["query_ready"], "index": status, "embedding_profile": profile(), "embedding_runtime": runtime_stats(), "embedding_provider": s.embedding_provider, "embedding_model": embedding_id(), "generation_provider": s.generation_provider, "generation_model": s.openai_model if s.generation_provider == "openai" else "exact-sentence extraction", "selection_reason": "Hybrid uses reciprocal rank fusion of model-compatible vector and keyword candidates. MiniLM chunks respect a 256-token budget. Thresholds are explicit and benchmarked; they are not answer confidence probabilities."}
 
 
 @app.put("/v1/projects/{project_id}/pipeline")
@@ -326,14 +334,35 @@ def set_pipeline(project_id: str, body: PipelineInput, request: Request, db: Ses
 @app.post("/v1/projects/{project_id}/reindex", status_code=202)
 def reindex(project_id: str, request: Request, db: Session = Depends(get_db)):
     project = access(project_id, request, db, owner_only=True).project
-    active = set(db.scalars(select(Job.document_id).where(Job.project_id == project_id, Job.status.in_(["queued", "processing"]))))
+    project = db.scalar(select(Project).where(Project.id == project_id).with_for_update())
+    dimensions = storage_dimensions(db)
+    if dimensions is not None and dimensions != profile()["dimensions"]:
+        raise HTTPException(409, "Database vector dimensions differ from the active model. Use a separate database or explicit vector-column migration; existing data is preserved.")
+    active = list(db.scalars(select(Job).where(Job.project_id == project_id, Job.status.in_(["queued", "processing"]))))
+    if active and project.index_profile and project.index_profile.get("id") == embedding_id() and all(j.config.get("_embedding", {}).get("id") == embedding_id() and j.config.get("_generation", 0) == project.index_generation and j.pipeline_version == project.pipeline_version for j in active):
+        return {"queued": 0, "index_generation": project.index_generation, "message": "Matching jobs are already queued or processing."}
+    for job in active:
+        job.status, job.lease_token, job.lease_until = "cancelled", str(uuid.uuid4()), None
+        job.error, job.finished_at = "Superseded by a controlled index rebuild", time.time()
+    project.index_generation += 1
+    project.index_profile = profile()
     count = 0
     for doc in db.scalars(select(Document).where(Document.project_id == project_id)):
-        if doc.id not in active:
-            enqueue(db, doc, project)
-            count += 1
+        enqueue(db, doc, project)
+        count += 1
     db.commit()
-    return {"queued": count}
+    return {"queued": count, "index_generation": project.index_generation, "embedding_profile": profile()}
+
+
+@app.post("/v1/projects/{project_id}/retrieval/compare")
+def compare_retrieval(project_id: str, body: QueryInput, request: Request, db: Session = Depends(get_db)):
+    project = access(project_id, request, db, owner_only=True).project
+    results = []
+    for strategy in ("vector", "keyword", "hybrid"):
+        start = time.perf_counter()
+        sources = retrieve(db, project, body.question, strategy=strategy)
+        results.append({"strategy": strategy, "retrieval_latency_ms": round((time.perf_counter()-start)*1000, 2), "retrieved": sources})
+    return {"question": body.question, "embedding_profile": profile(), "results": results, "note": "Retrieval signals are not accuracy or answer confidence scores. No answer generation or history entry is created."}
 
 
 @app.post("/v1/projects/{project_id}/query")
@@ -397,7 +426,8 @@ def revoke_key(project_id: str, key_id: str, request: Request, db: Session = Dep
 def project_status(project_id: str, request: Request, db: Session = Depends(get_db)):
     project = access(project_id, request, db).project
     states = dict(db.execute(select(Document.status, func.count()).where(Document.project_id == project_id).group_by(Document.status)).all())
-    return {"project_id": project_id, "documents": states, "ready": bool(states.get("ready")), "pipeline_version": project.pipeline_version}
+    status = index_status(db, project)
+    return {"project_id": project_id, "documents": states, "ready": bool(states.get("ready")) and status["query_ready"], "pipeline_version": project.pipeline_version, "index": status}
 
 
 @app.get("/v1/projects/{project_id}/usage")
@@ -416,7 +446,7 @@ def cast_bool(column):
 def manifest(project_id: str, request: Request, db: Session = Depends(get_db)):
     p = access(project_id, request, db, owner_only=True).project
     docs = db.scalars(select(Document).where(Document.project_id == project_id))
-    return {"schema_version": "1.0", "name": p.name, "description": p.description, "pipeline": p.pipeline, "embedding": {"provider": s.embedding_provider, "model": embedding_id(), "dimensions": s.embedding_dimensions}, "generation": {"provider": s.generation_provider, "model": s.openai_model or None}, "documents": [{"name": d.name, "sha256": d.sha256, "status": d.status} for d in docs], "export_status": "Configuration only. Standalone source package export is the next milestone."}
+    return {"schema_version": "1.1", "name": p.name, "description": p.description, "pipeline": p.pipeline, "embedding": profile(), "index_generation": p.index_generation, "generation": {"provider": s.generation_provider, "model": s.openai_model or None}, "documents": [{"name": d.name, "sha256": d.sha256, "status": d.status} for d in docs], "export_status": "Configuration only. Standalone source package export is the next milestone."}
 
 
 @app.get("/v1/projects/{project_id}/evaluation/cases")
@@ -533,7 +563,7 @@ def openapi_schema():
         "SessionCookie": {"type": "apiKey", "in": "cookie", "name": "ragforge_session", "description": "Sign in through the dashboard; browsers send the HttpOnly cookie"},
         "WidgetToken": {"type": "http", "scheme": "bearer", "description": "Public query capability from explicit widget publication"},
     }
-    owners = {"projects", "create_project", "update_project", "delete_project", "keys", "create_key", "revoke_key", "conversations", "conversation", "set_pipeline", "reindex", "manifest", "eval_cases", "create_case", "delete_case", "synthetic_cases", "eval_runs", "create_run", "widget", "set_widget"}
+    owners = {"projects", "create_project", "update_project", "delete_project", "keys", "create_key", "revoke_key", "conversations", "conversation", "set_pipeline", "reindex", "compare_retrieval", "manifest", "eval_cases", "create_case", "delete_case", "synthetic_cases", "eval_runs", "create_run", "widget", "set_widget"}
     for route in app.routes:
         if not isinstance(route, APIRoute):
             continue

@@ -23,6 +23,11 @@ jobs:
           cache: pip
           cache-dependency-path: backend/requirements.lock.txt
       - run: python -m pip install -r backend/requirements.lock.txt
+      - uses: actions/cache@v4
+        with:
+          path: data/models
+          key: minilm-d13954661f83248295ba75c1ed411eef3b7b936e
+      - run: PYTHONPATH=backend EMBEDDING_PROVIDER=semantic python -m app.model_cache
       - if: matrix.database == 'postgres'
         run: |
           echo "DATABASE_URL=postgresql+psycopg://ragforge:test-only-password@localhost:5432/ragforge_test" >> "$GITHUB_ENV"
@@ -44,3 +49,31 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm run build
+  browser:
+    runs-on: ubuntu-latest
+    env:
+      API_PORT: "8010"
+      WEB_PORT: "3010"
+      APP_ORIGINS: http://localhost:3010
+      QA_BASE_URL: http://localhost:3010
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm --prefix frontend ci
+      - run: cd frontend && npx playwright install --with-deps chromium
+      - run: docker compose -p ragforge-ci up --build -d
+      - run: docker compose -p ragforge-ci exec -T api python -m app.model_cache
+      - run: npm --prefix frontend run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-qa
+          path: |
+            artifacts/browser
+            docs/qa/screenshots
+      - if: always()
+        run: docker compose -p ragforge-ci down

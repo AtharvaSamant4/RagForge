@@ -37,6 +37,7 @@ class PipelineInput(BaseModel):
     overlap: int = Field(default=30, ge=0, le=200)
     top_k: int = Field(default=5, ge=1, le=15)
     min_score: float = Field(default=0.12, ge=0.05, le=0.9)
+    semantic_min_score: float = Field(default=0.32, ge=0.15, le=0.9)
     auto: bool = True
 
     @model_validator(mode="after")

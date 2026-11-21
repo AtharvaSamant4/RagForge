@@ -1,34 +1,37 @@
 # Implementation progress
 
-## Completed
+## Current milestone
 
-* Isolated accounts/projects; project CRUD; scoped, hashed and revocable API credentials.
-* Selectable-text PDF, DOCX, UTF-8 TXT/Markdown and textual CSV; metadata, offsets, validation and random storage paths.
-* Durable leased jobs, bounded retries, explicit failure recovery and transactional chunk publication; deletion and index cleanup.
-* Vector/keyword/hybrid retrieval, documented automatic defaults, chunk controls, conservative refusals, exact source citations, persisted conversations and SSE delivery endpoint.
-* Responsive Next.js dashboard: uploads, processing/error states, chunk inspection, pipeline edits/reindex, playground, measured evaluation, API keys/examples, widget controls, manifests and settings.
-* Explicit public query capabilities, origin-constrained iframe CSP, revocation and appearance controls. Private management keys never appear in widgets.
-* Verified vs synthetic evaluation cases, real document recall, citation provenance, lexical overlap, refusal agreement and latency; semantic faithfulness explicitly unassessed.
-* Environment configuration, frozen initial Alembic migration, Docker Compose, PostgreSQL vector/FTS indexes, local Windows helper, sample documents, API/security/architecture docs and CI matrix.
+Milestone 2 is implemented on `feat/semantic-benchmarks-qa`; it is not merged into main. The original MVP stack and its data remain separate. The semantic QA stack uses Docker Compose project `ragforge-m2`, dashboard port 3010 and API port 8010.
 
-## Executed verification
+## Completed functionality
 
-* Windows/Python 3.12 + SQLite: 33 automated tests passed; the PostgreSQL-only multi-worker test was correctly skipped. Coverage includes real PDF/DOCX extraction, all three retrieval modes, tenant boundaries, API key scopes/revocation, retries, expired lease recovery, deletion, evaluation and widget permissions. One upstream Starlette TestClient deprecation warning remains; it does not fail tests.
-* Real local HTTP API + independent durable worker: full `scripts/smoke.py` workflow passed (PDF upload, indexing, cited answer, external Bearer API, refusal, evaluation and deletion).
-* TypeScript check and Next.js production build passed. Local dashboard HTTP response: 200.
-* Browser QA attempted, but the browser access host was unavailable. Visual rendering, interactive clicks and responsive layout have **not** been browser-verified.
-* PostgreSQL 17 + pgvector: the frozen migration applied and all 34 tests passed against an isolated disposable PostgreSQL database (including vector, keyword and hybrid query paths, concurrent job claims and deletion during processing).
-* `scripts/check-web.py` passed against the running Next.js proxy: web routes/assets, real PDF processing, JavaScript and cURL API clients, widget CSP/configuration escaping, public queries and revocation.
-* SQLite migration upgrade, downgrade and re-upgrade passed. The updated TypeScript check and production build passed.
-* Docker Compose: API, worker and production Next.js images built successfully. All four services started with the documented default ports; database and API health checks passed.
-* Linux/Python 3.12 inside the actual API image: the frozen migration applied to a new disposable PostgreSQL database and all 34 tests passed (14 seconds).
-* Both `scripts/smoke.py` and `scripts/check-web.py` passed against the final containerized stack on ports 8000/3000, including Python/JavaScript/cURL clients, cited answers, measured evaluation, proxy OpenAPI, widget CSP/public query/revocation and deletion cleanup.
-* The implementation and verification records are committed and pushed to `https://github.com/AtharvaSamant4/RagForge`, branch `main`. No public deployment or paid model calls were performed.
+* Preserved accounts/projects, scoped API keys, document formats, background ingestion, citations/history, evaluation, widgets, deletion and local deployment.
+* Pinned CPU MiniLM ONNX inference: real semantic vectors, verified model/tokenizer checksums, persistent shared model cache, batched/deduplicated computation and bounded process-memory caching. Original lexical hashing remains selectable.
+* Model profiles and index generations, preserved-data migration, descriptive compatibility gates, fixed PostgreSQL dimension checks, controlled reindexing and stale-job cancellation. Existing default lexical jobs survive migration.
+* Semantic/keyword/hybrid retrieval, measured backend-specific defaults, explicit thresholds, weighted fusion, token-budget-aware chunks, qualified evidence and stronger exact-source grounding.
+* 18 synthetic benchmark sources, 30 deterministic fixture contracts, 120 explicitly unverified candidates, a separate human review/approval workflow, frozen original lexical baseline, actual database comparisons and resource/load measurements.
+* Active model/index diagnostics, three-strategy passage comparison and retrieval latency in the developer UI.
+* Real desktop/mobile Playwright workflows and inspected screenshots. Fixed mobile navigation, hidden document actions, small text, widget-settings loading races, stale rebuild messages and partial PDF line excerpts.
+* Updated setup/model/benchmark/browser/API/architecture/security documentation and CI coverage.
+
+## Executed checks
+
+* Docker PostgreSQL/pgvector: 56 backend tests passed, including actual model inference and original regressions.
+* SQLite/Windows: 54 tests passed; 2 PostgreSQL-only concurrency/fixed-dimension cases were intentionally skipped.
+* Frontend TypeScript checking and optimized production builds passed, including the actual Docker web image.
+* Desktop and mobile browser workflows both passed, with zero unexpected/flaky/skipped browser cases. Exact durations are in `qa/browser-results.json`.
+* Real semantic Docker HTTP smoke and web-proxy/widget checks passed, including Python/JavaScript/cURL clients and document deletion cleanup.
+* PostgreSQL and SQLite benchmarks executed on the same sources and questions; current JSON reports retain model/configuration/source/dataset fingerprints and individual outcomes. See BENCHMARKS.md.
+* HTTP load: 24 successful queries at concurrency 8; all 16 health requests returned 200. Latency, indexing/embedding time, memory and CPU observations are recorded without capacity guarantees.
+* One upstream Starlette TestClient deprecation warning remains; tests pass. No public deployment, paid model calls or merge into main occurred.
 
 ## Known limitations
 
-Local embeddings are lexical feature hashing; local answers extract source sentences. Synonyms and conversational follow-ups are limited. Hosted adapters have contract tests but no paid live API verification. Exact quote validation does not establish semantic entailment. Evaluations run synchronously with at most 50 cases. No OCR, multimodal data, numerical CSV analytics, standalone source export, password recovery/SSO or public deployment. Production security work is enumerated in SECURITY.md.
+The English semantic model and small authored corpus do not establish general customer-data accuracy. Fixtures were inspected during tuning; no blind holdout or independently human-verified candidate accuracy is claimed. Human candidate review remains a supported workflow, not an invented completed review. Semantic similarity and exact quotes do not prove answerability or entailment. Numeric conflicts and instruction-request filtering cover narrow patterns. Hosted adapters have no live paid-provider verification. Model memory is per process; cache state and competing load affect latency, and concurrent tail latency is noticeable.
+
+No OCR, multimodal ingestion, arbitrary CSV analytics, standalone code-package export, SSO/password recovery or public hosting was added. Production parsing isolation, storage/spend quotas, broader monitoring and other launch requirements remain in SECURITY.md.
 
 ## Next priority
 
-The local MVP foundation is implemented and verified. Next: browser visual/interaction QA when browser access is available, parser isolation and storage/spend quotas before internet exposure, broader manually labeled retrieval benchmarks, provider-native streaming and standalone Docker source export. Hosted adapters still need an explicitly authorized live provider test.
+Human review of the candidate queue, independently labeled developer-document benchmarks, broader multilingual/contradiction coverage and measured tail-latency/memory tuning before production hardening or standalone source export. The requirement-by-requirement completion evidence is in MILESTONE2_AUDIT.md.

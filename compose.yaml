@@ -24,11 +24,14 @@ services:
     environment:
       DATABASE_URL: postgresql+psycopg://ragforge:${POSTGRES_PASSWORD:-local-ragforge-change-me}@db:5432/ragforge
       STORAGE_DIR: /app/data/uploads
+      EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-semantic}
+      MODEL_CACHE_DIR: /app/data/models
       APP_ORIGINS: ${APP_ORIGINS:-http://localhost:3000}
     ports:
       - "127.0.0.1:${API_PORT:-8000}:8000"
     volumes:
       - uploads:/app/data/uploads
+      - model_cache:/app/data/models
     depends_on:
       db:
         condition: service_healthy
@@ -49,8 +52,11 @@ services:
     environment:
       DATABASE_URL: postgresql+psycopg://ragforge:${POSTGRES_PASSWORD:-local-ragforge-change-me}@db:5432/ragforge
       STORAGE_DIR: /app/data/uploads
+      EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-semantic}
+      MODEL_CACHE_DIR: /app/data/models
     volumes:
       - uploads:/app/data/uploads
+      - model_cache:/app/data/models
     depends_on:
       api:
         condition: service_healthy
@@ -70,3 +76,4 @@ services:
 volumes:
   postgres_data:
   uploads:
+  model_cache:

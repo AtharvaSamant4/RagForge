@@ -134,3 +134,10 @@ body[data-theme="light"] input {
   background: white;
   border-color: #9fb8a9;
 }
+
+main > p {
+  font-size: 16px;
+}
+footer {
+  font-size: 12px;
+}
