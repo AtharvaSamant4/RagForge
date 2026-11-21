@@ -520,3 +520,36 @@ def public_query(project_id: str, body: QueryInput, request: Request, db: Sessio
     token = request.headers.get("authorization", "").removeprefix("Bearer ")
     p = public_access(project_id, token, request, db)
     return answer(db, p, body.question, "widget", save=True, public=True)
+
+
+def openapi_schema():
+    from fastapi.openapi.utils import get_openapi
+    from fastapi.routing import APIRoute
+    if app.openapi_schema:
+        return app.openapi_schema
+    schema = get_openapi(title=app.title, version=app.version, routes=app.routes)
+    schema.setdefault("components", {})["securitySchemes"] = {
+        "ProjectKey": {"type": "http", "scheme": "bearer", "description": "Project-scoped key created in API & Integration"},
+        "SessionCookie": {"type": "apiKey", "in": "cookie", "name": "ragforge_session", "description": "Sign in through the dashboard; browsers send the HttpOnly cookie"},
+        "WidgetToken": {"type": "http", "scheme": "bearer", "description": "Public query capability from explicit widget publication"},
+    }
+    owners = {"projects", "create_project", "update_project", "delete_project", "keys", "create_key", "revoke_key", "conversations", "conversation", "set_pipeline", "reindex", "manifest", "eval_cases", "create_case", "delete_case", "synthetic_cases", "eval_runs", "create_run", "widget", "set_widget"}
+    for route in app.routes:
+        if not isinstance(route, APIRoute):
+            continue
+        security = None
+        if route.path.startswith("/v1/projects"):
+            security = [{"SessionCookie": []}] if route.name in owners else [{"ProjectKey": []}, {"SessionCookie": []}]
+        elif route.name in {"public_query", "public_config"}:
+            security = [{"WidgetToken": []}]
+        elif route.name == "me":
+            security = [{"SessionCookie": []}]
+        if security:
+            for method in route.methods:
+                if method.lower() in schema["paths"].get(route.path, {}):
+                    schema["paths"][route.path][method.lower()]["security"] = security
+    app.openapi_schema = schema
+    return schema
+
+
+app.openapi = openapi_schema

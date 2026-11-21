@@ -66,7 +66,7 @@ SQLite is configured by default and supports one worker. PostgreSQL is required 
 6. In **Evaluation**, add a verified question with the PDF selected as its relevant source, then run evaluation. It computes actual document recall, quote provenance, refusal agreement and latency. Generated candidate questions are explicitly unverified and excluded by default. No semantic faithfulness score is claimed.
 7. In **Deployment**, optionally enable a public widget, add your embedding website's exact origin, and copy the new embed script. Every ready source becomes queryable through this capability. Saving rotates the token; disabling revokes it. Localhost URLs work only for local testing; external hosting requires an operator deployment and HTTPS.
 8. Delete the PDF, then ask the refund question again. The source is gone from retrieval and the answer is refused. Deletion also clears cached project history and evaluation run outputs so they do not retain deleted passages.
-9. To demonstrate recovery, upload a malformed file starting with `%PDF-1.7`. It is accepted for processing but visibly fails parsing. Fix/replace the source and use **Retry** or upload the repaired file; genuine failures never appear as ready.
+9. To demonstrate failure handling, upload a malformed file starting with `%PDF-1.7`. It is accepted for processing but visibly fails parsing. **Retry** reruns the stored file; a corrupt source should be deleted and re-uploaded after repair. Retry also recovers transient provider failures after server configuration or connectivity is fixed. Genuine failures never appear as ready.
 
 Sample PDF/DOCX files can be recreated with `.venv/bin/python scripts/create_samples.py`.
 

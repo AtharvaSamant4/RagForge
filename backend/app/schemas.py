@@ -1,5 +1,7 @@
 from typing import Literal
 from urllib.parse import urlparse
+import ipaddress
+import re
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
@@ -77,7 +79,18 @@ class WidgetInput(BaseModel):
             p = urlparse(value)
             if p.scheme not in ("https", "http") or not p.netloc or p.username or p.password or p.path not in ("", "/") or p.query or p.fragment:
                 raise ValueError("Use explicit http(s) origins without paths or wildcards")
-            result.append(f"{p.scheme}://{p.netloc}")
+            try:
+                host = p.hostname or ""
+                port = p.port
+                if ":" in host:
+                    host = "[" + str(ipaddress.IPv6Address(host)) + "]"
+                else:
+                    host = host.encode("idna").decode("ascii").lower()
+                    if not re.fullmatch(r"[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?", host):
+                        raise ValueError("Invalid hostname")
+            except (ValueError, UnicodeError):
+                raise ValueError("Use a valid hostname or IP address and optional port") from None
+            result.append(f"{p.scheme}://{host}" + (f":{port}" if port is not None else ""))
         return result
 
     @model_validator(mode="after")

@@ -18,6 +18,9 @@ assert web.get("/embed-client.js").status_code == 200
 assert web.get("/embed.css").status_code == 200
 assert web.get("/api/health").json()["status"] == "ok"
 assert web.get("/api/docs").status_code == 200
+schema = web.get("/openapi.json").json()
+assert schema["servers"][0]["url"] == "/api"
+assert "ProjectKey" in schema["components"]["securitySchemes"]
 assert web.post("/api/v1/auth/register", json={"email": f"web-{uuid.uuid4().hex[:12]}@example.com", "password": uuid.uuid4().hex}).status_code == 201
 p = web.post("/api/v1/projects", json={"name": "Web integration checks"}).json()
 base = "/api/v1/projects/" + p["id"]

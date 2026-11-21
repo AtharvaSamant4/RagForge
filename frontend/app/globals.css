@@ -1980,3 +1980,25 @@ dd {
     scroll-behavior: auto !important;
   }
 }
+
+.modal-dialog {
+  border: 0;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  max-width: calc(100vw - 30px);
+  max-height: 92vh;
+  overflow: visible;
+}
+.modal-dialog::backdrop {
+  background: #020407cc;
+  backdrop-filter: blur(8px);
+}
+.mobile-logout {
+  display: none;
+}
+@media (max-width: 700px) {
+  .mobile-logout {
+    display: inline-flex;
+  }
+}

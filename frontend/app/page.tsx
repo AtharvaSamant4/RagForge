@@ -38,6 +38,7 @@ import {
   Zap,
 } from "lucide-react";
 import { api, download } from "./api";
+import { Modal } from "./modal";
 import type {
   Case,
   Doc,
@@ -409,6 +410,13 @@ export default function Dashboard() {
       setError("Clipboard access failed. Select and copy the text.");
     }
   };
+  const signout = () =>
+    void task("Signing out", async () => {
+      await api("/v1/auth/logout", { method: "POST" });
+      setUser(null);
+      setSelected("");
+      setProjects([]);
+    });
   if (boot)
     return (
       <main className="boot">
@@ -596,17 +604,7 @@ export default function Dashboard() {
               ? "Extractive answers · lexical embeddings"
               : "Verified source quotes · hosted generation"}
           </p>
-          <button
-            className="profile"
-            onClick={() =>
-              void task("Signing out", async () => {
-                await api("/v1/auth/logout", { method: "POST" });
-                setUser(null);
-                setSelected("");
-                setProjects([]);
-              })
-            }
-          >
+          <button className="profile" disabled={!!busy} onClick={signout}>
             <span className="avatar">
               {user.email.slice(0, 2).toUpperCase()}
             </span>
@@ -631,6 +629,14 @@ export default function Dashboard() {
             <BookOpen size={16} />
             API reference
           </a>
+          <button
+            className="mobile-logout icon-button"
+            aria-label="Sign out"
+            disabled={!!busy}
+            onClick={signout}
+          >
+            <LogOut size={17} />
+          </button>
         </header>
         <main className="content">
           {error && (
@@ -2176,13 +2182,8 @@ export default function Dashboard() {
         </footer>
       </div>
       {create && (
-        <div className="modal-backdrop">
-          <section
-            className="modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="create-title"
-          >
+        <Modal label="create-title" onClose={() => setCreate(false)}>
+          <section className="modal">
             <button
               className="modal-close"
               aria-label="Close"
@@ -2222,16 +2223,11 @@ export default function Dashboard() {
               </button>
             </form>
           </section>
-        </div>
+        </Modal>
       )}
       {preview && (
-        <div className="modal-backdrop">
-          <section
-            className="modal wide-modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="source-title"
-          >
+        <Modal label="source-title" onClose={() => setPreview(null)}>
+          <section className="modal wide-modal">
             <button
               className="modal-close"
               aria-label="Close source preview"
@@ -2259,7 +2255,7 @@ export default function Dashboard() {
               )}
             </div>
           </section>
-        </div>
+        </Modal>
       )}
     </div>
   );
