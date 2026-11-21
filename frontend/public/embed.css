@@ -1,0 +1,136 @@
+:root {
+  --accent: #14b8a6;
+  color-scheme: dark;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: #10171b;
+  color: #e2eee9;
+  font: 16px/1.65 system-ui;
+}
+header {
+  padding: 20px;
+  background: #17231f;
+  border-bottom: 1px solid #33473e;
+}
+header span {
+  font-size: 18px;
+  font-weight: 600;
+}
+header small {
+  display: block;
+  color: #8eaa9b;
+  font-size: 12px;
+}
+main {
+  flex: 1;
+  overflow: auto;
+  padding: 18px;
+  min-height: 0;
+}
+main > p {
+  padding: 12px 14px;
+  border-radius: 10px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 14px;
+}
+.assistant {
+  background: #1b2825;
+  border: 1px solid #32483e;
+}
+.user {
+  background: #243b34;
+  margin-left: 22px;
+}
+.error {
+  color: #ffb1b6;
+  background: #3a2228;
+}
+details {
+  font-size: 12px;
+  color: #9fc9b4;
+  border: 1px solid #3c5348;
+  padding: 9px;
+  border-radius: 6px;
+  margin: 8px 0;
+}
+summary {
+  cursor: pointer;
+}
+details p {
+  white-space: pre-wrap;
+}
+form {
+  padding: 14px 18px 6px;
+  border-top: 1px solid #2c4037;
+}
+label {
+  display: block;
+  font-size: 12px;
+  color: #91aa9c;
+  margin-bottom: 6px;
+}
+form div {
+  display: flex;
+  gap: 8px;
+}
+input {
+  min-width: 0;
+  flex: 1;
+  padding: 10px;
+  background: #17231f;
+  border: 1px solid #405c4e;
+  border-radius: 7px;
+  color: inherit;
+  font: 14px system-ui;
+}
+button {
+  background: var(--accent);
+  color: #081c13;
+  border: 0;
+  border-radius: 7px;
+  padding: 10px 13px;
+  font: 500 14px system-ui;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.5;
+}
+input:focus-visible,
+button:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+footer {
+  font-size: 10px;
+  text-align: center;
+  color: #6c8b7b;
+  padding: 7px 10px 12px;
+}
+body[data-theme="light"] {
+  background: #f4f8f6;
+  color: #182b21;
+  color-scheme: light;
+}
+body[data-theme="light"] header {
+  background: #e5f0e9;
+}
+body[data-theme="light"] .assistant {
+  background: #fff;
+  border-color: #d1ded6;
+}
+body[data-theme="light"] .user {
+  background: #dceee4;
+}
+body[data-theme="light"] input {
+  background: white;
+  border-color: #9fb8a9;
+}
