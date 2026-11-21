@@ -13,7 +13,7 @@ class Base(DeclarativeBase):
 url = settings().database_url
 if url.startswith("sqlite:///"):
     Path(url.removeprefix("sqlite:///")).parent.mkdir(parents=True, exist_ok=True)
-engine = create_engine(url, pool_pre_ping=True, connect_args={"check_same_thread": False, "timeout": 30} if url.startswith("sqlite") else {})
+engine = create_engine(url, pool_pre_ping=True, connect_args={"check_same_thread": False, "timeout": 30} if url.startswith("sqlite") else {"connect_timeout": 10})
 if url.startswith("sqlite"):
     @event.listens_for(engine, "connect")
     def sqlite_pragmas(connection, _):

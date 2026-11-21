@@ -19,3 +19,5 @@ def configure_logging():
     # Access logs can expose widget query-string capabilities; use safe structured middleware.
     logging.getLogger("uvicorn.access").disabled = True
     logging.getLogger("httpx").setLevel(logging.WARNING)
+    # Parser diagnostics may quote raw document bytes. Surface only our safe job errors.
+    logging.getLogger("pypdf").setLevel(logging.CRITICAL + 1)
