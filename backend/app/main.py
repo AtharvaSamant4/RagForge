@@ -499,9 +499,20 @@ def public_access(project_id, token, request, db):
 
 
 @app.get("/v1/public/{project_id}/config")
-def public_config(project_id: str, request: Request, token: str = "", db: Session = Depends(get_db)):
+def public_config(project_id: str, request: Request, db: Session = Depends(get_db)):
+    token = request.headers.get("authorization", "").removeprefix("Bearer ")
     p = public_access(project_id, token, request, db)
     return {"title": p.widget["title"], "welcome": p.widget["welcome"], "color": p.widget["color"], "theme": p.widget["theme"], "allowed_origins": p.widget["allowed_origins"]}
+
+
+@app.get("/v1/public/{project_id}/frame-policy")
+def frame_policy(project_id: str, request: Request, db: Session = Depends(get_db)):
+    # Only public embedding policy is disclosed. Document queries still require the capability.
+    rate_limit(db, "frame:" + (request.client.host if request.client else "unknown"), 120)
+    p = db.get(Project, project_id)
+    if not p or not p.widget.get("enabled"):
+        raise HTTPException(404, "Published assistant not found")
+    return {"allowed_origins": p.widget["allowed_origins"]}
 
 
 @app.post("/v1/public/{project_id}/query")

@@ -184,6 +184,8 @@ export default function Dashboard() {
     } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const chatEnd = useRef<HTMLDivElement>(null);
+  const selectedRef = useRef(selected);
+  selectedRef.current = selected;
   const project = projects.find((p) => p.id === selected);
   const base = `/v1/projects/${selected}`;
   const task = async (label: string, fn: () => Promise<void>) => {
@@ -209,6 +211,7 @@ export default function Dashboard() {
       api<Doc[]>(`/v1/projects/${selected}/documents`),
       api<Job[]>(`/v1/projects/${selected}/jobs`),
     ]);
+    if (selectedRef.current !== selected) return;
     setDocs(d);
     setJobs(j);
   }, [selected]);
@@ -539,6 +542,7 @@ export default function Dashboard() {
           <label htmlFor="project-select">Active project</label>
           <select
             id="project-select"
+            disabled={!!busy}
             value={selected}
             onChange={(e) => setSelected(e.target.value)}
           >
@@ -739,6 +743,7 @@ export default function Dashboard() {
                 ) : section === "Playground" ? (
                   <button
                     className="secondary"
+                    disabled={!!busy}
                     onClick={() => {
                       setMessages([]);
                       setConversationId(null);
