@@ -1,0 +1,25 @@
+{
+  "created_at_utc": "2026-11-22T10:39:38Z",
+  "compose_project": "ragforge-m4",
+  "protocol": "Actual worker SIGKILL while a new document is processing. Disposable QA-only 5-second lease, explicit 6-second crash interval, then a new worker. Normal deployment settings are restored in finally.",
+  "recovery": {
+    "killed_status": "processing",
+    "attempts_before": 1,
+    "attempts_after": 2,
+    "final_status": "ready",
+    "seconds_from_kill_to_ready": 47.419,
+    "document_bytes": 832045,
+    "chunks": 747,
+    "cited_query_after_recovery": true
+  },
+  "ingestion": {
+    "documents": 4,
+    "bytes": 8544,
+    "seconds_upload_to_all_ready": 9.167,
+    "documents_per_second": 0.436,
+    "chunks": 4,
+    "workload": "Four concurrent uploads of the public one-page PDF; one CPU MiniLM worker, normal parser limits, 1-second completion polling. Local test, not a capacity guarantee."
+  },
+  "ordinary_log_leak_check": "passed for unique source/question/password markers",
+  "resource_snapshot": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"46.57%\",\"Container\":\"ragforge-m4-api-1\",\"ID\":\"123d18ca09c6\",\"MemPerc\":\"2.08%\",\"MemUsage\":\"200.8MiB / 9.432GiB\",\"Name\":\"ragforge-m4-api-1\",\"NetIO\":\"1.75MB / 538kB\",\"PIDs\":\"12\"}\n{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.88%\",\"Container\":\"ragforge-m4-worker-1\",\"ID\":\"a71a04780764\",\"MemPerc\":\"2.74%\",\"MemUsage\":\"264.6MiB / 9.432GiB\",\"Name\":\"ragforge-m4-worker-1\",\"NetIO\":\"132kB / 7.52MB\",\"PIDs\":\"11\"}\n"
+}

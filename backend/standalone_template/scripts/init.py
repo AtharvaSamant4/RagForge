@@ -4,6 +4,7 @@ import hashlib
 import os
 from pathlib import Path
 import secrets
+import time
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -17,7 +18,7 @@ def initialize(port=8020,rotate=False):
         raise SystemExit("Already initialized. Use --rotate to rotate only the API key; keep the database password.")
     lines=env.read_text(encoding="utf-8").splitlines() if env.exists() else (ROOT/".env.example").read_text(encoding="utf-8").splitlines()
     raw="sa_"+secrets.token_urlsafe(32)
-    values={"STANDALONE_API_KEY_HASH":hashlib.sha256(raw.encode()).hexdigest()}
+    values={"STANDALONE_API_KEY_HASH":hashlib.sha256(raw.encode()).hexdigest(),"STANDALONE_API_KEY_EXPIRES_AT":str(int(time.time()+90*86400))}
     if not env.exists():
         values.update(POSTGRES_PASSWORD=secrets.token_hex(32),API_PORT=str(port),COMPOSE_PROJECT_NAME="rag-"+secrets.token_hex(5))
     names=set(values)

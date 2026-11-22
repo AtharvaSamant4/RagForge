@@ -6,6 +6,7 @@ import uuid
 from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, HTTPException, Request, UploadFile
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from sqlalchemy import func, select, text
 from .bootstrap import MANIFEST, COLLECTION_ID, PIPELINE
@@ -29,7 +30,7 @@ async def lifespan(app):
     yield
 
 
-app = FastAPI(title="Standalone Knowledge API", version="1.0.0", lifespan=lifespan)
+app = FastAPI(title="Standalone Knowledge API", version="1.1.0", lifespan=lifespan)
 from .http_limits import BodyLimit
 app.add_middleware(BodyLimit)
 
@@ -51,17 +52,29 @@ async def limits(request: Request, call_next):
     return response
 
 
+@app.exception_handler(RequestValidationError)
+async def invalid_request(request, exc):
+    # Pydantic's default errors echo input and context, including credentials/questions.
+    return JSONResponse({"detail": [{"loc": item["loc"], "msg": item["msg"], "type": item["type"]} for item in exc.errors()]}, 422)
+
+
 @app.exception_handler(ProviderError)
 async def provider_error(request, exc):
     return JSONResponse({"detail":str(exc)},503)
 
 
 def collection(db,lock=False):
+    if lock and db.bind.dialect.name=='sqlite':db.execute(text('BEGIN IMMEDIATE'))
     query=select(Project).where(Project.id==COLLECTION_ID)
     project = db.scalar(query.with_for_update() if lock else query)
     if not project:
         raise HTTPException(503,"Run python -m app.initialize before starting the API")
     return project
+
+
+def check_jobs(db,incoming):
+    count=db.scalar(select(func.count()).select_from(Job).where(Job.status.in_(['queued','processing'])))
+    if count+incoming>settings().max_ingestion_jobs_per_user:raise HTTPException(429,'Collection ingestion quota reached')
 
 
 def imports_enabled():
@@ -101,8 +114,8 @@ def upload(file:UploadFile,db=Depends(get_db)):
     imports_enabled()
     project=collection(db,lock=True)
     require_compatible(db,project,for_upload=True)
-    if db.scalar(select(func.count()).select_from(Document))>=100:
-        raise HTTPException(409,"Limit: 100 documents per collection")
+    if db.scalar(select(func.count()).select_from(Document))>=settings().max_documents_per_project:
+        raise HTTPException(409,"Document quota reached for this collection")
     content=file.file.read(settings().max_upload_mb*1024*1024+1)
     if len(content)>settings().max_upload_mb*1024*1024:
         raise HTTPException(413,"Upload exceeds configured size limit")
@@ -110,6 +123,9 @@ def upload(file:UploadFile,db=Depends(get_db)):
         name,kind=validate_file(file.filename or "",content)
     except ExtractionError as exc:
         raise HTTPException(422,str(exc)) from None
+    used=db.scalar(select(func.coalesce(func.sum(Document.size_bytes),0)))
+    if used+len(content)>settings().user_storage_mb*1024**2:raise HTTPException(413,'Collection storage quota reached')
+    check_jobs(db,1)
     sha=hashlib.sha256(content).hexdigest()
     db.execute(text("DELETE FROM standalone_removed_sources WHERE sha256=:sha"),{"sha":sha})
     previous=db.scalar(select(Document).where(Document.sha256==sha))
@@ -118,9 +134,9 @@ def upload(file:UploadFile,db=Depends(get_db)):
     storage_name=uuid.uuid4().hex+"."+kind
     path=settings().storage_dir/storage_name
     path.parent.mkdir(parents=True,exist_ok=True)
-    with path.open("xb") as out:
-        out.write(content)
     try:
+        with path.open("xb") as out:
+            out.write(content)
         doc=Document(project_id=COLLECTION_ID,name=name,kind=kind,storage_name=storage_name,sha256=sha,size_bytes=len(content))
         db.add(doc);db.flush();enqueue(db,doc,project);db.commit()
     except Exception:
@@ -159,6 +175,7 @@ def retry(job_id:str,db=Depends(get_db)):
         raise HTTPException(404,"Job not found")
     if job.status!="failed":
         raise HTTPException(409,"Only failed jobs can be retried")
+    check_jobs(db,1)
     job.status,job.attempts,job.available_at,job.error,job.finished_at="queued",0,time.time(),None,None
     job.config={**project.pipeline,"_embedding":profile(),"_generation":project.index_generation}
     doc=db.get(Document,job.document_id);doc.status,doc.error="queued",None
@@ -176,6 +193,8 @@ def reindex(db=Depends(get_db)):
         return {"queued":0,"message":"Matching work is already active"}
     for job in active:
         job.status,job.lease_token,job.lease_until="cancelled",str(uuid.uuid4()),None
+    db.flush()
+    check_jobs(db,db.scalar(select(func.count()).select_from(Document)))
     project.index_generation+=1
     project.index_profile=profile()
     # Editing config/manifest.json changes pipeline only through this explicit rebuild.

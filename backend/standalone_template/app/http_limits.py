@@ -5,7 +5,9 @@ from .engine.config import settings
 
 class BodyLimit:
     """Bound bytes before JSON or multipart parsing, including chunked requests."""
-    def __init__(self,app):self.app=app
+    def __init__(self,app):
+        import threading
+        self.app=app;self.upload_slots=threading.BoundedSemaphore(4)
 
     async def __call__(self,scope,receive,send):
         if scope['type']!='http':return await self.app(scope,receive,send)
@@ -25,4 +27,8 @@ class BodyLimit:
             received+=len(message.get('body',b''))
             if received>maximum:raise HTTPException(413,'Request exceeds body limit')
             return message
-        return await self.app(scope,bounded_receive,send)
+        if upload and not self.upload_slots.acquire(blocking=False):
+            return await JSONResponse({'detail':'Upload capacity reached; retry shortly'},429)(scope,receive,send)
+        try:return await self.app(scope,bounded_receive,send)
+        finally:
+            if upload:self.upload_slots.release()

@@ -19,6 +19,9 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(254), unique=True)
     password_hash: Mapped[str] = mapped_column(Text)
     created_at: Mapped[float] = mapped_column(Float, default=time.time)
+    is_admin: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false")
+    disabled: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false")
+    resource_epoch: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
 
 
 class LoginSession(Base):
@@ -100,6 +103,7 @@ class APIKey(Base):
     scopes: Mapped[list] = mapped_column(JSON)
     created_at: Mapped[float] = mapped_column(Float, default=time.time)
     last_used_at: Mapped[float | None] = mapped_column(Float, nullable=True)
+    expires_at: Mapped[float | None] = mapped_column(Float, nullable=True)
 
 
 class Conversation(Base):
@@ -167,3 +171,35 @@ class ExportJob(Base):
 
 
 Index("ix_jobs_claim", Job.status, Job.available_at)
+
+
+class Invite(Base):
+    __tablename__ = "invites"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uid)
+    token_hash: Mapped[str] = mapped_column(String(64), unique=True)
+    created_by: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    expires_at: Mapped[float] = mapped_column(Float)
+    redeemed_by: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    revoked: Mapped[bool] = mapped_column(Boolean, default=False)
+
+
+class ProviderUsage(Base):
+    __tablename__ = "provider_usage"
+    day: Mapped[str] = mapped_column(String(10), primary_key=True)
+    requests: Mapped[int] = mapped_column(Integer, default=0)
+    input_chars: Mapped[int] = mapped_column(Integer, default=0)
+
+
+class OperationalMetric(Base):
+    __tablename__ = "operational_metrics"
+    key: Mapped[str] = mapped_column(String(220), primary_key=True)
+    count: Mapped[int] = mapped_column(Integer, default=0)
+    total_ms: Mapped[float] = mapped_column(Float, default=0)
+    max_ms: Mapped[float] = mapped_column(Float, default=0)
+
+
+class WorkerHeartbeat(Base):
+    __tablename__ = "worker_heartbeats"
+    instance: Mapped[str] = mapped_column(String(100), primary_key=True)
+    updated_at: Mapped[float] = mapped_column(Float)
+    details: Mapped[dict] = mapped_column(JSON)

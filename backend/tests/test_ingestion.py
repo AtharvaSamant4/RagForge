@@ -36,7 +36,7 @@ def test_upload_validation(name, content):
 def test_path_traversal_and_format_ingestion(owner, project):
     for name, data in [("../../private.txt", b"Acme refund policy allows cancellation within thirty days."),("guide.md", b"# Refund policy\nAnnual subscriptions have a 30 day refund period."),("faq.csv", b"question,answer\nWhat is the refund period?,The refund period is thirty days.\n")]:
         _, doc = ingest(owner, project, data, name)
-        assert doc["status"] == "ready", doc
+        assert doc["status"] == "ready", doc["error"]
         assert "/" not in doc["name"] and "\\" not in doc["name"]
     buffer = io.BytesIO()
     word = Docx()

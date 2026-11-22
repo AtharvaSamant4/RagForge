@@ -34,12 +34,12 @@ from benchmarks import baseline
 from benchmarks.metrics import score, aggregate, canonical_bytes
 
 
-def run(output: str, include_candidates: bool, thresholds: list[float]):
+def run(output: str, include_candidates: bool, thresholds: list[float], *, frozen_config=None, cases_override=None, dataset_kind=None):
     fixtures = json.loads((ROOT / "benchmarks/fixtures.json").read_text(encoding="utf-8"))
     candidates = json.loads((ROOT / "benchmarks/candidates.json").read_text(encoding="utf-8")) if include_candidates else []
     approved_path = ROOT / "benchmarks/approved.jsonl"
     approved = [json.loads(line) for line in approved_path.read_text(encoding="utf-8").splitlines() if line.strip()] if approved_path.exists() else []
-    cases = fixtures + candidates + approved
+    cases = fixtures + candidates + approved if cases_override is None else cases_override
     corpus = sorted((ROOT / "benchmarks/corpus").glob("*.md"))
     corpus_hash = hashlib.sha256(b"".join(p.name.encode() + canonical_bytes(p) for p in corpus)).hexdigest()
     if any(record.get("corpus_sha256") != corpus_hash for record in approved):
@@ -52,8 +52,12 @@ def run(output: str, include_candidates: bool, thresholds: list[float]):
     report = {"schema_version": "1.0", "created_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "platform": platform.platform(), "python": platform.python_version(), "database": engine.dialect.name, "cpu_logical_count": os.cpu_count(), "corpus_sha256": corpus_hash, "dataset_sha256": dataset_hash, "source_count": len(corpus), "case_count": len(cases), "label_warning": "Fixture contracts are authored synthetic specifications; candidates are unverified proposed labels. Human-approved records are a separate split.", "latency_protocol": "Warm model, sequential queries, batch size configured in profile runtime. Bounded process embedding cache stays enabled across strategies. No paid generation.", "runs": []}
     report["source_hash_normalization"]="UTF-8 without BOM; LF line endings"
     report["source_sha256"]={str(path.relative_to(ROOT)).replace("\\","/"):hashlib.sha256(canonical_bytes(path)).hexdigest() for path in [*sorted((ROOT/"backend/app").glob("*.py")),ROOT/"benchmarks/run.py",ROOT/"benchmarks/baseline.py",ROOT/"benchmarks/metrics.py",ROOT/"backend/requirements.lock.txt"]}
-    for provider in ("local", "semantic"):
+    report["dataset_kind"]=dataset_kind or "development_sweep"
+    report["frozen_config"]=frozen_config
+    report["status"]="completed" if cases else "not_run_no_cases"
+    for provider in (("semantic",) if frozen_config else ("local", "semantic")) if cases else ():
         settings().embedding_provider = provider
+        if frozen_config and profile()["id"]!=frozen_config["embedding_profile"]:raise ValueError("Frozen embedding profile mismatch")
         cold_start = time.perf_counter()
         if provider == "semantic":
             model()
@@ -62,6 +66,7 @@ def run(output: str, include_candidates: bool, thresholds: list[float]):
             user = User(email=f"benchmark-{uuid.uuid4().hex}@example.com", password_hash="disabled-benchmark-account")
             db.add(user); db.flush()
             project = Project(owner_id=user.id, name="Benchmark " + provider)
+            if frozen_config:project.pipeline={**(project.pipeline or {}),**frozen_config["pipeline"],"auto":False}
             db.add(project); db.commit()
             project_id, user_id = project.id, user.id
             paths = []
@@ -86,7 +91,7 @@ def run(output: str, include_candidates: bool, thresholds: list[float]):
                 docs = list(db.scalars(select(Document).where(Document.project_id == project_id)))
                 indexing = {"seconds": round(indexing_seconds,4), "documents_per_second": round(len(docs)/indexing_seconds,3), "characters_per_second": round(sum(d.metadata_json["characters"] for d in docs)/indexing_seconds,2), "chunks": sum(d.chunk_count for d in docs), "embedding_ms_sum": round(sum(d.metadata_json["embedding_ms"] for d in docs),2), "sampled_peak_rss_mb": round(max(rss_samples)/1024**2,2), "cpu_seconds": round(sum(process.cpu_times()[:2])-cpu_start,3), "model_load_ms_cached_files": round(model_load_ms,2)}
                 for threshold in (thresholds if provider == "semantic" else [.12]):
-                    for strategy in ("vector", "keyword", "hybrid"):
+                    for strategy in ((frozen_config["pipeline"]["strategy"],) if frozen_config else ("vector", "keyword", "hybrid")):
                         project.pipeline = {**project.pipeline, "strategy": strategy, "top_k": 5, "min_score": .12, "semantic_min_score": threshold}
                         db.commit()
                         ordered = list(cases);random.Random(42).shuffle(ordered)
@@ -120,6 +125,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", default="benchmarks/results/sqlite.json")
     parser.add_argument("--candidates", action="store_true")
-    parser.add_argument("--thresholds", default="0.40")
+    parser.add_argument("--thresholds", default="0.32")
     args = parser.parse_args()
     run(args.output, args.candidates, [float(x) for x in args.thresholds.split(",")])

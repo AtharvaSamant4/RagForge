@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "body_limit_status": 413,
+  "undeclared_upload_status": 411,
+  "redirect_stays_on_public_api_path": true,
+  "upstream_offline_status": 503,
+  "upstream_error_request_id": "2ce93dd9-b1ae-419b-bde8-f893ad70a84e",
+  "private_url_question_authorization_not_logged": true,
+  "recovered_health": 200,
+  "protocol": "Stopped only isolated M4 API; preserved volumes; checked safe JSON/request ID/body limits and subsequent recovery. No mutation retry is automatic."
+}

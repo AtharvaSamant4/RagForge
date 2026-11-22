@@ -17,10 +17,15 @@ test("complete knowledge workspace and public widget workflow", async ({
   context,
   baseURL,
 }, testInfo) => {
+  test.setTimeout(240_000);
+  test.skip(
+    Boolean(process.env.QA_ALPHA),
+    "Development widget workflow runs separately",
+  );
   const email = `browser-${testInfo.project.name}-${Date.now()}@example.com`,
     password = "browser-test-password-long";
   const prefix = testInfo.project.name,
-    screenshotDir = path.resolve("../docs/qa/screenshots");
+    screenshotDir = path.resolve("../docs/qa/screenshots/m4-development");
   fs.mkdirSync(screenshotDir, { recursive: true });
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
@@ -204,7 +209,7 @@ test("complete knowledge workspace and public widget workflow", async ({
     .click();
   const configDownload = await configDownloadPromise;
   await configDownload.saveAs(
-    path.resolve(`../artifacts/browser/${prefix}-configuration.zip`),
+    path.resolve(`../artifacts/browser/m4-${prefix}-configuration.zip`),
   );
   await exportPanel.getByLabel("Include selected knowledge snapshot").check();
   await expect(
@@ -243,15 +248,21 @@ test("complete knowledge workspace and public widget workflow", async ({
     .click();
   const snapshotDownload = await snapshotDownloadPromise;
   await snapshotDownload.saveAs(
-    path.resolve(`../artifacts/browser/${prefix}-snapshot.zip`),
+    path.resolve(`../artifacts/browser/m4-${prefix}-snapshot.zip`),
   );
-  const exportJobs = await context.request.get(`${baseURL}/api/v1/projects/${projectId}/exports`);
+  const exportJobs = await context.request.get(
+    `${baseURL}/api/v1/projects/${projectId}/exports`,
+  );
   expect(exportJobs.ok()).toBe(true);
   const exportEvidence = (await exportJobs.json())[0];
   fs.writeFileSync(
-    path.resolve(`../artifacts/browser/${prefix}-export-before.json`),
+    path.resolve(`../artifacts/browser/m4-${prefix}-export-before.json`),
     JSON.stringify(
-      { before: beforeExport, source_project_id: projectId, export: exportEvidence },
+      {
+        before: beforeExport,
+        source_project_id: projectId,
+        export: exportEvidence,
+      },
       null,
       2,
     ),

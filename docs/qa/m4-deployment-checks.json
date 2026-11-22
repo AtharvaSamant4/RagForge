@@ -1,0 +1,15 @@
+{
+  "https_ready": 200,
+  "localhost_hsts_excluded": true,
+  "registration_mode": "invite",
+  "generation_provider": "extractive",
+  "hosted_calls_disabled": true,
+  "private_environment_selected": true,
+  "no_development_provider_key_inherited": true,
+  "api_memory_bytes": 1073741824,
+  "api_cpu_limit": 2.0,
+  "read_only_root": true,
+  "pids_limit": 128,
+  "cap_drop_all": true,
+  "no_new_privileges": true
+}

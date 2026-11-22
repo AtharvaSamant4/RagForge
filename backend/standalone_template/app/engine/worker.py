@@ -3,7 +3,7 @@ import time
 import uuid
 from pathlib import Path
 
-from sqlalchemy import delete, or_, select
+from sqlalchemy import delete, or_, select, func, text as sql_text
 
 from .config import settings
 from .db import SessionLocal
@@ -25,6 +25,10 @@ def enqueue(db, document: Document, project: Project):
 def run_once(project_id: str | None = None) -> bool:
     now = time.time()
     with SessionLocal() as db:
+        if db.bind.dialect.name=='postgresql':db.execute(sql_text('SELECT pg_advisory_xact_lock(6743323)'))
+        else:db.execute(sql_text('BEGIN IMMEDIATE'))
+        running=db.scalar(select(func.count()).select_from(Job).where(Job.status=='processing',Job.lease_until>now))
+        if running>=settings().max_ingestion_processes:return False
         query = select(Job).where(or_((Job.status == "queued") & (Job.available_at <= now), (Job.status == "processing") & (Job.lease_until < now)))
         if project_id:
             query = query.where(Job.project_id == project_id)
@@ -87,7 +91,10 @@ def run_once(project_id: str | None = None) -> bool:
             job.status, job.finished_at, job.error, job.lease_until = "succeeded", time.time(), None, None
             db.commit()
         log.info("ingestion_succeeded", extra={"job_id": job_id, "chunks": len(chunks)})
+        from .observability import metric
+        metric('ingestion_succeeded',(time.perf_counter()-started)*1000)
     except Exception as exc:
+        retry=False
         safe = str(exc) if isinstance(exc, (ExtractionError, ProviderError)) else "Document processing failed. Check format or server logs, then retry."
         with SessionLocal() as db:
             job = db.scalar(select(Job).where(Job.id == job_id).with_for_update())
@@ -101,6 +108,8 @@ def run_once(project_id: str | None = None) -> bool:
                 doc.status, doc.error = job.status, job.error
                 db.commit()
         log.warning("ingestion_failed", extra={"job_id": job_id, "error_type": type(exc).__name__})
+        from .observability import metric
+        metric('ingestion_retry' if retry else 'ingestion_failed')
     return True
 
 
@@ -114,6 +123,21 @@ def main():
             model()  # Download/init before claiming a lease; persistent cache is shared with API.
         except ProviderError:
             log.warning("embedding_model_unavailable")
+    from .observability import heartbeat
+    from .parse_isolation import execute_parser
+    parser_state={}
+    try:
+        probe=execute_parser(b'Probe','txt',probe='boundaries',outside='/etc/passwd') if __import__('sys').platform=='linux' else execute_parser(b'Probe','txt')
+        if __import__('sys').platform=='linux' and not all(probe.get('blocked',{}).get(k) for k in ('outside_file','network','process')):raise RuntimeError('Parser control probe failed')
+        parser_state=probe.get('restrictions',probe.get('metadata',{}).get('parser_containment',{}))
+    except Exception:log.warning('parser_containment_unavailable')
+    import threading
+    def publish_heartbeat():
+        while True:
+            try:heartbeat(parser_state)
+            except Exception:log.warning('heartbeat_failed')
+            time.sleep(5)
+    threading.Thread(target=publish_heartbeat,daemon=True).start()
     log.info("worker_started")
     while True:
         if not run_once():

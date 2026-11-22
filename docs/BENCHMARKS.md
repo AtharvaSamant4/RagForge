@@ -127,9 +127,53 @@ Human review is explicit:
 ```sh
 python benchmarks/review.py list
 python benchmarks/review.py show --id candidate-returns-01
-# A human inspects all proposed sources/answers; correct candidates.json if necessary.
+# Inspect the complete sources/answer; use the audited correction workflow below.
 python benchmarks/review.py approve --id candidate-returns-01 --reviewer 'Your name' --notes 'Reviewed question, complete source and expected response'
 # Or use reject with a reason.
 ```
 
 Approvals append a reviewer/timestamp/notes/source checksum/corpus checksum audit record and enter a separate `human_approved` split. Corpus changes invalidate prior approvals. The agent did not approve any candidate as a human. `python scripts/performance.py` reproduces the HTTP load test against the isolated semantic stack.
+
+
+## Milestone 4: audited review and frozen evaluation
+
+All **120 candidates remain unverified**. No real human approval, participation or independent holdout was invented. `review.py show` prints the complete original sources and current proposed answer/evidence/refusal. Decisions record reviewer identity, UTC timestamp, notes and normalized source/corpus hashes. The append-only history includes correction and reopen events; `approved.jsonl` is derived from the latest decisions. A correction requires a separate approval. Reopening removes previous approval without deleting its audit trail.
+
+```sh
+python benchmarks/review.py list
+python benchmarks/review.py show --id candidate-returns-01
+# A human creates a JSON file with corrected source_refs, expected_quotes,
+# question and/or expect_refusal. Quotes must match exact corpus text.
+python benchmarks/review.py correct --id candidate-returns-01 --reviewer 'Your name' --notes 'Evidence checked' --correction /private/correction.json
+python benchmarks/review.py approve --id candidate-returns-01 --reviewer 'Your name' --notes 'Full source and proposed response checked'
+# Previously approved/rejected? Reopen before correcting/reviewing again:
+python benchmarks/review.py reopen --id candidate-returns-01 --reviewer 'Your name' --notes 'Reason for re-review'
+```
+
+Validation rejects unsafe source paths, unknown correction fields and unsupported quotations. Tests perform explicitly labeled fake reviews only in temporary directories. Reviewer identity is operator-supplied provenance, not identity-provider authentication. Corpus changes invalidate old approvals.
+
+`frozen-config.json` preserves M2-selected MiniLM, hybrid/top-5 retrieval, chunk 180/overlap 30 and threshold 0.32. `evaluate.py` runs this one configuration without a tuning sweep. The original M2 sweep runner remains available for **development only**. Use a new/dedicated benchmark DB and source directory; never point tests at live data.
+
+```sh
+python benchmarks/evaluate.py --split development --output benchmarks/results/m4-frozen-development.json
+python benchmarks/evaluate.py --split human-approved --output benchmarks/results/m4-frozen-human.json
+python benchmarks/evaluate.py --split holdout --output benchmarks/results/m4-frozen-holdout.json
+```
+
+Executed SQLite frozen development evaluation: **30 authored fixtures**. Hit@5/recall@5 1.0, refusal contract match 1.0, citation provenance 1.0 where citations exist, mean end-to-end 72.21 ms and P95 174.15 ms on this run. These known fixture contracts demonstrate regression behavior, **not product-wide accuracy or independent generalization**. Reports retain case/source/data/code hashes, configuration, model profile, indexing and resource measurements.
+
+Human-approved split: **0 cases, not run, no score**. Independent holdout: **0 cases, not run, no score**. Human-reviewed candidates still share the synthetic development corpus and are not automatically a true holdout.
+
+For an external holdout pass `--holdout-file /private/holdout.json`. It must contain `kind: "independent_holdout"`, `frozen_config_sha256` (normalized SHA-256 of frozen-config.json), `reviewer`, `reviewed_at`, `provenance`, `not_used_for_tuning: true` and `cases` using the existing exact-evidence contract. Known development/candidate questions are rejected. Freeze settings before receiving labels. Do not tune on holdout errors and claim the resulting score is independent; the attestation remains a reviewer responsibility.
+
+## Milestone 4 bounded HTTP load
+
+Final deployed rate-counter/proxy measurement: [m4-query-load-final.json](qa/m4-query-load-final.json). The separate hosted backup run retains its own earlier load in [m4-hosted-recovery-load.json](qa/m4-hosted-recovery-load.json). Windows 10, four logical CPU threads, Docker Linux engine with about 9.4 GiB; API/worker each capped at 2 CPUs/1 GiB, DB at 1 CPU/512 MiB. One public sample PDF/project/key, three fixed questions, warm CPU MiniLM and extractive generation, no paid calls. Client/server share the machine; historical development stacks remained running and contention was not controlled. Sixty measured requests followed three warmups, aligned to one fixed minute; each stage ran once, without a confidence interval.
+
+| Concurrency | Requests | HTTP results | Responses/s | Median ms | P95 ms |
+|---|---:|---|---:|---:|---:|
+| 1 | 12 | 12 successful | 9.488 | 99.16 | 152.94 |
+| 4 | 24 | 24 successful | 4.461 | 190.70 | 4364.96 |
+| 8 | 24 | 21 successful, 3 quota rejections | 8.302 including rejections | 375.77 | 2813.87 |
+
+Nearest-rank P95 includes TLS/frontend proxy, auth, retrieval/generation, durable query storage and metrics. Cache effects, scheduling and tiny samples mean results need not vary monotonically. The last stage crosses 60 requests/key/minute after warmups. Its throughput includes 429 responses and is **not successful-query capacity**. End resource snapshots: API 200.7 MiB, worker 186.8 MiB, DB 50.57 MiB; these are not peaks. Actual worker interruption and four-document ingestion throughput are in [m4-worker-recovery-ingestion.json](qa/m4-worker-recovery-ingestion.json). No production capacity is extrapolated from this local test.

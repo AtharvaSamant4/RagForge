@@ -19,6 +19,10 @@ class Credentials(BaseModel):
         return value
 
 
+class RegistrationInput(Credentials):
+    invite_token: str | None = Field(default=None,max_length=200)
+
+
 class ProjectInput(BaseModel):
     name: str = Field(min_length=1, max_length=100)
     description: str = Field(default="", max_length=500)

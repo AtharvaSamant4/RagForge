@@ -6,6 +6,14 @@ The default runs a real pretrained **all-MiniLM-L6-v2** model on CPU through ONN
 
 Milestone 3 builds on verified Milestone 2 commit `f574709`, on `feat/standalone-rag-export`; neither feature branch is merged into `main`. **Deployment → Export standalone application** generates a complete independent Dockerized knowledge API. See [standalone export](docs/STANDALONE_EXPORT.md), [measured Milestone 2 benchmarks](docs/BENCHMARKS.md), [browser QA](docs/BROWSER_QA.md), and [model/index compatibility](docs/SEMANTIC_MODELS.md).
 
+## Current private-alpha milestone
+
+Milestone 4 on `feat/private-alpha-hardening` builds on verified M3 `c73d99f`. It adds tested parser containment, invitation controls, atomic quotas/budgets, credential rotation, diagnostics, encrypted recovery and an HTTPS/resource-limited private-alpha overlay. It is not production-certified or publicly launched. Existing downloaded standalone apps remain independent; new exports use reviewed template version 1.1.0.
+
+Start with [private-alpha onboarding](docs/PRIVATE_ALPHA.md), [operator setup](docs/OPERATIONS.md), [backup/restore](docs/BACKUP_RESTORE.md), [security limits](docs/SECURITY.md) and [the launch checklist](docs/LAUNCH_CHECKLIST.md). No real pilot participation, human benchmark approvals, independent holdout score or external invitations are claimed. M3's draft PR is [#1](https://github.com/AtharvaSamant4/RagForge/pull/1); it is not merged.
+
+For M4 development QA beside existing stacks, use a separate project with `API_PORT=8031`, `WEB_PORT=3031`, `APP_ORIGINS=http://localhost:3031`, then `docker compose -p ragforge-m4 up --build -d`. The older M2/M3 port examples below describe their historical isolated verification stacks; preserve those volumes rather than reusing their names for a new deployment.
+
 ## Start with Docker
 
 Requires Docker Engine/Desktop with Compose v2.24+ and Linux containers.
@@ -126,7 +134,7 @@ npm --prefix frontend run test:e2e
 .venv/bin/python benchmarks/run.py --candidates --output benchmarks/results/local.json
 ```
 
-Browser tests default to the Milestone 3 isolated stack at port 3030. Set `QA_BASE_URL=http://localhost:3000` to test the default stack instead. The Playwright external-widget fixture opens port 4020 on loopback for the duration of each test. Test accounts and their data are disposable; successful workflows remove their projects. Browser failures may leave only their own fixture projects in the QA database.
+Browser tests default to the Milestone 4 isolated development stack at port 3031. Set `QA_BASE_URL=http://localhost:3000` to test the default stack instead. The Playwright external-widget fixture opens port 4020 on loopback for the duration of each test. Test accounts and their data are disposable; successful workflows remove their projects. Browser failures may leave only their own fixture projects in the QA database.
 
 Real-model backend tests require the pinned local cache; prefetch with `python -m app.model_cache` first. These tests use local inference, not mocked semantic vectors. The test suite continues to exercise the original lexical path as a regression baseline.
 

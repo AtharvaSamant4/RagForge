@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     brand_name: str = "Standalone Knowledge API"
     database_url: str = "sqlite:///./runtime/standalone.db"
     storage_dir: Path = Path("./runtime/uploads")
-    app_origins: str = ""
+    app_origins: str = "http://localhost:3000"
     cookie_secure: bool = False
     allow_registration: bool = False
     max_upload_mb: int = 20
@@ -28,6 +28,30 @@ class Settings(BaseSettings):
     openai_embedding_model: str = "text-embedding-3-small"
     openai_model: str = ""
     job_lease_seconds: int = 300
+    export_dir: Path = Path("./data/exports")
+    export_max_source_mb: int = 100
+    export_max_archive_mb: int = 80
+    export_storage_mb: int = 512
+    export_retention_seconds: int = 3600
+    deployment_mode: Literal["development", "private_alpha"] = "development"
+    registration_mode: Literal["development", "invite", "disabled"] = "development"
+    session_ttl_seconds: int = 604800
+    api_key_ttl_days: int = 90
+    max_projects_per_user: int = 100
+    max_documents_per_project: int = 100
+    user_storage_mb: int = 512
+    max_ingestion_jobs_per_user: int = 20
+    max_ingestion_processes: int = 4
+    max_export_jobs_per_user: int = 2
+    parser_wall_seconds: float = 15
+    parser_cpu_seconds: int = 10
+    parser_memory_mb: int = 512
+    parser_output_mb: int = 16
+    parser_require_sandbox: bool = False
+    hosted_daily_requests: int = 100
+    hosted_daily_input_chars: int = 200000
+    hosted_call_input_chars: int = 64000
+    allow_public_widgets: bool = True
 
     @property
     def origins(self) -> list[str]:

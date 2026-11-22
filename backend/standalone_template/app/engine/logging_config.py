@@ -1,11 +1,14 @@
 import json
 import logging
 import time
+import re
 
 
 class JSONFormatter(logging.Formatter):
     def format(self, record):
-        value = {"time": time.time(), "level": record.levelname, "event": record.getMessage(), "logger": record.name}
+        message=record.getMessage()
+        event=message if record.name.startswith('ragforge') and re.fullmatch(r'[a-z][a-z0-9_]{0,60}',message) else 'external_log'
+        value = {"time": time.time(), "level": record.levelname, "event": event, "logger": record.name}
         for key in ("request_id", "method", "path", "status", "latency_ms", "job_id", "chunks", "error_type"):
             if hasattr(record, key):
                 value[key] = getattr(record, key)

@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "name": "milestone2-selected-before-m4-review",
+  "embedding_profile": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077",
+  "pipeline": {
+    "strategy": "hybrid",
+    "top_k": 5,
+    "chunk_size": 180,
+    "overlap": 30,
+    "min_score": 0.12,
+    "semantic_min_score": 0.32
+  },
+  "provenance": "M2 settings selected on development fixtures. M4 evaluations do not tune these values. Human-approved candidates were generated from the same synthetic corpus; they are not an independent holdout."
+}

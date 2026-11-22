@@ -9,6 +9,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, HTTPException, Request, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, StreamingResponse
 from sqlalchemy import delete, func, select, text
 from sqlalchemy.exc import IntegrityError
@@ -19,15 +20,16 @@ from .db import get_db
 from .evaluation import generate_cases, run_evaluation
 from .ingestion import ExtractionError, validate_file
 from .logging_config import configure_logging
-from .models import APIKey, Chunk, Conversation, Document, EvalCase, EvalRun, Job, LoginSession, Project, QueryRecord, User
+from .models import APIKey, Chunk, Conversation, Document, EvalCase, EvalRun, Job, LoginSession, Project, QueryRecord, User, Invite
 from .providers import ProviderError, embedding_id
 from .retrieval import answer
 from .retrieval import retrieve
 from .embeddings import profile, runtime_stats
 from .indexing import index_status, require_compatible, storage_dimensions
-from .schemas import CaseInput, Credentials, KeyInput, PipelineInput, ProjectInput, QueryInput, RunInput, WidgetInput
+from .schemas import CaseInput, Credentials, RegistrationInput, KeyInput, PipelineInput, ProjectInput, QueryInput, RunInput, WidgetInput
 from .security import access, current_user, digest, password_hash, password_valid, rate_limit
 from .worker import enqueue
+from .quotas import lock_owner, allocate, usage as quota_usage
 
 log = logging.getLogger("ragforge.api")
 s = settings()
@@ -37,17 +39,24 @@ s = settings()
 async def lifespan(app):
     configure_logging()
     s.storage_dir.mkdir(parents=True, exist_ok=True)
+    s.export_dir.mkdir(parents=True, exist_ok=True)
+    if s.deployment_mode=='private_alpha' and (not s.cookie_secure or not s.origins or any(not origin.startswith('https://') for origin in s.origins)):
+        raise RuntimeError('Private alpha requires HTTPS origins and secure cookies')
     yield
 
 
 app = FastAPI(title=f"{s.brand_name} API", version="0.1.0", lifespan=lifespan)
 from .exports import router as export_router
 app.include_router(export_router)
+from .ops import router as ops_router
+app.include_router(ops_router)
 
 
 class BodyLimit:
     def __init__(self, app):
         self.app = app
+        import threading
+        self.upload_slots=threading.BoundedSemaphore(4)
 
     async def __call__(self, scope, receive, send):
         if scope["type"] != "http":
@@ -58,7 +67,7 @@ class BodyLimit:
             size = int(headers.get(b"content-length", b"0"))
         except ValueError:
             size = maximum + 1
-        if size > maximum:
+        if not 0 <= size <= maximum:
             return await JSONResponse({"detail": "Request body exceeds the size limit"}, 413)(scope, receive, send)
         # Require a declared size for uploads to bound multipart parsing before disk spooling.
         if scope["method"] == "POST" and scope["path"].endswith("/documents") and b"content-length" not in headers:
@@ -71,7 +80,15 @@ class BodyLimit:
             if total > maximum:
                 raise HTTPException(413, "Request body exceeds the size limit")
             return message
-        await self.app(scope, bounded_receive, send)
+        upload=scope["method"]=="POST" and scope["path"].endswith("/documents")
+        if upload and not self.upload_slots.acquire(blocking=False):
+            return await JSONResponse({"detail":"Upload capacity reached; retry shortly"},429)(scope,receive,send)
+        try:await self.app(scope, bounded_receive, send)
+        finally:
+            if upload:self.upload_slots.release()
+
+
+app.add_middleware(BodyLimit)
 
 
 @app.middleware("http")
@@ -79,11 +96,11 @@ async def safeguards(request: Request, call_next):
     start = time.perf_counter()
     request_id = str(uuid.uuid4())
     # Session-cookie state changes require a trusted browser Origin. CLI uses Bearer keys.
-    if request.method in {"POST", "PUT", "PATCH", "DELETE"} and not request.url.path.startswith("/v1/public/") and not request.headers.get("authorization"):
-        if request.headers.get("origin", "").rstrip("/") not in s.origins:
-            return JSONResponse({"detail": "A trusted Origin header is required"}, 403)
     try:
-        response = await call_next(request)
+        if request.method in {"POST", "PUT", "PATCH", "DELETE"} and not request.url.path.startswith("/v1/public/") and not request.headers.get("authorization") and request.headers.get("origin", "").rstrip("/") not in s.origins:
+            response = JSONResponse({"detail": "A trusted Origin header is required"}, 403)
+        else:
+            response = await call_next(request)
     except Exception as exc:
         log.error("request_failed", extra={"request_id": request_id, "error_type": type(exc).__name__})
         response = JSONResponse({"detail": "An internal error occurred", "request_id": request_id}, 500)
@@ -91,12 +108,22 @@ async def safeguards(request: Request, call_next):
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["Referrer-Policy"] = "no-referrer"
     response.headers["Cache-Control"] = "no-store"
-    log.info("request_completed", extra={"request_id": request_id, "method": request.method, "path": request.url.path, "status": response.status_code, "latency_ms": round((time.perf_counter()-start)*1000, 2)})
+    route=getattr(request.scope.get('route'),'path','unmatched')
+    elapsed=round((time.perf_counter()-start)*1000,2)
+    from .observability import api_metric
+    import anyio
+    await anyio.to_thread.run_sync(api_metric,request.method,route,response.status_code,elapsed)
+    log.info("request_completed", extra={"request_id": request_id, "method": request.method, "path": route, "status": response.status_code, "latency_ms": elapsed})
     return response
 
 
-app.add_middleware(BodyLimit)
 app.add_middleware(CORSMiddleware, allow_origins=s.origins, allow_credentials=True, allow_methods=["GET", "POST", "PATCH", "PUT", "DELETE"], allow_headers=["Content-Type", "Authorization"])
+
+
+@app.exception_handler(RequestValidationError)
+async def invalid_request(request, exc):
+    # Pydantic's default errors echo input and context, including credentials/questions.
+    return JSONResponse({"detail": [{"loc": item["loc"], "msg": item["msg"], "type": item["type"]} for item in exc.errors()]}, 422)
 
 
 @app.exception_handler(ProviderError)
@@ -131,24 +158,30 @@ def child(db, model, project_id, id_):
 @app.get("/health")
 def health(db: Session = Depends(get_db)):
     db.execute(text("SELECT 1"))
-    return {"status": "ok", "brand": s.brand_name, "embedding_provider": s.embedding_provider, "embedding_profile": profile(), "embedding_runtime": runtime_stats(), "generation_provider": s.generation_provider, "registration_enabled": s.allow_registration}
+    mode=s.registration_mode if s.registration_mode!='development' or s.deployment_mode=='development' else 'disabled'
+    return {"status": "ok", "brand": s.brand_name, "embedding_provider": s.embedding_provider, "embedding_profile": profile(), "embedding_runtime": runtime_stats(), "generation_provider": s.generation_provider, "registration_enabled": mode=='invite' or (mode=='development' and s.allow_registration),"registration_mode":mode}
 
 
 def login_response(db, user, response):
     raw = secrets.token_urlsafe(32)
     db.execute(delete(LoginSession).where(LoginSession.expires_at < time.time()))
-    db.add(LoginSession(token_hash=digest(raw), user_id=user.id, expires_at=time.time()+7*86400))
+    db.add(LoginSession(token_hash=digest(raw), user_id=user.id, expires_at=time.time()+s.session_ttl_seconds))
     db.commit()
-    response.set_cookie("ragforge_session", raw, httponly=True, secure=s.cookie_secure, samesite="strict", max_age=7*86400, path="/")
-    return {"id": user.id, "email": user.email}
+    response.set_cookie("ragforge_session", raw, httponly=True, secure=s.cookie_secure, samesite="strict", max_age=s.session_ttl_seconds, path="/")
+    return {"id": user.id, "email": user.email,"is_admin":user.is_admin}
 
 
 @app.post("/v1/auth/register", status_code=201)
-def register(body: Credentials, request: Request, response: Response, db: Session = Depends(get_db)):
-    if not s.allow_registration:
+def register(body: RegistrationInput, request: Request, response: Response, db: Session = Depends(get_db)):
+    mode=health(db)['registration_mode']
+    if mode=='disabled' or (mode=='development' and not s.allow_registration):
         raise HTTPException(403, "Registration is disabled")
     rate_limit(db, "auth:" + (request.client.host if request.client else "unknown"), 15)
-    user = User(email=body.email, password_hash=password_hash(body.password))
+    user = User(id=str(uuid.uuid4()),email=body.email, password_hash=password_hash(body.password))
+    if mode=='invite':
+        from sqlalchemy import update
+        claimed=db.scalar(update(Invite).where(Invite.token_hash==digest(body.invite_token or ''),Invite.revoked==False,Invite.redeemed_by.is_(None),Invite.expires_at>time.time()).values(redeemed_by=user.id).returning(Invite.id))
+        if not claimed:raise HTTPException(403,'A valid, unused invitation is required')
     db.add(user)
     try:
         db.commit()
@@ -164,14 +197,19 @@ def login(body: Credentials, request: Request, response: Response, db: Session =
     user = db.scalar(select(User).where(User.email == body.email))
     # Equal-cost check prevents trivial account enumeration through timing.
     encoded = user.password_hash if user else "pbkdf2:600000:" + "00"*16 + ":" + "00"*32
-    if not password_valid(body.password, encoded) or not user:
+    if not password_valid(body.password, encoded) or not user or user.disabled:
         raise HTTPException(401, "Email or password is incorrect")
     return login_response(db, user, response)
 
 
 @app.get("/v1/auth/me")
 def me(user: User = Depends(current_user)):
-    return {"id": user.id, "email": user.email}
+    return {"id": user.id, "email": user.email,"is_admin":user.is_admin}
+
+
+@app.get('/v1/account/quotas')
+def account_quotas(user:User=Depends(current_user),db:Session=Depends(get_db)):
+    return quota_usage(db,user.id)
 
 
 @app.post("/v1/auth/logout")
@@ -190,8 +228,9 @@ def projects(user: User = Depends(current_user), db: Session = Depends(get_db)):
 @app.post("/v1/projects", status_code=201)
 def create_project(body: ProjectInput, user: User = Depends(current_user), db: Session = Depends(get_db)):
     rate_limit(db, "user:" + user.id)
-    if db.scalar(select(func.count()).select_from(Project).where(Project.owner_id == user.id)) >= 100:
-        raise HTTPException(409, "Local MVP limit: 100 projects per account")
+    lock_owner(db,user.id)
+    if db.scalar(select(func.count()).select_from(Project).where(Project.owner_id == user.id)) >= s.max_projects_per_user:
+        raise HTTPException(409, "Project quota reached")
     project = Project(owner_id=user.id, **body.model_dump())
     db.add(project)
     db.commit()
@@ -214,6 +253,7 @@ def update_project(project_id: str, body: ProjectInput, request: Request, db: Se
 @app.delete("/v1/projects/{project_id}")
 def delete_project(project_id: str, request: Request, db: Session = Depends(get_db)):
     project = access(project_id, request, db, owner_only=True).project
+    lock_owner(db,project.owner_id)
     names = list(db.scalars(select(Document.storage_name).where(Document.project_id == project_id)))
     db.delete(project)
     db.commit()
@@ -231,13 +271,15 @@ def documents(project_id: str, request: Request, db: Session = Depends(get_db)):
 @app.post("/v1/projects/{project_id}/documents", status_code=202)
 def upload(project_id: str, file: UploadFile, request: Request, db: Session = Depends(get_db)):
     project = access(project_id, request, db, "documents").project
+    lock_owner(db,project.owner_id)
     project = db.scalar(select(Project).where(Project.id == project_id).with_for_update())
     require_compatible(db, project, for_upload=True)
-    if db.scalar(select(func.count()).select_from(Document).where(Document.project_id == project_id)) >= 100:
-        raise HTTPException(409, "Local MVP limit: 100 documents per project")
+    if db.scalar(select(func.count()).select_from(Document).where(Document.project_id == project_id)) >= s.max_documents_per_project:
+        raise HTTPException(409, "Document quota reached for this project")
     content = file.file.read(s.max_upload_mb*1024*1024+1)
     if len(content) > s.max_upload_mb*1024*1024:
         raise HTTPException(413, f"Maximum upload size is {s.max_upload_mb} MB")
+    allocate(db,project.owner_id,incoming=len(content),ingestion=1)
     try:
         name, kind = validate_file(file.filename or "", content)
     except ExtractionError as exc:
@@ -247,9 +289,9 @@ def upload(project_id: str, file: UploadFile, request: Request, db: Session = De
     storage_name = uuid.uuid4().hex + "." + kind
     s.storage_dir.mkdir(parents=True, exist_ok=True)
     path = s.storage_dir / storage_name
-    with path.open("xb") as target:
-        target.write(content)
     try:
+        with path.open("xb") as target:
+            target.write(content)
         doc = Document(project_id=project_id, name=name, kind=kind, storage_name=storage_name, sha256=hashlib.sha256(content).hexdigest(), size_bytes=len(content))
         db.add(doc)
         db.flush()
@@ -271,7 +313,8 @@ def inspect_document(project_id: str, document_id: str, request: Request, db: Se
 
 @app.delete("/v1/projects/{project_id}/documents/{document_id}")
 def delete_document(project_id: str, document_id: str, request: Request, db: Session = Depends(get_db)):
-    access(project_id, request, db, "documents")
+    auth=access(project_id, request, db, "documents")
+    lock_owner(db,auth.project.owner_id)
     doc = child(db, Document, project_id, document_id)
     path = s.storage_dir / doc.storage_name
     # Cached answer text may contain deleted material, so clear project history and eval runs.
@@ -302,6 +345,8 @@ def get_job(project_id: str, job_id: str, request: Request, db: Session = Depend
 @app.post("/v1/projects/{project_id}/jobs/{job_id}/retry")
 def retry_job(project_id: str, job_id: str, request: Request, db: Session = Depends(get_db)):
     project = access(project_id, request, db, "documents").project
+    lock_owner(db,project.owner_id)
+    allocate(db,project.owner_id,ingestion=1)
     job = child(db, Job, project_id, job_id)
     if job.status != "failed":
         raise HTTPException(409, "Only failed jobs can be retried")
@@ -336,6 +381,7 @@ def set_pipeline(project_id: str, body: PipelineInput, request: Request, db: Ses
 @app.post("/v1/projects/{project_id}/reindex", status_code=202)
 def reindex(project_id: str, request: Request, db: Session = Depends(get_db)):
     project = access(project_id, request, db, owner_only=True).project
+    lock_owner(db,project.owner_id)
     project = db.scalar(select(Project).where(Project.id == project_id).with_for_update())
     dimensions = storage_dimensions(db)
     if dimensions is not None and dimensions != profile()["dimensions"]:
@@ -346,6 +392,8 @@ def reindex(project_id: str, request: Request, db: Session = Depends(get_db)):
     for job in active:
         job.status, job.lease_token, job.lease_until = "cancelled", str(uuid.uuid4()), None
         job.error, job.finished_at = "Superseded by a controlled index rebuild", time.time()
+    db.flush()
+    allocate(db,project.owner_id,ingestion=db.scalar(select(func.count()).select_from(Document).where(Document.project_id==project_id)))
     project.index_generation += 1
     project.index_profile = profile()
     count = 0
@@ -410,10 +458,10 @@ def keys(project_id: str, request: Request, db: Session = Depends(get_db)):
 def create_key(project_id: str, body: KeyInput, request: Request, db: Session = Depends(get_db)):
     access(project_id, request, db, owner_only=True)
     raw = "rf_" + secrets.token_urlsafe(32)
-    key = APIKey(project_id=project_id, name=body.name, scopes=body.scopes, prefix=raw[:11], token_hash=digest(raw))
+    key = APIKey(project_id=project_id, name=body.name, scopes=body.scopes, prefix=raw[:11], token_hash=digest(raw),expires_at=time.time()+s.api_key_ttl_days*86400)
     db.add(key)
     db.commit()
-    return {**row_dict(key, "id name prefix scopes created_at"), "secret": raw}
+    return {**row_dict(key, "id name prefix scopes created_at expires_at"), "secret": raw}
 
 
 @app.delete("/v1/projects/{project_id}/keys/{key_id}")
@@ -509,6 +557,7 @@ def widget(project_id: str, request: Request, db: Session = Depends(get_db)):
 
 @app.put("/v1/projects/{project_id}/widget")
 def set_widget(project_id: str, body: WidgetInput, request: Request, db: Session = Depends(get_db)):
+    if body.enabled and not s.allow_public_widgets:raise HTTPException(403,'Public widgets are disabled by the operator')
     p = access(project_id, request, db, owner_only=True).project
     raw = secrets.token_urlsafe(32) if body.enabled else None
     p.widget, p.widget_hash = body.model_dump(), digest(raw) if raw else None
@@ -518,6 +567,7 @@ def set_widget(project_id: str, body: WidgetInput, request: Request, db: Session
 
 def public_access(project_id, token, request, db):
     p = db.get(Project, project_id)
+    if not s.allow_public_widgets or (p and db.get(User,p.owner_id).disabled):raise HTTPException(404,'Published assistant not found')
     if not p or not p.widget.get("enabled") or not p.widget_hash or not hmac.compare_digest(p.widget_hash, digest(token)):
         raise HTTPException(404, "Published assistant not found")
     # Embedding origin is enforced by the frame's CSP. It is not authentication.
@@ -542,7 +592,7 @@ def frame_policy(project_id: str, request: Request, db: Session = Depends(get_db
     # Only public embedding policy is disclosed. Document queries still require the capability.
     rate_limit(db, "frame:" + (request.client.host if request.client else "unknown"), 120)
     p = db.get(Project, project_id)
-    if not p or not p.widget.get("enabled"):
+    if not s.allow_public_widgets or not p or db.get(User,p.owner_id).disabled or not p.widget.get("enabled"):
         raise HTTPException(404, "Published assistant not found")
     return {"allowed_origins": p.widget["allowed_origins"]}
 
@@ -574,7 +624,7 @@ def openapi_schema():
             security = [{"SessionCookie": []}] if route.name in owners or "/exports" in route.path else [{"ProjectKey": []}, {"SessionCookie": []}]
         elif route.name in {"public_query", "public_config"}:
             security = [{"WidgetToken": []}]
-        elif route.name == "me":
+        elif route.name == "me" or route.path.startswith(("/v1/admin/", "/v1/account/")):
             security = [{"SessionCookie": []}]
         if security:
             for method in route.methods:
