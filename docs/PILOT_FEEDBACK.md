@@ -9,7 +9,7 @@ Copy this blank form only after an authorized participant consents. Use an anony
 - First cited answer timestamp; elapsed minutes from setup start:
 - Independent deployment timestamp; elapsed minutes from task 5 start:
 
-| Task | Start | End | Completed / abandoned | Errors and assistance | Difficulty 1?5 |
+| Task | Start | End | Completed / abandoned | Errors and assistance | Difficulty 1 to 5 |
 |---|---|---|---|---|---|
 | Create project | | | | | |
 | Upload unfamiliar docs | | | | | |

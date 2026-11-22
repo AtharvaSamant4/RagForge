@@ -12,7 +12,7 @@ Implemented engineering and remaining operator/external work are separate. This 
 - [x] Encrypted hosted backup restored into a separate empty environment with matching sources/citations; unsafe restores refused.
 - [x] Audited review/correction workflow and frozen evaluation modes; human/holdout scores left empty.
 - [x] Onboarding/sample/tutorials/troubleshooting, five pilot tasks and empty feedback measurements.
-- [ ] Record final standalone recovery, worker interruption, desktop/mobile screenshot inspection and CI evidence in the M4 QA/audit report before delivery.
+- [x] Record final standalone recovery, worker interruption, desktop/mobile screenshot inspection and all-six-job CI evidence in [the M4 audit](MILESTONE4_AUDIT.md).
 
 ## Required operator steps before invitations
 

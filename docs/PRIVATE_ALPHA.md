@@ -15,7 +15,7 @@ For the controlled HTTPS configuration, follow [OPERATIONS.md](OPERATIONS.md): i
 1. Open the operator-provided HTTPS URL. Create an account using your private invitation code and a unique password of at least 12 characters. Invitations expire and work once. Contact the operator if yours is expired or revoked.
 2. Choose **Create project** and give the collection a clear name. Upload `samples/acme-handbook.pdf` from this repository as a public demonstration fixture.
 3. Wait for the document to become **ready**. Queued and processing are not success. Open the document to inspect extracted text/page locators. A failed job shows a safe error; repair the format and retry or replace the source.
-4. In **Playground**, ask ?What is the refund period?? Expand the citation and confirm that its exact quotation appears in the PDF. Ask ?Who won the Martian election in 2050?? and check that it refuses unsupported claims.
+4. In **Playground**, ask "What is the refund period?" Expand the citation and confirm that its exact quotation appears in the PDF. Ask "Who won the Martian election in 2050?" and check that it refuses unsupported claims.
 5. In **Evaluation**, add a case with the expected source and answer. Generated cases remain unverified until a person reviews them. A passing sample case is a regression result, not product-wide accuracy.
 
 Supported sources: selectable-text PDF, DOCX, UTF-8 TXT/Markdown and textual FAQ CSV. Default maximum is 20 MB/file and two million extracted characters. No OCR, arbitrary spreadsheet analytics, malware scanning or multimedia ingestion is provided. Remove secrets before upload. Exact quotations establish provenance; they do not establish truth or semantic entailment.
@@ -77,4 +77,4 @@ A first-time developer completes these tasks without coaching beyond this guide:
 | 4. Create a scoped key and query outside the UI | External client receives the expected cited answer; unauthorized project access fails. |
 | 5. Export and run an independent app | App starts on a separate port/database and answers with citations while the hosted API is unavailable. |
 
-Use [PILOT_FEEDBACK.md](PILOT_FEEDBACK.md) per participant. Measure setup start/end, each task start/end/completion, errors, time to first cited answer and independent deployment, and reported difficulty (1 easy?5 hard). Record assistance and abandoned tasks. `pilot/measurements.json` starts empty; automated QA is not pilot participation. Do not prefill real results or infer participant satisfaction from automated tests.
+Use [PILOT_FEEDBACK.md](PILOT_FEEDBACK.md) per participant. Measure setup start/end, each task start/end/completion, errors, time to first cited answer and independent deployment, and reported difficulty (1 easy to 5 hard). Record assistance and abandoned tasks. `pilot/measurements.json` starts empty; automated QA is not pilot participation. Do not prefill real results or infer participant satisfaction from automated tests.
