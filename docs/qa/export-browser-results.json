@@ -1,0 +1,36 @@
+{
+  "tool": "Playwright Chromium",
+  "tests": [
+    {
+      "project": "desktop",
+      "name": "complete knowledge workspace and public widget workflow",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 59727
+        }
+      ]
+    },
+    {
+      "project": "mobile",
+      "name": "complete knowledge workspace and public widget workflow",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 46516
+        }
+      ]
+    }
+  ],
+  "stats": {
+    "startTime": "2026-11-21T18:39:58.107Z",
+    "duration": 120616.67,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "scope": "Real hosted source dashboard/API/worker and external widget server. Configuration-only and selected-snapshot ZIPs were downloaded through both desktop and mobile UI. No app API or inference mocks."
+}

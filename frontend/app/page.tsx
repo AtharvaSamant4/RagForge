@@ -40,6 +40,7 @@ import {
 import { api, download } from "./api";
 import { Modal } from "./modal";
 import { PipelineDiagnostics } from "./pipeline-diagnostics";
+import { StandaloneExport } from "./standalone-export";
 import type {
   Case,
   Doc,
@@ -2113,6 +2114,7 @@ export default function Dashboard() {
                     )}
                   </section>
                   <div className="stack">
+                    <StandaloneExport key={selected} base={base} documents={docs} />
                     <section className="panel form-panel">
                       <h2>Deployment foundation</h2>
                       <div className="deployment-state">
@@ -2158,8 +2160,8 @@ export default function Dashboard() {
                         Download configuration
                       </button>
                       <p className="muted">
-                        Standalone source package export is planned for the next
-                        milestone.
+                        Use Export standalone application above for a runnable
+                        source package with an independent database and API.
                       </p>
                     </section>
                   </div>

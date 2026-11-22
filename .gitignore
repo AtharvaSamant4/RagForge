@@ -4,6 +4,12 @@
 .ruff_cache/
 .env
 data/
+# The trusted empty knowledge directory must exist in configuration-only exports.
+!backend/standalone_template/data/
+backend/standalone_template/data/*
+!backend/standalone_template/data/knowledge/
+backend/standalone_template/data/knowledge/*
+!backend/standalone_template/data/knowledge/.keep
 frontend/node_modules/
 frontend/.next/
 frontend/out/

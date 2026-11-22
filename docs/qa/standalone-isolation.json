@@ -1,0 +1,42 @@
+{
+  "8020": {
+    "documents": [
+      "acme-handbook.pdf"
+    ],
+    "other_app_credential_status": 401,
+    "refund_refused": false,
+    "compose_project": "rag-a3ce5c4b57",
+    "mounts": [
+      {
+        "Type": "volume",
+        "Name": "rag-a3ce5c4b57_runtime",
+        "Source": "/var/lib/docker/volumes/rag-a3ce5c4b57_runtime/_data",
+        "Destination": "/runtime",
+        "Driver": "local",
+        "Mode": "z",
+        "RW": true,
+        "Propagation": ""
+      }
+    ]
+  },
+  "8021": {
+    "documents": [
+      "team.txt"
+    ],
+    "other_app_credential_status": 401,
+    "refund_refused": true,
+    "compose_project": "rag-43f3b4423e",
+    "mounts": [
+      {
+        "Type": "volume",
+        "Name": "rag-43f3b4423e_runtime",
+        "Source": "/var/lib/docker/volumes/rag-43f3b4423e_runtime/_data",
+        "Destination": "/runtime",
+        "Driver": "local",
+        "Mode": "z",
+        "RW": true,
+        "Propagation": ""
+      }
+    ]
+  }
+}

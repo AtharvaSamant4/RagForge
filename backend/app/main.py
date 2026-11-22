@@ -41,6 +41,8 @@ async def lifespan(app):
 
 
 app = FastAPI(title=f"{s.brand_name} API", version="0.1.0", lifespan=lifespan)
+from .exports import router as export_router
+app.include_router(export_router)
 
 
 class BodyLimit:
@@ -563,13 +565,13 @@ def openapi_schema():
         "SessionCookie": {"type": "apiKey", "in": "cookie", "name": "ragforge_session", "description": "Sign in through the dashboard; browsers send the HttpOnly cookie"},
         "WidgetToken": {"type": "http", "scheme": "bearer", "description": "Public query capability from explicit widget publication"},
     }
-    owners = {"projects", "create_project", "update_project", "delete_project", "keys", "create_key", "revoke_key", "conversations", "conversation", "set_pipeline", "reindex", "compare_retrieval", "manifest", "eval_cases", "create_case", "delete_case", "synthetic_cases", "eval_runs", "create_run", "widget", "set_widget"}
+    owners = {"projects", "create_project", "update_project", "delete_project", "keys", "create_key", "revoke_key", "conversations", "conversation", "set_pipeline", "reindex", "compare_retrieval", "manifest", "eval_cases", "create_case", "delete_case", "synthetic_cases", "eval_runs", "create_run", "widget", "set_widget", "create_export", "get_export", "download_export"}
     for route in app.routes:
         if not isinstance(route, APIRoute):
             continue
         security = None
         if route.path.startswith("/v1/projects"):
-            security = [{"SessionCookie": []}] if route.name in owners else [{"ProjectKey": []}, {"SessionCookie": []}]
+            security = [{"SessionCookie": []}] if route.name in owners or "/exports" in route.path else [{"ProjectKey": []}, {"SessionCookie": []}]
         elif route.name in {"public_query", "public_config"}:
             security = [{"WidgetToken": []}]
         elif route.name == "me":

@@ -4,10 +4,11 @@ WORKDIR /app
 COPY backend/requirements.lock.txt /app/requirements.txt
 RUN --mount=type=secret,id=pip_config,target=/etc/pip.conf pip install --no-cache-dir -r requirements.txt && useradd --create-home --uid 10001 ragforge
 COPY backend /app/backend
+COPY pytest.ini /app/pytest.ini
 COPY samples /app/samples
 COPY benchmarks /app/benchmarks
 COPY scripts /app/scripts
-RUN mkdir -p /app/data/uploads /app/data/models && chown -R ragforge:ragforge /app
+RUN mkdir -p /app/data/uploads /app/data/models /app/data/exports && chown -R ragforge:ragforge /app
 USER ragforge
 ENV PYTHONPATH=/app/backend
 EXPOSE 8000

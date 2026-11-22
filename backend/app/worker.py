@@ -115,8 +115,14 @@ def main():
         except ProviderError:
             log.warning("embedding_model_unavailable")
     log.info("worker_started")
+    from .exports import run_once as export_once, cleanup
+    last_cleanup = 0.0
     while True:
-        if not run_once():
+        if time.time()-last_cleanup > 60:
+            with SessionLocal() as db:
+                cleanup(db); db.commit()
+            last_cleanup=time.time()
+        if not run_once() and not export_once():
             time.sleep(1)
 
 

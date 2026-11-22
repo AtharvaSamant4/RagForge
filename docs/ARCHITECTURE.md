@@ -8,7 +8,7 @@ PostgreSQL + pgvector is the Docker deployment target. SQLite with exact vector 
 
 Use a **database-backed durable job queue**, rather than Redis: ingestion state and enqueue are committed together, eliminating the DB/broker dual-write failure. PostgreSQL workers claim with `FOR UPDATE SKIP LOCKED`; SQLite supports one worker. Leases recover interrupted jobs. Extraction runs outside the claim transaction; atomic replacement of chunks occurs only after success. Retry is bounded, errors remain inspectable, and explicit retries are supported. Redis can be introduced when measured throughput justifies it.
 
-No independent source-package export is claimed. A versioned JSON manifest is the foundation for that next milestone.
+The versioned application compiler now creates independent source packages from an approved template catalog and frozen retrieval component bundle. Owner-only export jobs capture validated configuration and explicitly selected ready sources, verify source bytes, publish bounded deterministic ZIPs through a shared export volume, and expire retained artifacts. No vectors, account/session/key records or history are copied. Generated apps initialize their own PostgreSQL schema, API key and durable ingestion pipeline; they never import the hosted repository or contact its services. See STANDALONE_EXPORT.md.
 
 ## Data model
 

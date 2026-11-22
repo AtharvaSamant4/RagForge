@@ -186,6 +186,80 @@ test("complete knowledge workspace and public widget workflow", async ({
   expect((await response.json()).citations.length).toBeGreaterThan(0);
   await page.getByRole("button", { name: "Dismiss secret" }).click();
   await nav("Deployment");
+  const exportPanel = page.getByRole("region", {
+    name: "Standalone application export",
+  });
+  await expect(
+    exportPanel.getByLabel(
+      "Configuration only · no uploaded documents (default)",
+    ),
+  ).toBeChecked();
+  await exportPanel
+    .getByRole("button", { name: "Export standalone application", exact: true })
+    .click();
+  await expect(exportPanel).toContainText("Export status: ready");
+  const configDownloadPromise = page.waitForEvent("download");
+  await exportPanel
+    .getByRole("button", { name: "Download ZIP", exact: true })
+    .click();
+  const configDownload = await configDownloadPromise;
+  await configDownload.saveAs(
+    path.resolve(`../artifacts/browser/${prefix}-configuration.zip`),
+  );
+  await exportPanel.getByLabel("Include selected knowledge snapshot").check();
+  await expect(
+    exportPanel.getByRole("button", {
+      name: "Export standalone application",
+      exact: true,
+    }),
+  ).toBeDisabled();
+  await exportPanel.getByLabel(/acme-handbook.pdf ·/).check();
+  await exportPanel
+    .getByLabel(
+      "I approve including these documents and understand exported copies cannot be revoked.",
+    )
+    .check();
+  const beforeExport = [];
+  for (const question of [
+    "What is the refund period?",
+    "How long does a refund take?",
+    "Who won the Martian election in 2050?",
+  ]) {
+    const original = await context.request.post(
+      `${baseURL}/api/v1/projects/${projectId}/query`,
+      { data: { question }, headers: { Origin: baseURL! } },
+    );
+    expect(original.ok()).toBe(true);
+    beforeExport.push({ question, result: await original.json() });
+  }
+  await exportPanel
+    .getByRole("button", { name: "Export standalone application", exact: true })
+    .click();
+  await expect(exportPanel).toContainText("Export status: ready");
+  await expect(exportPanel).toContainText("1 included documents");
+  const snapshotDownloadPromise = page.waitForEvent("download");
+  await exportPanel
+    .getByRole("button", { name: "Download ZIP", exact: true })
+    .click();
+  const snapshotDownload = await snapshotDownloadPromise;
+  await snapshotDownload.saveAs(
+    path.resolve(`../artifacts/browser/${prefix}-snapshot.zip`),
+  );
+  const exportJobs = await context.request.get(`${baseURL}/api/v1/projects/${projectId}/exports`);
+  expect(exportJobs.ok()).toBe(true);
+  const exportEvidence = (await exportJobs.json())[0];
+  fs.writeFileSync(
+    path.resolve(`../artifacts/browser/${prefix}-export-before.json`),
+    JSON.stringify(
+      { before: beforeExport, source_project_id: projectId, export: exportEvidence },
+      null,
+      2,
+    ),
+  );
+  await screenshot("standalone-export");
+  await exportPanel.screenshot({
+    path: path.join(screenshotDir, `${prefix}-standalone-export-panel.png`),
+  });
   await page.getByLabel("Enable public query access for this project").check();
   await page.getByLabel("Assistant title").fill("Browser knowledge assistant");
   await page

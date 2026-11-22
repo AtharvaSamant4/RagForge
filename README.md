@@ -4,7 +4,7 @@ A working foundation for turning documents into private, tested knowledge APIs: 
 
 The default runs a real pretrained **all-MiniLM-L6-v2** model on CPU through ONNX Runtime: 384 dimensions, pinned weights/tokenizer, Apache-2.0 model license, and persistent model caching. Answers quote supporting source text. Lexical feature hashing remains available for baseline comparisons; OpenAI adapters are opt-in. No paid calls are needed for the demo, benchmarks or tests.
 
-Milestone 2 lives on `feat/semantic-benchmarks-qa`; it has not been merged into `main`. See [measured benchmarks](docs/BENCHMARKS.md), [browser QA](docs/BROWSER_QA.md), and [model/index compatibility](docs/SEMANTIC_MODELS.md).
+Milestone 3 builds on verified Milestone 2 commit `f574709`, on `feat/standalone-rag-export`; neither feature branch is merged into `main`. **Deployment → Export standalone application** generates a complete independent Dockerized knowledge API. See [standalone export](docs/STANDALONE_EXPORT.md), [measured Milestone 2 benchmarks](docs/BENCHMARKS.md), [browser QA](docs/BROWSER_QA.md), and [model/index compatibility](docs/SEMANTIC_MODELS.md).
 
 ## Start with Docker
 
@@ -37,6 +37,17 @@ docker compose -p ragforge-m2 up --build -d
 ```
 
 Open http://localhost:3010. This is the isolated stack used for milestone verification. Its volumes are separate from `ragforge`.
+
+Milestone 3 export verification uses a further isolated source stack, leaving both existing stacks/data in place:
+
+```powershell
+$env:API_PORT='8030'
+$env:WEB_PORT='3030'
+$env:APP_ORIGINS='http://localhost:3030'
+docker compose -p ragforge-m3 up --build -d
+```
+
+Open http://localhost:3030, upload the sample, then use **Deployment → Export standalone application**. Choose configuration-only or explicitly select/approve sources. Extract the ZIP elsewhere, run `python scripts/init.py`, then `docker compose up --build -d` from that directory (use a fresh terminal without the source stack's port overrides). It binds to port 8020 and uses new credentials/volumes. See [the complete export workflow and security limits](docs/STANDALONE_EXPORT.md).
 
 ## Start locally without Docker
 
@@ -115,7 +126,7 @@ npm --prefix frontend run test:e2e
 .venv/bin/python benchmarks/run.py --candidates --output benchmarks/results/local.json
 ```
 
-Browser tests default to the isolated stack at port 3010. Set `QA_BASE_URL=http://localhost:3000` to test the default stack instead. The Playwright external-widget fixture opens port 4020 on loopback for the duration of each test. Test accounts and their data are disposable; successful workflows remove their projects. Browser failures may leave only their own fixture projects in the QA database.
+Browser tests default to the Milestone 3 isolated stack at port 3030. Set `QA_BASE_URL=http://localhost:3000` to test the default stack instead. The Playwright external-widget fixture opens port 4020 on loopback for the duration of each test. Test accounts and their data are disposable; successful workflows remove their projects. Browser failures may leave only their own fixture projects in the QA database.
 
 Real-model backend tests require the pinned local cache; prefetch with `python -m app.model_cache` first. These tests use local inference, not mocked semantic vectors. The test suite continues to exercise the original lexical path as a regression baseline.
 
@@ -144,6 +155,6 @@ pgvector's column dimension is fixed by the initial migration. A different dimen
 
 ## Scope and limitations
 
-Supported: selectable-text PDF (up to 500 pages), DOCX paragraphs/tables, UTF-8 TXT/Markdown and textual/FAQ CSV. Default file limit: 20 MB; extracted text limit: 2 million characters; 100 projects/user, 100 files/project, 50 eval cases/project. There is no OCR, multimodal ingestion, arbitrary CSV analytics, reranker, semantic optimization claim, standalone code-package export, public cloud deployment, SSO or billing. Conversation history is persistent but questions retrieve independently. SSE sends validated answer deltas after generation rather than native model token streaming. Evaluation is synchronous and bounded.
+Supported: selectable-text PDF (up to 500 pages), DOCX paragraphs/tables, UTF-8 TXT/Markdown and textual/FAQ CSV. Default file limit: 20 MB; extracted text limit: 2 million characters; 100 projects/user, 100 files/project, 50 eval cases/project. Standalone exports generate a single-collection API with its own database, worker, API credentials and optional selected source snapshot; they do not clone the hosted dashboard/accounts/history/widget. There is no OCR, multimodal ingestion, arbitrary CSV analytics, reranker, semantic optimization claim, public cloud deployment, SSO or billing. Conversation history is persistent but questions retrieve independently. SSE sends validated answer deltas after generation rather than native model token streaming. Evaluation is synchronous and bounded.
 
 This is a foundation for production work, not a claim of production readiness. Semantic similarity is not proof of answerability. Exact citations establish provenance, not truth or entailment; local responses remain source extracts with conservative qualifications. A narrow numeric-conflict check and instruction-request filter do not solve general contradiction detection or prompt injection. See [benchmark limitations](docs/BENCHMARKS.md), [security limits](docs/SECURITY.md), [API contracts](docs/API.md) and [design decisions](docs/ARCHITECTURE.md). Branding is configurable with `BRAND_NAME`; the dashboard reads it from the backend.

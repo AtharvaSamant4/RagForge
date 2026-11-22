@@ -28,6 +28,11 @@ class Settings(BaseSettings):
     openai_embedding_model: str = "text-embedding-3-small"
     openai_model: str = ""
     job_lease_seconds: int = 300
+    export_dir: Path = Path("./data/exports")
+    export_max_source_mb: int = 100
+    export_max_archive_mb: int = 80
+    export_storage_mb: int = 512
+    export_retention_seconds: int = 3600
 
     @property
     def origins(self) -> list[str]:

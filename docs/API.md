@@ -58,3 +58,13 @@ curl http://localhost:8000/v1/projects/PROJECT_ID/documents -H "Authorization: B
 ```
 
 The repository's `scripts/smoke.py` executes the full flow over real HTTP with an actual worker. Credentials are randomly generated and not printed. Smoke accounts remain in the local database; smoke projects and uploaded files are removed.
+
+## Standalone application export (Milestone 3)
+
+Only an authenticated project-owner session can use these endpoints; project API keys cannot export. Cookie-authenticated POSTs require the normal trusted Origin. All paths are relative to `/v1/projects/{project_id}`:
+
+* `POST /exports` → 202 durable job. Default body `{}` creates a configuration-only application. Snapshot body: `{"mode":"snapshot","document_ids":["approved-document-id"],"acknowledge_copy":true,"allow_imports":true}`. Sources must belong to this project and be ready; snapshots require a compatible index.
+* `GET /exports` → recent jobs for this project; `GET /exports/{id}` → status, safe errors, expiry, manifest, archive size/hash and measured generation time when ready.
+* `GET /exports/{id}/download` → ZIP with `Content-Disposition` and `X-Archive-SHA256`; 409 while unavailable, 410 after expiry. Downloads require the same owner authorization.
+
+Invalid mode/selection/acknowledgment is rejected, cross-project references return 404, active/storage reservations can return 409/429, and oversized sources return 413. Archives exclude existing credentials, history and stored vectors. Snapshot copies cannot be revoked after download. See STANDALONE_EXPORT.md for bounds/cleanup, standalone API contracts and exact initialization/import/query commands. The existing JSON `/manifest` endpoint remains a configuration record; the `/exports` ZIP contains the actual independent application.

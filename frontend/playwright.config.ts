@@ -14,7 +14,7 @@ export default defineConfig({
   use: {
     actionTimeout: 15000,
     navigationTimeout: 30000,
-    baseURL: process.env.QA_BASE_URL || "http://localhost:3010",
+    baseURL: process.env.QA_BASE_URL || "http://localhost:3030",
     browserName: "chromium",
     trace: "retain-on-failure",
     screenshot: "only-on-failure",

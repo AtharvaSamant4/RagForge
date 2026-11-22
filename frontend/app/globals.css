@@ -2115,3 +2115,51 @@ dd {
     font-size: 0.8125rem;
   }
 }
+.standalone-export fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.standalone-export legend {
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.standalone-export h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.export-selection,
+.export-summary,
+.export-result {
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 14px 0;
+  overflow-wrap: anywhere;
+}
+.export-summary {
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+}
+.export-error {
+  color: #fda4af;
+  padding: 12px;
+  border: 1px solid #9f1239;
+  border-radius: 8px;
+}
+.export-hash {
+  display: block;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+}
+.export-result progress {
+  width: 100%;
+  accent-color: #2dd4bf;
+  margin-top: 12px;
+}
+.standalone-export .checkbox {
+  align-items: flex-start;
+}

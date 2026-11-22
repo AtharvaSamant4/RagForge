@@ -46,3 +46,11 @@ npm run test:e2e
 ```
 
 Set `QA_BASE_URL` to the dashboard origin if using a different port. The configured `APP_ORIGINS` must match. Port 4020 must be free. Traces, failure screenshots, HTML and JSON reports are written under `artifacts/browser`; successful representative captures are written under `docs/qa/screenshots`. The CI workflow provisions Chromium and runs the same suite against Docker.
+
+## Milestone 3 application export coverage
+
+The extended desktop and mobile workflows also create and download configuration-only ZIPs, switch to selected knowledge snapshots, require explicit copy approval, download the snapshot, capture the actual export metadata and three source-side query results, then continue the original widget/deletion/login regressions. Both real workflows passed; [export-browser-results.json](qa/export-browser-results.json) records the executed timings and counts. All four archives passed ZIP integrity checks and matched the current trusted-template fingerprint.
+
+The source for this run is the isolated `ragforge-m3` stack at ports 3030/8030. Initial checks that overlapped a container refresh were discarded and rerun after startup completed. Docker backend test discovery was corrected to use the repository pytest configuration instead of collecting the generated template's separate deployment tests.
+
+The final export panels were visually inspected on desktop and mobile for readability, disclosure/selection clarity, wrapping, spacing and accessible download controls. Screenshots: [desktop panel](qa/screenshots/desktop-standalone-export-panel.png), [mobile panel](qa/screenshots/mobile-standalone-export-panel.png), [desktop full Deployment](qa/screenshots/desktop-standalone-export.png), [mobile full Deployment](qa/screenshots/mobile-standalone-export.png). Page-level overflow checks and uncaught-exception assertions still apply. The browser-downloaded ZIPs are then used for independent Docker-runtime verification; see STANDALONE_EXPORT.md.
