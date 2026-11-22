@@ -215,6 +215,7 @@ try:
     assert all(set(r['status_counts'])<={'200','429'} for p in report['quota_probes'] for r in p['runs'])
     report['status']='completed'
 finally:
+    report.setdefault('status','failed_before_completion')
     report['created_at_utc']=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime())
     report['profile_namespaces']=[d.project for d in deployments]
     for d in deployments:

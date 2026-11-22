@@ -525,7 +525,7 @@ export function PilotPanel({ isAdmin }: { isAdmin: boolean }) {
               Enable optional offline pilot evidence when exporting. Query the
               independent application, then run its bundled{" "}
               <code>
-                python scripts/pilot-evidence.py --url http://localhost:8020
+                python scripts/pilot-evidence.py
                 --output runtime-evidence.json
               </code>
               . Upload that JSON here explicitly. There is no automatic
