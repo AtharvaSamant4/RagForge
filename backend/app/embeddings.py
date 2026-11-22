@@ -88,6 +88,7 @@ def model():
         try:
             import numpy as np
             import onnxruntime as ort
+            ort.disable_telemetry_events()  # Vendor diagnostics are not pilot consent.
             from tokenizers import Tokenizer
             directory = model_files()
             tokenizer = Tokenizer.from_file(str(directory / "tokenizer.json"))

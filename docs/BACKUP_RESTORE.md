@@ -49,3 +49,7 @@ The mandatory hosted workflow was executed from disposable `ragforge-m4-alpha` i
 
 
 Disposable QA scripts retain recovery passphrases/generated credentials in ignored local `artifacts/*secret*.json` and `artifacts/m4-private-credentials.json` for inspection/reproduction. These are outside the encrypted bundle but are not a production secret vault; Windows uses inherited ACLs. Do not distribute the artifacts directory or copy it wholesale as a backup. Real deployments must use a separate operator secret store. The backup CLI itself never automatically persists a passphrase.
+
+## Milestone 5 pilot privacy
+
+Hosted RAG backups omit the data in all six pilot tables, operator attestations and ephemeral export rows. They preserve RAG users/projects/documents/indexes/configuration/keys, while preventing restored snapshots from reviving old study consent or evidence keys. Re-enroll, obtain fresh consent and reverify target-host operator controls after recovery. Keep separately authorized sanitized study exports privately under the agreed retention/deletion policy; these are not implicitly recovered by the RAG backup. Standalone backups still require the original package/manifest; optional evidence signing configuration remains part of that protected package, not a hosted credential.

@@ -25,5 +25,5 @@ def test_upgrade_preserves_legacy_projects_documents_and_vectors(tmp_path):
         assert db.execute("SELECT name,index_profile,index_generation FROM projects").fetchone()==("Legacy project",None,0)
         assert db.execute("SELECT text,embedding,embedding_model FROM chunks").fetchone()==("existing private passage",vector,"local:hash-v1:384")
         assert db.execute("SELECT status FROM documents").fetchone()==("ready",)
-        assert db.execute("SELECT version_num FROM alembic_version").fetchone()==("0004",)
+        assert db.execute("SELECT version_num FROM alembic_version").fetchone()==("0005",)
     assert source.read_bytes()==b"private pre-migration source"

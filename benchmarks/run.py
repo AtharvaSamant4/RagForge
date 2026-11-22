@@ -34,13 +34,14 @@ from benchmarks import baseline
 from benchmarks.metrics import score, aggregate, canonical_bytes
 
 
-def run(output: str, include_candidates: bool, thresholds: list[float], *, frozen_config=None, cases_override=None, dataset_kind=None):
+def run(output: str, include_candidates: bool, thresholds: list[float], *, frozen_config=None, cases_override=None, dataset_kind=None, corpus_dir=None):
+    settings().generation_provider='extractive'  # Also enforce for programmatic callers with cached settings.
     fixtures = json.loads((ROOT / "benchmarks/fixtures.json").read_text(encoding="utf-8"))
     candidates = json.loads((ROOT / "benchmarks/candidates.json").read_text(encoding="utf-8")) if include_candidates else []
     approved_path = ROOT / "benchmarks/approved.jsonl"
-    approved = [json.loads(line) for line in approved_path.read_text(encoding="utf-8").splitlines() if line.strip()] if approved_path.exists() else []
+    approved = [json.loads(line) for line in approved_path.read_text(encoding="utf-8").splitlines() if line.strip()] if approved_path.exists() and corpus_dir is None else []
     cases = fixtures + candidates + approved if cases_override is None else cases_override
-    corpus = sorted((ROOT / "benchmarks/corpus").glob("*.md"))
+    corpus = sorted((Path(corpus_dir) if corpus_dir else ROOT / "benchmarks/corpus").glob("*.md"))
     corpus_hash = hashlib.sha256(b"".join(p.name.encode() + canonical_bytes(p) for p in corpus)).hexdigest()
     if any(record.get("corpus_sha256") != corpus_hash for record in approved):
         raise ValueError("Human approvals refer to an older corpus. Review the changed sources and renew approvals before benchmarking them.")

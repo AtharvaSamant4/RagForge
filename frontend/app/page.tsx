@@ -41,6 +41,7 @@ import { api, download } from "./api";
 import { Modal } from "./modal";
 import { PipelineDiagnostics } from "./pipeline-diagnostics";
 import { StandaloneExport } from "./standalone-export";
+import { PilotPanel } from "./pilot-panel";
 import type {
   Case,
   Doc,
@@ -63,6 +64,7 @@ const sections = [
   ["Evaluation", FlaskConical],
   ["API & Integration", Code2],
   ["Deployment", Rocket],
+  ["Pilot study", Activity],
   ["Settings", Settings2],
 ] as const;
 const bytes = (n: number) =>
@@ -120,7 +122,10 @@ function SourceCard({ source }: { source: Source }) {
 }
 
 export default function Dashboard() {
-  const [user, setUser] = useState<{ email: string } | null>(null),
+  const [user, setUser] = useState<{
+      email: string;
+      is_admin?: boolean;
+    } | null>(null),
     [boot, setBoot] = useState(true),
     [register, setRegister] = useState(true),
     [email, setEmail] = useState(""),
@@ -733,7 +738,9 @@ export default function Dashboard() {
               </button>
             </div>
           )}
-          {!selected ? (
+          {section === "Pilot study" ? (
+            <PilotPanel isAdmin={!!user.is_admin} />
+          ) : !selected ? (
             <>
               <div className="page-heading">
                 <div>
@@ -2411,7 +2418,11 @@ function integration(language: string, project: string) {
     typeof window === "undefined"
       ? "http://localhost:3000"
       : window.location.origin;
-  const url = `${origin}/api/v1/projects/${project}/query`;
+  const localOrigin = new URL(origin);
+  // Compose publishes IPv4 loopback; preserve HTTPS certificate hostnames.
+  if (localOrigin.protocol === "http:" && localOrigin.hostname === "localhost")
+    localOrigin.hostname = "127.0.0.1";
+  const url = `${localOrigin.origin}/api/v1/projects/${project}/query`;
   if (language === "Python")
     return `import os\nimport httpx\n\nresponse = httpx.post(\n    "${url}",\n    headers={"Authorization": "Bearer " + os.environ["RAGFORGE_API_KEY"]},\n    json={"question": "What is our refund policy?"},\n    timeout=120,\n)\nresponse.raise_for_status()\nprint(response.json())`;
   if (language === "JavaScript")

@@ -54,6 +54,7 @@ def current_user(request: Request, db: Session = Depends(get_db)) -> User:
     user = db.get(User, session.user_id)
     if not user or user.disabled:
         raise HTTPException(401, "Sign in to continue")
+    request.state.pilot_user_id = user.id
     return user
 
 
@@ -83,6 +84,7 @@ def access(project_id: str, request: Request, db: Session, scope: str = "read", 
         owner=db.get(User,project.owner_id) if project else None
         if not owner or owner.disabled:
             raise HTTPException(401,"Invalid or revoked API key")
+        request.state.pilot_user_id = owner.id
         return Access(project, "key:" + key.id, False)
     user = current_user(request, db)
     project = db.scalar(select(Project).where(Project.id == project_id, Project.owner_id == user.id))

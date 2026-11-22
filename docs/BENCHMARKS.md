@@ -177,3 +177,20 @@ Final deployed rate-counter/proxy measurement: [m4-query-load-final.json](qa/m4-
 | 8 | 24 | 21 successful, 3 quota rejections | 8.302 including rejections | 375.77 | 2813.87 |
 
 Nearest-rank P95 includes TLS/frontend proxy, auth, retrieval/generation, durable query storage and metrics. Cache effects, scheduling and tiny samples mean results need not vary monotonically. The last stage crosses 60 requests/key/minute after warmups. Its throughput includes 429 responses and is **not successful-query capacity**. End resource snapshots: API 200.7 MiB, worker 186.8 MiB, DB 50.57 MiB; these are not peaks. Actual worker interruption and four-document ingestion throughput are in [m4-worker-recovery-ingestion.json](qa/m4-worker-recovery-ingestion.json). No production capacity is extrapolated from this local test.
+
+## Milestone 5 latency investigation
+
+The [initial controlled reproduction](qa/m5-query-profiling-initial.json) used fresh, equally limited M4 and M5 database/source/model volumes, the same public PDF, pinned CPU MiniLM, hybrid retrieval, extractive answers and HTTPS proxy. Cold process startup, warmed question caches, concurrency 1/4/8, actual concurrent ingestion, PostgreSQL waits/WAL timing, cgroup resource counters and an unchanged 60-request/key/minute quota were measured separately. All ordinary 24-request stages returned 200; quota probes retain their 429 responses separately. This is a small shared Windows/Docker host experiment, not a capacity certification.
+
+The multi-second tail was reproduced before changing the retrieval implementation. A [matched transport experiment](qa/m5-latency-paths-ipv4.json) isolated Windows `localhost` resolution against Docker's IPv4-only loopback publishing: connection refusal on `::1` took **2134.83 ms**, compared with **0.41 ms** to IPv4. New pooled connections were the slow requests; corresponding API logs finished milliseconds before the client received the response. Container clients and direct/proxied paths were also compared.
+
+| Same warm M5 workload, C4, 24 requests | Median ms | P95 ms |
+|---|---:|---:|
+| Windows HTTPS proxy, default address selection | 210.74 | 2501.83 |
+| Windows HTTPS proxy, explicit IPv4 transport retaining HTTPS hostname | 282.44 | 481.84 |
+| Windows direct HTTP API, localhost | 75.14 | 2333.06 |
+| Windows direct HTTP API, 127.0.0.1 | 288.95 | 380.68 |
+
+Median did not improve uniformly. The supported change is to default generated **local HTTP** clients to `127.0.0.1` and read their initialized port; HTTPS keeps the approved hostname and normal certificate verification. The isolated localhost QA probe uses its development certificate exception explicitly. No production TLS validation, grounding threshold, model or quota was relaxed. Under consent, profiling also identified participant-row serialization; one redundant post-lock SELECT was removed using `UPDATE RETURNING` with a refreshed ORM identity, retaining exact-cap/deduplication concurrency tests.
+
+Cold model load, PostgreSQL WAL sync and transaction/tuple waits, worker activity and shared-host scheduling remain separate contributors. Service timings omit auth, durable metric finalization, proxy and transport; they must not be presented as HTTP timings. The script `scripts/profile-query-latency.py --repeats 3 --transport ipv4` records the final equivalent-version comparison, individual observations and image identities in [the profiling receipt](qa/m5-query-profiling.json). Inspect that receipt's status before treating it as completed evidence.

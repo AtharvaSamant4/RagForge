@@ -50,6 +50,8 @@ from .exports import router as export_router
 app.include_router(export_router)
 from .ops import router as ops_router
 app.include_router(ops_router)
+from .pilot import router as pilot_router, emit as pilot_event
+app.include_router(pilot_router)
 
 
 class BodyLimit:
@@ -113,6 +115,16 @@ async def safeguards(request: Request, call_next):
     from .observability import api_metric
     import anyio
     await anyio.to_thread.run_sync(api_metric,request.method,route,response.status_code,elapsed)
+    if response.status_code >= 400 and request.method == 'POST':
+        from .pilot import record_http_failure
+        # Early body/parser rejects may precede dependencies. Resolve only credential
+        # hashes in the error collector; never put raw paths/bodies in analytics.
+        import re
+        match = re.fullmatch(r'/v1/projects/([a-f0-9-]{36})/documents', request.url.path)
+        error_route = '/v1/projects/{project_id}/documents' if match else route
+        bearer = request.headers.get('authorization', '')
+        identity = {'session': digest(request.cookies['ragforge_session']) if request.cookies.get('ragforge_session') else None, 'key': digest(bearer[7:]) if bearer.startswith('Bearer ') else None, 'project_id': match.group(1) if match else None}
+        await anyio.to_thread.run_sync(record_http_failure,getattr(request.state,'pilot_user_id',None),error_route,response.status_code,request_id,getattr(request.state,'pilot_quota_error',False),identity)
     log.info("request_completed", extra={"request_id": request_id, "method": request.method, "path": route, "status": response.status_code, "latency_ms": elapsed})
     return response
 
@@ -123,7 +135,13 @@ app.add_middleware(CORSMiddleware, allow_origins=s.origins, allow_credentials=Tr
 @app.exception_handler(RequestValidationError)
 async def invalid_request(request, exc):
     # Pydantic's default errors echo input and context, including credentials/questions.
-    return JSONResponse({"detail": [{"loc": item["loc"], "msg": item["msg"], "type": item["type"]} for item in exc.errors()]}, 422)
+    return JSONResponse({"detail": [{"loc": item["loc"][:1] + ("[unknown field]",) if item["type"] == "extra_forbidden" else item["loc"][:2], "msg": item["msg"], "type": item["type"]} for item in exc.errors()]}, 422)
+
+
+@app.exception_handler(HTTPException)
+async def expected_error(request, exc):
+    request.state.pilot_quota_error = isinstance(exc.detail, str) and 'quota' in exc.detail.lower()
+    return JSONResponse({'detail': exc.detail}, exc.status_code, headers=exc.headers)
 
 
 @app.exception_handler(ProviderError)
@@ -233,6 +251,8 @@ def create_project(body: ProjectInput, user: User = Depends(current_user), db: S
         raise HTTPException(409, "Project quota reached")
     project = Project(owner_id=user.id, **body.model_dump())
     db.add(project)
+    db.flush()
+    pilot_event(db, user.id, 'project_created', project.id)
     db.commit()
     return project_dict(db, project)
 
@@ -296,6 +316,7 @@ def upload(project_id: str, file: UploadFile, request: Request, db: Session = De
         db.add(doc)
         db.flush()
         enqueue(db, doc, project)
+        pilot_event(db, project.owner_id, 'document_uploaded', doc.id)
         db.commit()
     except Exception:
         path.unlink(missing_ok=True)
@@ -456,10 +477,12 @@ def keys(project_id: str, request: Request, db: Session = Depends(get_db)):
 
 @app.post("/v1/projects/{project_id}/keys", status_code=201)
 def create_key(project_id: str, body: KeyInput, request: Request, db: Session = Depends(get_db)):
-    access(project_id, request, db, owner_only=True)
+    project = access(project_id, request, db, owner_only=True).project
     raw = "rf_" + secrets.token_urlsafe(32)
     key = APIKey(project_id=project_id, name=body.name, scopes=body.scopes, prefix=raw[:11], token_hash=digest(raw),expires_at=time.time()+s.api_key_ttl_days*86400)
     db.add(key)
+    db.flush()
+    pilot_event(db, project.owner_id, 'api_key_created', key.id)
     db.commit()
     return {**row_dict(key, "id name prefix scopes created_at expires_at"), "secret": raw}
 
@@ -624,7 +647,7 @@ def openapi_schema():
             security = [{"SessionCookie": []}] if route.name in owners or "/exports" in route.path else [{"ProjectKey": []}, {"SessionCookie": []}]
         elif route.name in {"public_query", "public_config"}:
             security = [{"WidgetToken": []}]
-        elif route.name == "me" or route.path.startswith(("/v1/admin/", "/v1/account/")):
+        elif route.name == "me" or route.path.startswith(("/v1/admin/", "/v1/account/", "/v1/pilot/")):
             security = [{"SessionCookie": []}]
         if security:
             for method in route.methods:

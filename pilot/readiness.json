@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "milestone": 5,
+  "engineering_checks": {"status": "in_progress", "evidence": []},
+  "operator_configuration": {"status": "pending_target_host_verification", "completed": false},
+  "external_access_authorization": {"status": "pending_explicit_user_authorization", "completed": false},
+  "human_evaluation": {"status": "pending_real_label_review", "human_approved_cases": 0, "holdout_cases": 0, "pilot_query_cases": 0, "score": null},
+  "actual_participant_trials": {"status": "pending_authorized_participants", "participants": [], "completed_trials": 0, "engineering_qa_counts_as_trial": false},
+  "external_phase": "blocked_pending_human_action",
+  "proposed_success_criteria_approved": false
+}

@@ -71,10 +71,14 @@ A first-time developer completes these tasks without coaching beyond this guide:
 
 | Task | Observable completion |
 |---|---|
-| 1. Install/sign in and create a project | Health reachable, authenticated project visible. |
-| 2. Upload unfamiliar permitted documentation | Processing reaches ready; developer inspects extraction or diagnoses a real error. |
-| 3. Ask two answerable questions and one unsupported question | Exact citations inspected; unsupported response assessed honestly. |
-| 4. Create a scoped key and query outside the UI | External client receives the expected cited answer; unauthorized project access fails. |
-| 5. Export and run an independent app | App starts on a separate port/database and answers with citations while the hosted API is unavailable. |
+| 1. Create a project and upload permitted documentation | Ready index/extraction or an honestly diagnosed failure. |
+| 2. Ask questions and inspect citations | Two answerable questions and one unsupported question are assessed against actual sources. |
+| 3. Integrate using Python or JavaScript | Scoped key query outside the playground; assistance and errors recorded. |
+| 4. Export a standalone application | Ready ZIP/manifest inspected; no deployment inferred from download. |
+| 5. Run independently and obtain a cited answer | Separate API/database/client works with the hosted API unavailable to that client. |
 
 Use [PILOT_FEEDBACK.md](PILOT_FEEDBACK.md) per participant. Measure setup start/end, each task start/end/completion, errors, time to first cited answer and independent deployment, and reported difficulty (1 easy to 5 hard). Record assistance and abandoned tasks. `pilot/measurements.json` starts empty; automated QA is not pilot participation. Do not prefill real results or infer participant satisfaction from automated tests.
+
+M5 adds the optional **Pilot study** screen: operator enrollment, explicit consent, five task outcomes, private problem reports and deletion/withdrawal. The operator view is administrator-only; engineering QA is excluded from human results. Follow [PILOT_PLAN.md](PILOT_PLAN.md), [PILOT_TASKS.md](PILOT_TASKS.md) and [PILOT_METRICS.md](PILOT_METRICS.md). Collection is off by default and does not backfill prior project/query activity. Records expire after 30 days; study deletion preserves normal projects. Default report downloads omit free text and identities. No real trials are claimed in [PILOT_RESULTS.md](PILOT_RESULTS.md).
+
+Optional standalone evidence is generated only after consent and an explicit export checkbox, then imported manually. It records signed self-hosted observations, not remote attestation or human completion. The independent app never calls home automatically. New generator 1.2 clients read their configured port and use IPv4 loopback by default. Windows `localhost` can incur a measured slow refusal on unpublished `::1`; use `127.0.0.1` for local HTTP API clients. Retain and validate approved HTTPS hostnames; do not disable certificate verification. A local HTTPS Python client may bind IPv4 with `httpx.HTTPTransport(local_address="0.0.0.0")` while keeping the same trusted HTTPS URL and certificate checks.

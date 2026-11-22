@@ -27,10 +27,12 @@ from .security import authenticate
 @asynccontextmanager
 async def lifespan(app):
     configure_logging()
+    from .pilot_evidence import start_runtime
+    start_runtime()
     yield
 
 
-app = FastAPI(title="Standalone Knowledge API", version="1.1.0", lifespan=lifespan)
+app = FastAPI(title="Standalone Knowledge API", version="1.2.0", lifespan=lifespan)
 from .http_limits import BodyLimit
 app.add_middleware(BodyLimit)
 
@@ -55,7 +57,7 @@ async def limits(request: Request, call_next):
 @app.exception_handler(RequestValidationError)
 async def invalid_request(request, exc):
     # Pydantic's default errors echo input and context, including credentials/questions.
-    return JSONResponse({"detail": [{"loc": item["loc"], "msg": item["msg"], "type": item["type"]} for item in exc.errors()]}, 422)
+    return JSONResponse({"detail": [{"loc": item["loc"][:1] + ("[unknown field]",) if item["type"] == "extra_forbidden" else item["loc"][:2], "msg": item["msg"], "type": item["type"]} for item in exc.errors()]}, 422)
 
 
 @app.exception_handler(ProviderError)
@@ -101,7 +103,17 @@ def status(db=Depends(get_db)):
 
 @app.post("/v1/query",dependencies=[Depends(authenticate)])
 def query(body:QueryInput,db=Depends(get_db)):
-    return answer(db,collection(db),body.question,"standalone",save=False)
+    result = answer(db,collection(db),body.question,"standalone",save=False)
+    from .pilot_evidence import observe
+    observe(result)
+    return result
+
+
+@app.get('/v1/pilot-evidence',dependencies=[Depends(authenticate)])
+def offline_pilot_evidence(db=Depends(get_db)):
+    collection(db)
+    from .pilot_evidence import evidence
+    return evidence()
 
 
 @app.get("/v1/documents",dependencies=[Depends(authenticate)])

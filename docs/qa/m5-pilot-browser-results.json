@@ -1,0 +1,35 @@
+{
+  "browser": "Chromium",
+  "mobile": "390x844 touch emulation, not a physical device/Safari claim",
+  "cohort": "engineering_qa",
+  "tests": [
+    {
+      "title": "optional pilot consent, private feedback, operator triage and deletion",
+      "project": "desktop",
+      "status": "passed",
+      "duration_ms": 20961,
+      "start_time": "2026-11-22T16:38:39.669Z"
+    },
+    {
+      "title": "optional pilot consent, private feedback, operator triage and deletion",
+      "project": "mobile",
+      "status": "passed",
+      "duration_ms": 14296,
+      "start_time": "2026-11-22T16:39:05.689Z"
+    },
+    {
+      "title": "explicit import of real independent runtime evidence",
+      "project": "desktop",
+      "status": "passed",
+      "duration_ms": 3292,
+      "start_time": "2026-11-22T16:39:00.938Z"
+    },
+    {
+      "title": "explicit import of real independent runtime evidence",
+      "project": "mobile",
+      "status": "passed",
+      "duration_ms": 5457,
+      "start_time": "2026-11-22T16:39:20.302Z"
+    }
+  ]
+}

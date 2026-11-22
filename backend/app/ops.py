@@ -44,7 +44,7 @@ def readiness(db):
     checks={}
     try:db.execute(text('SELECT 1'));checks['database']=True
     except Exception:return {'ready':False,'checks':{'database':False}}
-    try:checks['schema']=db.scalar(text('SELECT version_num FROM alembic_version'))=='0004'
+    try:checks['schema']=db.scalar(text('SELECT version_num FROM alembic_version'))=='0005'
     except Exception:
         db.rollback();checks['schema']=False
     workers=list(db.scalars(select(WorkerHeartbeat).where(WorkerHeartbeat.updated_at>time.time()-90)))

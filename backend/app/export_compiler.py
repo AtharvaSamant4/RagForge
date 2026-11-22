@@ -9,7 +9,7 @@ import zipfile
 
 from .config import settings
 
-VERSION="1.1.0"
+VERSION="1.2.0"
 TEMPLATE=Path(__file__).resolve().parents[1]/"standalone_template"
 
 
@@ -72,13 +72,15 @@ def scan(name,data,secrets=()):
         raise ExportError("Potential credential in generated configuration/template")
 
 
-def compile_archive(target:Path,manifest:dict,sources:list[dict]):
+def compile_archive(target:Path,manifest:dict,sources:list[dict],pilot_evidence=None):
     entries=template_files()
     if manifest.get("generator_version")!=VERSION or manifest.get("template_sha256")!=template_digest(entries):
         raise ExportError("Trusted template version changed after enqueue; create a new export")
     if sum(s["size_bytes"] for s in sources)>settings().export_max_source_mb*1024**2:
         raise ExportError("Selected sources exceed the export limit")
     entries["config/manifest.json"]=(json.dumps(manifest,ensure_ascii=False,sort_keys=True,indent=2)+"\n").encode()
+    if pilot_evidence is not None:
+        entries['config/pilot-evidence.json']=(json.dumps(pilot_evidence,sort_keys=True,indent=2)+'\n').encode()
     credentials=[settings().openai_api_key]
     def write(archive,name,data):
         scan(name,data,credentials)

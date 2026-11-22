@@ -6,7 +6,13 @@ The default runs a real pretrained **all-MiniLM-L6-v2** model on CPU through ONN
 
 Milestone 3 builds on verified Milestone 2 commit `f574709`, on `feat/standalone-rag-export`; neither feature branch is merged into `main`. **Deployment → Export standalone application** generates a complete independent Dockerized knowledge API. See [standalone export](docs/STANDALONE_EXPORT.md), [measured Milestone 2 benchmarks](docs/BENCHMARKS.md), [browser QA](docs/BROWSER_QA.md), and [model/index compatibility](docs/SEMANTIC_MODELS.md).
 
-## Current private-alpha milestone
+## Current developer-pilot milestone
+
+Milestone 5 on `feat/developer-pilot-validation` builds on verified M4 `04f6ef2`. It adds optional consent-aware activation telemetry, a restricted pilot dashboard, private task feedback/triage, offline signed standalone evidence and independent dataset review/import tooling. Engineering QA is separate from human results. Real participants, human label approvals and external trials remain pending explicit authorization and operator gates. See [pilot plan](docs/PILOT_PLAN.md), [tasks](docs/PILOT_TASKS.md), [metric definitions](docs/PILOT_METRICS.md), [results/readiness](docs/PILOT_RESULTS.md) and [the M5 plan](docs/MILESTONE5_PLAN.md). New exports use generator 1.2.0; downloaded older packages remain unchanged.
+
+For Windows Docker Desktop local HTTP API clients, use `127.0.0.1` rather than `localhost` when connecting to the explicitly IPv4-only published ports. The measured unpublished `::1` fallback added about two seconds per new connection. HTTPS clients must retain and validate the approved certificate hostname; see [the latency investigation](docs/BENCHMARKS.md). No quotas or TLS checks were relaxed.
+
+## Verified private-alpha baseline
 
 Milestone 4 on `feat/private-alpha-hardening` builds on verified M3 `c73d99f`. It adds tested parser containment, invitation controls, atomic quotas/budgets, credential rotation, diagnostics, encrypted recovery and an HTTPS/resource-limited private-alpha overlay. It is not production-certified or publicly launched. Existing downloaded standalone apps remain independent; new exports use reviewed template version 1.1.0.
 

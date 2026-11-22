@@ -1,6 +1,16 @@
 # Implementation progress
 
-## Current milestone
+## Current milestone: developer pilot preparation
+
+M5 is being implemented on `feat/developer-pilot-validation` from verified M4 `04f6ef2`. Added opt-in enrollment/consent/retention/deletion, a deduplicated ten-stage technical funnel, restricted operator reporting, private feedback/triage, offline runtime proof and unfamiliar/approved-query evaluation import. No real participants, external invitations, human label approvals or adoption claims exist.
+
+Executed final Windows SQLite backend suite: 115 passed, 3 platform-specific skips. Frontend typecheck and optimized Docker production build passed. Earlier focused checks passed 47 feature/export/review/compiled-runtime tests, four real desktop/mobile pilot browser workflows and an actual independent Docker runtime with all ten technical stages. Final browser/runtime verification of the latest usability/client refinements and complete remote CI remain in progress.
+
+The initial latency investigation reproduced multi-second tails and isolated a Windows localhost IPv6 refusal: ::1 connection refusal took 2135 ms versus IPv4 connect 0.4 ms. A matched C4 TLS proxy burst measured P95 2502 ms with default transport and 482 ms with explicit IPv4 while retaining the hostname. Median did not improve uniformly. Cold model load and WAL/lock waits also varied. No quota, TLS or grounding threshold was relaxed; final repeated measurements, clean remote installation and complete CI remain in progress.
+
+External phase: blocked pending explicit user authorization, approved target-host controls, real human label review and actual participants. See PILOT_PLAN/TASKS/METRICS/RESULTS and `pilot/readiness.json`.
+
+## Verified Milestone 4 baseline
 
 Milestone 4, private-alpha readiness, is implemented on `feat/private-alpha-hardening`, based on verified M3 `c73d99f79f85cc10f7200c101ce9e483aa7a3879`. Main and the M2/M3 branches are preserved. M3 draft PR [#1](https://github.com/AtharvaSamant4/RagForge/pull/1) is unmerged. No public deployment, paid model call or external pilot invitation occurred.
 

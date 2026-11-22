@@ -1,13 +1,19 @@
 """API client for import, query, status and explicit index rebuild."""
 import argparse
+import os
 from pathlib import Path
 import httpx
 
+root=Path(__file__).resolve().parents[1]
+values=dict(line.split('=',1) for line in (root/'.env').read_text(encoding='utf-8').splitlines() if '=' in line and not line.startswith('#')) if (root/'.env').is_file() else {}
+port=int(values.get('API_PORT','8020'))
+if not 1024<=port<=65535:raise SystemExit('Invalid configured API port')
 parser=argparse.ArgumentParser()
 parser.add_argument("action",choices=["status","import","query","reindex"])
 parser.add_argument("value",nargs="?")
-parser.add_argument("--url",default="http://localhost:8020")
+parser.add_argument("--url",default=os.environ.get('STANDALONE_URL',f'http://127.0.0.1:{port}'))
 args=parser.parse_args()
+if not (root/'.standalone-key').is_file():raise SystemExit('Initialize first with python scripts/init.py; keep the generated credential files private')
 key=(Path(__file__).resolve().parents[1]/".standalone-key").read_text().strip()
 with httpx.Client(base_url=args.url,headers={"Authorization":"Bearer "+key},timeout=120) as client:
     if args.action=="import":

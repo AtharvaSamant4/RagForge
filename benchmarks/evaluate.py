@@ -10,7 +10,7 @@ from benchmarks.metrics import canonical_bytes
 from benchmarks.review import validate_evidence
 
 
-def load_cases(split, holdout=None):
+def load_cases(split, holdout=None, dataset_dir=None):
     root=ROOT/'benchmarks'
     config_path=root/'frozen-config.json'
     config=json.loads(config_path.read_text(encoding='utf-8-sig'))
@@ -19,7 +19,23 @@ def load_cases(split, holdout=None):
     candidates=json.loads((root/'candidates.json').read_text(encoding='utf-8-sig'))
     approved_path=root/'approved.jsonl'
     approved=[json.loads(line) for line in approved_path.read_text(encoding='utf-8-sig').splitlines() if line.strip()] if approved_path.exists() else []
-    if split=='development':cases=fixtures
+    if dataset_dir:
+        from benchmarks.datasets import validate_dataset
+        metadata=validate_dataset(dataset_dir)
+        if (split,metadata['kind']) not in [('holdout','independent_holdout'),('pilot-approved','pilot_queries')]:raise ValueError('Imported dataset kind does not match the requested evaluation split')
+        root=Path(dataset_dir).resolve()
+        approved_path=root/'approved.jsonl'
+        cases=[json.loads(line) for line in approved_path.read_text(encoding='utf-8').splitlines() if line.strip()] if approved_path.exists() else []
+        corpus_hash=hashlib.sha256(b''.join(p.name.encode()+canonical_bytes(p) for p in sorted((root/'corpus').glob('*.md')))).hexdigest()
+        history=root/'review-history.jsonl'
+        latest={r['id']:r for line in history.read_text(encoding='utf-8').splitlines() if line.strip() for r in [json.loads(line)]} if history.exists() else {}
+        known={c['question'].strip().casefold() for c in fixtures+candidates+approved}
+        for case in cases:
+            record=latest.get(case['id'],{})
+            if record!=case or case.get('decision')!='approve' or case.get('status')!='human_approved' or not case.get('reviewer') or not case.get('reviewed_at') or case.get('corpus_sha256')!=corpus_hash:raise ValueError('Labels require the latest audited human approval of unchanged sources')
+            if split=='holdout' and case['question'].strip().casefold() in known:raise ValueError('Holdout duplicates a development/candidate question')
+            if split=='pilot-approved' and (case.get('participant_approved_for_evaluation') is not True or not case.get('participant_approval_reference')):raise ValueError('Pilot query evaluation permission is missing')
+    elif split=='development':cases=fixtures
     elif split=='human-approved':
         cases=approved
         if any(c.get('status')!='human_approved' or not c.get('reviewer') or not c.get('reviewed_at') for c in cases):raise ValueError('Missing review provenance')
@@ -37,12 +53,14 @@ def load_cases(split, holdout=None):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--split',choices=['development','human-approved','holdout'],required=True)
+    parser.add_argument('--split',choices=['development','human-approved','holdout','pilot-approved'],required=True)
+    parser.add_argument('--dataset-dir',help='Imported unfamiliar/approved pilot dataset with an audited review queue')
     parser.add_argument('--holdout-file');parser.add_argument('--output',required=True)
     args=parser.parse_args()
-    config,config_hash,cases=load_cases(args.split,args.holdout_file)
+    if args.dataset_dir and args.holdout_file:parser.error('Choose either an imported dataset or a legacy holdout file')
+    config,config_hash,cases=load_cases(args.split,args.holdout_file,args.dataset_dir)
     from benchmarks.run import run
-    run(args.output,False,[config['pipeline']['semantic_min_score']],frozen_config={**config,'sha256':config_hash},cases_override=cases,dataset_kind=args.split)
+    run(args.output,False,[config['pipeline']['semantic_min_score']],frozen_config={**config,'sha256':config_hash},cases_override=cases,dataset_kind=args.split,corpus_dir=Path(args.dataset_dir)/'corpus' if args.dataset_dir else None)
 
 
 if __name__=='__main__':main()

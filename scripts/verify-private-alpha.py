@@ -88,6 +88,10 @@ def main():
         credentials['recovery_project']=project['id'];credentials['recovery_key']=key
         credentials_path.write_text(json.dumps(credentials));credentials_path.chmod(0o600)
         old_cookie=client.cookies.get('ragforge_session')
+        pilot_state=client.get('/v1/pilot/me')
+        if pilot_state.status_code==200:
+            checked(admin.post('/v1/admin/pilot/participants',json={'email':credentials['recovery_email'],'cohort':'engineering_qa','authorization_obtained':True,'authorization_reference':'Disposable encrypted recovery QA; no external participant'}))
+            checked(client.put('/v1/pilot/consent',json={'accepted':True,'version':'pilot-v1'}))
         backup=ROOT/'artifacts/m4-hosted.backup'
         if backup.exists():backup=ROOT/('artifacts/m4-hosted-'+secrets.token_hex(4)+'.backup')
         password=secrets.token_urlsafe(32)
@@ -111,6 +115,9 @@ def main():
             wait(lambda:restored.get('/health').status_code==200)
             assert restored.get('/v1/projects',cookies={'ragforge_session':old_cookie}).status_code==401
             checked(restored.post('/v1/auth/login',json={'email':credentials['recovery_email'],'password':credentials['recovery_password']}))
+            if pilot_state.status_code==200:
+                assert checked(restored.get('/v1/pilot/me'))['enrolled'] is False
+                report['backup']['pilot_consent_and_records_not_restored']='passed'
             projects=checked(restored.get('/v1/projects'));assert any(p['id']==project['id'] for p in projects)
             restored_docs=checked(restored.get(base+'/documents'));assert restored_docs[0]['sha256']==hashlib.sha256(data).hexdigest() and restored_docs[0]['id']==doc['id']
             after=checked(restored.post(base+'/query',json={'question':questions[0]}))

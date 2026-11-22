@@ -89,6 +89,8 @@ def run_once(project_id: str | None = None) -> bool:
             metadata.update({"embedding_profile": expected, "index_generation": config.get("_generation", 0), "embedding_ms": round((time.perf_counter()-embedding_started)*1000, 2), "indexing_ms": round((time.perf_counter()-started)*1000, 2), "chunking": "token-budget-aware" if settings().embedding_provider == "semantic" else "word-window"})
             doc.status, doc.chunk_count, doc.metadata_json, doc.error = "ready", len(chunks), metadata, None
             job.status, job.finished_at, job.error, job.lease_until = "succeeded", time.time(), None, None
+            from .pilot import emit
+            emit(db, project.owner_id, 'document_indexed', doc_id)
             db.commit()
         log.info("ingestion_succeeded", extra={"job_id": job_id, "chunks": len(chunks)})
         from .observability import metric
@@ -106,6 +108,10 @@ def run_once(project_id: str | None = None) -> bool:
                 job.error, job.lease_until = safe[:300], None
                 job.finished_at = None if retry else time.time()
                 doc.status, doc.error = job.status, job.error
+                if not retry:
+                    from .pilot import emit
+                    owner = db.get(Project, project_id)
+                    if owner: emit(db, owner.owner_id, 'processing_failed', job_id + ':' + str(job.attempts))
                 db.commit()
         log.warning("ingestion_failed", extra={"job_id": job_id, "error_type": type(exc).__name__})
         from .observability import metric
@@ -145,6 +151,8 @@ def main():
     while True:
         if time.time()-last_cleanup > 60:
             with SessionLocal() as db:
+                from .pilot import purge
+                purge(db)
                 cleanup(db); db.commit()
             last_cleanup=time.time()
         if not run_once() and not export_once():

@@ -30,3 +30,11 @@ Implemented engineering and remaining operator/external work are separate. This 
 ## Future work, not claimed complete
 
 Independent audit/penetration test; stronger parser VM/container isolation and malware/CDR scanning; managed secrets/identity/reset/verification/SSO; physical per-tenant DB/index accounting; source-orphan/history retention automation; managed monitoring/HA; general prompt-injection/entailment defenses and customer-data quality studies. No production certification or public launch is claimed.
+
+## Milestone 5 operator checklist
+
+Before starting: inspect the M5 engineering/readiness receipts; obtain approval of participants and proposed success criteria; verify target networking/TLS/firewalls/backup/alerts/credentials/incident ownership; deliver only authorized M4 invitations; enroll the correct cohort; let each real participant opt in themselves.
+
+While running: monitor real human-cohort technical counters and private feedback separately; record failures, errors, assistance and missing outcomes; triage security/data-loss problems immediately; keep paid providers disabled. Never count engineering QA or downloaded ZIPs as real trials/deployments.
+
+At the end: review all five actual task outcomes, record operator-attested participation only after an actual attempt, export only authorized sanitized reports, link private triage to engineering work, erase/expire agreed study/evaluation copies, and record honest results including failures. External authorization, real human label review and real trials remain pending until performed.
