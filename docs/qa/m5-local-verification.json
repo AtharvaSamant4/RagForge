@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "cohort": "engineering_qa",
+  "human_trial": false,
+  "application_commit": "e1038d349e6429384221625173435f32eed4681e",
+  "windows_sqlite_junit": {
+    "tests": 118,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 3,
+    "passed": 115
+  },
+  "frontend_typecheck": "passed; repeated after the configured-port help-text correction",
+  "docker_frontend_production_build": "passed",
+  "pilot_browser": {
+    "startTime": "2026-11-22T17:57:22.642Z",
+    "duration": 96075.887,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "layout_inspection": "Desktop operator and mobile participant full-page screenshots inspected; browser overflow assertions passed. Viewport/touch emulation, not physical devices. Help command subsequently corrected to use tested configured-port defaults; complete CI reruns that UI.",
+  "local_build_log": "Ignored artifacts/m5-final-build.log",
+  "local_test_log": "Ignored artifacts/m5-backend-sqlite.log",
+  "initial_ci_run": "https://github.com/AtharvaSamant4/RagForge/actions/runs/45052147271"
+}

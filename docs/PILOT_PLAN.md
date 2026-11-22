@@ -47,4 +47,4 @@ Use categories security, data loss, retrieval, API, export, setup, performance, 
 
 ## Review path
 
-Preserve the stack: main → existing M2/M3 draft PR #1 → M4 `feat/private-alpha-hardening` → M5 `feat/developer-pilot-validation`. Review each delta against its parent; do not merge automatically. M4/M5 draft review links and verified commits are recorded in the M5 audit at delivery.
+Preserve the stack: main → [M2/M3 draft PR #1](https://github.com/AtharvaSamant4/RagForge/pull/1) → [M4 draft PR #2](https://github.com/AtharvaSamant4/RagForge/pull/2) → [M5 draft PR #3](https://github.com/AtharvaSamant4/RagForge/pull/3). Review each delta against its immediate parent; do not merge automatically. Verified code, execution receipts and the remaining human gates are recorded in [the M5 audit](MILESTONE5_AUDIT.md).

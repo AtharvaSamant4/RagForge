@@ -1,0 +1,52 @@
+{
+  "run_url": "https://github.com/AtharvaSamant4/RagForge/actions/runs/45052973299",
+  "code_commit": "5beded422d0fa9a16f47734297fc395548085332",
+  "status": "completed",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "name": "standalone",
+      "conclusion": "success"
+    },
+    {
+      "name": "frontend",
+      "conclusion": "success"
+    },
+    {
+      "name": "private-alpha",
+      "conclusion": "success"
+    },
+    {
+      "name": "clean-install",
+      "conclusion": "success"
+    },
+    {
+      "name": "backend (postgres)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser",
+      "conclusion": "success"
+    },
+    {
+      "name": "backend (sqlite)",
+      "conclusion": "success"
+    }
+  ],
+  "backend_junit": {
+    "backend-postgres": {
+      "tests": 118,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 118
+    },
+    "backend-sqlite": {
+      "tests": 118,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 2,
+      "passed": 116
+    }
+  }
+}

@@ -1,35 +1,292 @@
 {
-  "browser": "Chromium",
-  "mobile": "390x844 touch emulation, not a physical device/Safari claim",
-  "cohort": "engineering_qa",
-  "tests": [
-    {
-      "title": "optional pilot consent, private feedback, operator triage and deletion",
-      "project": "desktop",
-      "status": "passed",
-      "duration_ms": 20961,
-      "start_time": "2026-11-22T16:38:39.669Z"
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "D:\\ATHARVA_DATA\\Automatic RAG for Devs\\frontend\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "pilot.spec.ts"
+    ],
+    "configFile": "D:\\ATHARVA_DATA\\Automatic RAG for Devs\\frontend\\playwright.config.ts",
+    "rootDir": "D:/ATHARVA_DATA/Automatic RAG for Devs/frontend/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
     },
-    {
-      "title": "optional pilot consent, private feedback, operator triage and deletion",
-      "project": "mobile",
-      "status": "passed",
-      "duration_ms": 14296,
-      "start_time": "2026-11-22T16:39:05.689Z"
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/ATHARVA_DATA/Automatic RAG for Devs/artifacts/browser/test-output",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "desktop",
+        "name": "desktop",
+        "testDir": "D:/ATHARVA_DATA/Automatic RAG for Devs/frontend/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "D:/ATHARVA_DATA/Automatic RAG for Devs/artifacts/browser/test-output",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "mobile",
+        "name": "mobile",
+        "testDir": "D:/ATHARVA_DATA/Automatic RAG for Devs/frontend/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "D:\\ATHARVA_DATA\\Automatic RAG for Devs\\artifacts\\browser\\test-output",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "desktop",
+        "testDir": "D:\\ATHARVA_DATA\\Automatic RAG for Devs\\frontend\\e2e",
+        "snapshotDir": "D:\\ATHARVA_DATA\\Automatic RAG for Devs\\frontend\\e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 120000,
+        "use": {
+          "ignoreHTTPSErrors": true,
+          "actionTimeout": 15000,
+          "navigationTimeout": 30000,
+          "baseURL": "https://localhost:8445",
+          "browserName": "chromium",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "viewport": {
+            "width": 1440,
+            "height": 1000
+          }
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "desktop"
+      },
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "D:\\ATHARVA_DATA\\Automatic RAG for Devs\\artifacts\\browser\\test-output",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "mobile",
+        "testDir": "D:\\ATHARVA_DATA\\Automatic RAG for Devs\\frontend\\e2e",
+        "snapshotDir": "D:\\ATHARVA_DATA\\Automatic RAG for Devs\\frontend\\e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 120000,
+        "use": {
+          "ignoreHTTPSErrors": true,
+          "actionTimeout": 15000,
+          "navigationTimeout": 30000,
+          "baseURL": "https://localhost:8445",
+          "browserName": "chromium",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "isMobile": true,
+          "hasTouch": true,
+          "deviceScaleFactor": 1
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "mobile"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "../artifacts/browser/results.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "../artifacts/browser/report",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
     },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.65.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
     {
-      "title": "explicit import of real independent runtime evidence",
-      "project": "desktop",
-      "status": "passed",
-      "duration_ms": 3292,
-      "start_time": "2026-11-22T16:39:00.938Z"
-    },
-    {
-      "title": "explicit import of real independent runtime evidence",
-      "project": "mobile",
-      "status": "passed",
-      "duration_ms": 5457,
-      "start_time": "2026-11-22T16:39:20.302Z"
+      "title": "pilot.spec.ts",
+      "file": "pilot.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "optional pilot consent, private feedback, operator triage and deletion",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 40919,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-22T17:57:24.224Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            },
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 26565,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-22T17:58:21.533Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d00b723c21676cbb8e3f-571095619fd096f21780",
+          "file": "pilot.spec.ts",
+          "line": 53,
+          "column": 1
+        },
+        {
+          "title": "explicit import of real independent runtime evidence",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 12931,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-22T17:58:05.917Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            },
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10044,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-22T17:58:48.399Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d00b723c21676cbb8e3f-e40f365e21b7043ef515",
+          "file": "pilot.spec.ts",
+          "line": 243,
+          "column": 1
+        }
+      ]
     }
-  ]
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-22T17:57:22.642Z",
+    "duration": 96075.887,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
 }

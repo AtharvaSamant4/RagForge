@@ -46,18 +46,20 @@
       },
       {
         "stage": "independent_startup",
-        "completed": false,
-        "observed_at": null
+        "completed": true,
+        "observed_at": 1795365048.8028126
       },
       {
         "stage": "standalone_cited_query",
-        "completed": false,
-        "observed_at": null
+        "completed": true,
+        "observed_at": 1795365048.8147926
       }
     ],
     "time_to_first_cited_answer_seconds": 368.056,
-    "time_to_observed_standalone_deployment_seconds": null,
-    "time_basis": "Server observation after opt-in activation; deployment includes offline evidence-import delay."
+    "time_to_observed_standalone_deployment_seconds": 520.497,
+    "time_from_account_creation_to_first_cited_answer_seconds": 368.199,
+    "time_from_account_creation_to_observed_deployment_seconds": 520.64,
+    "time_basis": "Primary intervals start at opt-in study activation. Separate account-creation intervals use the existing server signup timestamp only after consent. Deployment includes offline evidence-import delay; other prior activity is not backfilled."
   },
   "source_unavailable_during_independent_query": true,
   "independent_cited_answer": true,
@@ -116,18 +118,20 @@
     ],
     "time_to_first_cited_answer_seconds": 368.056,
     "time_to_observed_standalone_deployment_seconds": 520.497,
-    "time_basis": "Server observation after opt-in activation; deployment includes offline evidence-import delay."
+    "time_from_account_creation_to_first_cited_answer_seconds": 368.199,
+    "time_from_account_creation_to_observed_deployment_seconds": 520.64,
+    "time_basis": "Primary intervals start at opt-in study activation. Separate account-creation intervals use the existing server signup timestamp only after consent. Deployment includes offline evidence-import delay; other prior activity is not backfilled."
   },
   "evidence_acceptance": {
     "accepted": true,
     "duplicate": false,
-    "startup_observed_at": 1795365048.7899747,
-    "cited_query_observed_at": 1795365048.7899747,
+    "startup_observed_at": 1795370227.914588,
+    "cited_query_observed_at": 1795370227.914588,
     "evidence_class": "Signed self-hosted runtime evidence, not remote attestation or proof of human participation"
   },
   "duplicate_import_deduplicated": true,
-  "standalone_archive_sha256": "c3d7deb337147af89f82f6ce0470900e7e773b2ff823e9d8c0f34e8f06e77265",
+  "standalone_archive_sha256": "3decdaf36430e03ef02410310183cbcd46b6cd5b22409473ba452fedda40bf11",
   "standalone_generator": "1.2.0",
   "source_project": "ragforge-m5-alpha",
-  "created_at_utc": "2026-11-22T16:30:48Z"
+  "created_at_utc": "2026-11-22T17:57:08Z"
 }

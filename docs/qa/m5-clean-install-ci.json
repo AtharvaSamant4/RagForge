@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "cohort": "engineering_qa",
+  "human_trial": false,
+  "source_commit": "5beded422d0fa9a16f47734297fc395548085332",
+  "compose_project": "ragforge-m5-clean-4b58775f",
+  "protocol": "Actual remote clone at exact commit; no inherited app .env/virtualenv/node_modules or model/database volume. Docker build --no-cache --pull installs pinned app dependencies. Public sample through hosted frontend proxy and external API, then generated Docker app with hosted source stopped. Driver Python/httpx is verification infrastructure, not an application dependency assumption.",
+  "fresh_dependency_build_seconds": 34.718,
+  "model_volume_verified_empty_before_start": true,
+  "database_volume_absent_before_start": true,
+  "ready_seconds_from_clone_start": 58.34,
+  "time_to_first_cited_answer_seconds_from_clone_start": 59.788,
+  "external_api_client": "Python/httpx with project key and no session cookie; passed",
+  "status": "passed",
+  "source_stopped_during_independent_query": true,
+  "independent_restart_and_clients": "passed",
+  "time_to_independent_deployment_seconds_from_clone_start": 137.908,
+  "archive_sha256": "7acbb158ff322b98906df36abf09d4809d7b696ba351dc66808461a99aecf69f",
+  "model_runtime": "Pinned CPU MiniLM, downloaded into a verified initially empty volume",
+  "pilot_collection_default_off": true,
+  "created_at_utc": "2026-11-22T18:07:12Z",
+  "checkout_directory": "/home/runner/work/RagForge/RagForge/artifacts/m5-clean-install-4b58775f"
+}
