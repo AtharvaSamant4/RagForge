@@ -22,7 +22,7 @@ parser=argparse.ArgumentParser()
 parser.add_argument("--source",default="http://localhost:8030")
 parser.add_argument("--origin",default="http://localhost:3030")
 parser.add_argument("--port",type=int,default=8020)
-parser.add_argument("--stop-source",choices=["ragforge-m3","ragforge-export-ci"])
+parser.add_argument("--stop-source",choices=["ragforge-m3","ragforge-m4","ragforge-export-ci"])
 parser.add_argument("--prepare-only",action="store_true")
 parser.add_argument("--directory")
 parser.add_argument("--archive",help="Use the ZIP downloaded by a real browser workflow")
@@ -174,7 +174,7 @@ with httpx.Client(base_url=f"http://localhost:{args.port}",headers={"Authorizati
     report["restart_query"]=after
     report["runtime_status"]=client.get("/v1/status").json()
 command(["node","scripts/example.mjs"],directory)
-curl_result=subprocess.check_output(["curl","--fail","--silent",f"http://localhost:{args.port}/v1/query","-H","Authorization: Bearer "+key,"-H","Content-Type: application/json","--data",json.dumps({"question":"What is the refund period?"})],text=True)
+curl_result=subprocess.check_output(["curl","--fail","--silent",f"http://localhost:{args.port}/v1/query","--header","@-","-H","Content-Type: application/json","--data",json.dumps({"question":"What is the refund period?"})],input="Authorization: Bearer "+key+"\n",text=True)
 assert "30 day" in json.loads(curl_result)["answer"]
 report["curl_client"]="passed"
 report["database_evidence"]=subprocess.check_output(["docker","compose","exec","-T","db","psql","-U","standalone","-d","standalone","-tAc","SELECT current_database(),(SELECT count(*) FROM chunks),(SELECT count(*) FROM pg_indexes WHERE indexname='standalone_chunks_vector');"],cwd=directory,text=True).strip()

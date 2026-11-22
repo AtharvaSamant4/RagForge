@@ -31,13 +31,26 @@ from app.main import app
 from app.engine import worker
 from app.engine.config import settings
 from app.engine.db import SessionLocal
-from app.engine.models import Chunk
+from app.engine.models import Chunk,RateBucket
 from sqlalchemy import select
 initialize()
 headers={'Authorization':'Bearer '+os.environ['TEST_KEY']}
 with TestClient(app,headers=headers) as client:
  assert client.get('/v1/status').json()['documents']==[]
  assert client.get('/v1/config',headers={'Authorization':'Bearer wrong'}).status_code==401
+ marker='PRIVATE-VALIDATION-INPUT'
+ invalid=client.post('/v1/query',json={'question':marker*1000})
+ assert invalid.status_code==422 and marker not in invalid.text
+ import time
+ future=int(time.time()//60)+1
+ with SessionLocal() as db:
+  bucket=db.get(RateBucket,'standalone');bucket.window=future;bucket.count=settings().rate_limit_per_minute;db.commit()
+ assert client.get('/v1/status').status_code==429
+ with SessionLocal() as db:
+  bucket=db.get(RateBucket,'standalone');assert bucket.window==future and bucket.count==settings().rate_limit_per_minute+1
+  db.delete(bucket);db.commit()
+
+
  assert client.post('/v1/query',json={'question':'what is unknown?'}).json()['refused']
  text=b'Customers may return eligible products within 30 calendar days of receiving their order.'
  r=client.post('/v1/documents',files={'file':('../../returns.txt',text)});assert r.status_code==202,r.text

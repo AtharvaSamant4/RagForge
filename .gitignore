@@ -3,6 +3,9 @@
 .pytest_cache/
 .ruff_cache/
 .env
+.env.*
+!.env.example
+!backend/standalone_template/.env.example
 data/
 # The trusted empty knowledge directory must exist in configuration-only exports.
 !backend/standalone_template/data/
@@ -18,3 +21,6 @@ artifacts/
 *.log
 *.pid
 test-results/
+
+benchmarks/.review.lock
+benchmarks/approved.jsonl.tmp

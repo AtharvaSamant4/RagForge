@@ -1,0 +1,20 @@
+{
+  "browser": "Chromium",
+  "protocol": "Desktop and mobile full development/widget workflows passed in separate final runs with the streaming API forwarding route; 240-second overall workflow budget, unchanged per-action/parser limits. Screenshots use a separate M4 directory.",
+  "tests": [
+    {
+      "project": "mobile",
+      "status": "passed",
+      "title": "complete knowledge workspace and public widget workflow",
+      "duration_ms": 97222,
+      "start_time": "2026-11-22T11:19:37.846Z"
+    },
+    {
+      "project": "desktop",
+      "status": "passed",
+      "title": "complete knowledge workspace and public widget workflow",
+      "duration_ms": 64016,
+      "start_time": "2026-11-22T11:23:47.045Z"
+    }
+  ]
+}

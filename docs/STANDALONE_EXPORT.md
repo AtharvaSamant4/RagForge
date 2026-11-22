@@ -30,7 +30,7 @@ First builds/downloads require internet access for base images, pinned Python pa
 
 The ZIP contains `app/main.py`, retrieval/embeddings/generation/models/security packages, a frozen `app/engine` component bundle, `config/manifest.json`, selected `data/knowledge` files, initialization/client scripts, functional tests, a pinned dependency lock, Dockerfile, Compose, environment example, ignore files and a generated README. It includes unused ORM definitions from the reviewed component bundle but no hosted rows or account APIs.
 
-Generator `1.0.0` uses data-only validated configuration and an approved template catalog. No LLM generates executable code. The manifest records schema/generator version, template SHA-256, model identity/revision/dimensions/pooling, retrieval settings, import capability and selected-source checksums. Archive order, timestamps, modes and configuration serialization are deterministic; repeated exports of the same inputs/templates are byte-identical. New template versions do not silently modify previously downloaded applications. A template change while a job is queued fails visibly and requires a new export.
+Current generator `1.1.0` uses data-only validated configuration and an approved template catalog. No LLM generates executable code. The manifest records schema/generator version, template SHA-256, model identity/revision/dimensions/pooling, retrieval settings, import capability and selected-source checksums. Archive order, timestamps, modes and configuration serialization are deterministic; repeated exports of the same inputs/templates are byte-identical. New template versions do not silently modify previously downloaded applications. A template change while a job is queued fails visibly and requires a new export.
 
 ## API and import
 
@@ -74,7 +74,7 @@ Archive paths are compiler-assigned, never derived from display filenames. Entri
 
 Standalone services run as non-root users with read-only application filesystems, bounded request/upload sizes, worker leases, CPU/memory/PID settings and persistent writable runtime volumes. Default memory limits are API 768 MiB, worker 1 GiB and PostgreSQL 512 MiB; inference uses two threads/process. Operators can tune resources through `.env`. Multiple workers require PostgreSQL. A single deployment key grants all documented API capabilities; distribute it only to trusted clients.
 
-For HTTPS hosting, put a maintained reverse proxy in front of loopback, configure TLS/certificate renewal, bounded bodies/timeouts and firewall access, and keep PostgreSQL private. Add parsing isolation, monitoring, backups/restore drills, quotas and managed secrets before production exposure. No public infrastructure is provisioned by export. Exact citation provenance does not prove entailment, eligibility or general contradiction resolution. The English encoder and small regression comparison do not establish general semantic equivalence or customer-data accuracy.
+For HTTPS hosting, put a maintained reverse proxy in front of loopback, configure TLS/certificate renewal, bounded bodies/timeouts and firewall access, and keep PostgreSQL private. Generator 1.1 adds tested isolated/resource-limited parsing, collection limits, provider budgets and operational counters. Consistent encrypted standalone recovery is supported by the repository backup tool. Managed secrets, stronger isolation/malware controls and independent security review remain operator/future work before broader exposure. No public infrastructure is provisioned by export. Exact citation provenance does not prove entailment, eligibility or general contradiction resolution. The English encoder and small regression comparison do not establish general semantic equivalence or customer-data accuracy.
 
 ## Verification and measurements
 
@@ -117,3 +117,10 @@ python scripts/verify-standalone-imports.py --archive artifacts/browser/mobile-c
 ```
 
 These tests leave their own generated deployments/volumes for inspection. Run `docker compose stop` in a generated directory to stop only that copy while preserving its data. Existing unmodified MVP/Milestone 2 stacks are not stopped by the source-shutdown flag.
+
+
+## Milestone 4 compatibility and recovery
+
+New exports use generator 1.1.0 and standalone schema state version 2 (additive budget/metrics/worker tables). Template hashes remain explicit; old downloaded 1.0 packages are not silently modified. Linux Compose requires Landlock/seccomp parser controls; CPU/memory/wall failures are bounded. New keys expire after 90 days and rotate without changing the DB password. Source storage/document/active-job/request limits are enforced; hosted daily calls default to disabled. Full reindex reserves one job/document, so an operator must raise the queue cap deliberately when a larger collection exceeds it; concurrent processing stays bounded.
+
+The new runtime was executed independently with the M4 source stack stopped and after restart, with matching before/after citations. Encrypted database/source backups were restored into a separate empty deployment using the original package/manifest and a fresh target key. Both old generator 1.0 applications on local QA ports 8020/8021 still authenticate and answer/refuse honestly. See [local acceptance](qa/m4-standalone-acceptance.json), [local recovery](qa/m4-standalone-recovery.json), [final-source CI acceptance](qa/m4-standalone-ci.json), [CI recovery](qa/m4-standalone-recovery-ci.json) and [BACKUP_RESTORE.md](BACKUP_RESTORE.md). No public deployment or paid model call occurred.

@@ -1,0 +1,870 @@
+{
+  "created_at_utc": "2026-11-22T12:25:58Z",
+  "source": "http://localhost:8030",
+  "questions": [
+    {
+      "question": "What is the refund period?",
+      "result": {
+        "answer": "Refunds are returned to the original payment\nmethod within seven business days. [1]\n\nAcme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. [2]\n\nTo request a refund, email\nsupport@acme.example with your invoice number. [3]",
+        "citations": [
+          {
+            "chunk_id": "8e15f67d-86ec-4ba2-9f22-5783fd389267",
+            "document_id": "79085500-ca37-4030-a0b7-29688aaf16d2",
+            "document_name": "acme-handbook.pdf",
+            "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+            "locator": {
+              "page": 1,
+              "char_start": 0,
+              "char_end": 602,
+              "tokens": 126
+            },
+            "score": 0.5992,
+            "vector_similarity": 0.5992,
+            "rank_score": 0.04918,
+            "number": 1,
+            "quote": "Refunds are returned to the original payment\nmethod within seven business days."
+          },
+          {
+            "chunk_id": "8e15f67d-86ec-4ba2-9f22-5783fd389267",
+            "document_id": "79085500-ca37-4030-a0b7-29688aaf16d2",
+            "document_name": "acme-handbook.pdf",
+            "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+            "locator": {
+              "page": 1,
+              "char_start": 0,
+              "char_end": 602,
+              "tokens": 126
+            },
+            "score": 0.5992,
+            "vector_similarity": 0.5992,
+            "rank_score": 0.04918,
+            "number": 2,
+            "quote": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions."
+          },
+          {
+            "chunk_id": "8e15f67d-86ec-4ba2-9f22-5783fd389267",
+            "document_id": "79085500-ca37-4030-a0b7-29688aaf16d2",
+            "document_name": "acme-handbook.pdf",
+            "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+            "locator": {
+              "page": 1,
+              "char_start": 0,
+              "char_end": 602,
+              "tokens": 126
+            },
+            "score": 0.5992,
+            "vector_similarity": 0.5992,
+            "rank_score": 0.04918,
+            "number": 3,
+            "quote": "To request a refund, email\nsupport@acme.example with your invoice number."
+          }
+        ],
+        "retrieved": [
+          {
+            "chunk_id": "8e15f67d-86ec-4ba2-9f22-5783fd389267",
+            "document_id": "79085500-ca37-4030-a0b7-29688aaf16d2",
+            "document_name": "acme-handbook.pdf",
+            "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+            "locator": {
+              "page": 1,
+              "char_start": 0,
+              "char_end": 602,
+              "tokens": 126
+            },
+            "score": 0.5992,
+            "vector_similarity": 0.5992,
+            "rank_score": 0.04918
+          }
+        ],
+        "refused": false,
+        "latency_ms": 422.68,
+        "retrieval_latency_ms": 397.57,
+        "generation_latency_ms": 25.11,
+        "conversation_id": null,
+        "generation_provider": "extractive",
+        "embedding_provider": "semantic",
+        "embedding_model": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077",
+        "answer_kind": "source_extract"
+      }
+    },
+    {
+      "question": "How long does a refund take?",
+      "result": {
+        "answer": "Refunds are returned to the original payment\nmethod within seven business days. [1]\n\nAcme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. [2]\n\nTo request a refund, email\nsupport@acme.example with your invoice number. [3]",
+        "citations": [
+          {
+            "chunk_id": "8e15f67d-86ec-4ba2-9f22-5783fd389267",
+            "document_id": "79085500-ca37-4030-a0b7-29688aaf16d2",
+            "document_name": "acme-handbook.pdf",
+            "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+            "locator": {
+              "page": 1,
+              "char_start": 0,
+              "char_end": 602,
+              "tokens": 126
+            },
+            "score": 0.6384,
+            "vector_similarity": 0.6384,
+            "rank_score": 0.04918,
+            "number": 1,
+            "quote": "Refunds are returned to the original payment\nmethod within seven business days."
+          },
+          {
+            "chunk_id": "8e15f67d-86ec-4ba2-9f22-5783fd389267",
+            "document_id": "79085500-ca37-4030-a0b7-29688aaf16d2",
+            "document_name": "acme-handbook.pdf",
+            "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+            "locator": {
+              "page": 1,
+              "char_start": 0,
+              "char_end": 602,
+              "tokens": 126
+            },
+            "score": 0.6384,
+            "vector_similarity": 0.6384,
+            "rank_score": 0.04918,
+            "number": 2,
+            "quote": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions."
+          },
+          {
+            "chunk_id": "8e15f67d-86ec-4ba2-9f22-5783fd389267",
+            "document_id": "79085500-ca37-4030-a0b7-29688aaf16d2",
+            "document_name": "acme-handbook.pdf",
+            "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+            "locator": {
+              "page": 1,
+              "char_start": 0,
+              "char_end": 602,
+              "tokens": 126
+            },
+            "score": 0.6384,
+            "vector_similarity": 0.6384,
+            "rank_score": 0.04918,
+            "number": 3,
+            "quote": "To request a refund, email\nsupport@acme.example with your invoice number."
+          }
+        ],
+        "retrieved": [
+          {
+            "chunk_id": "8e15f67d-86ec-4ba2-9f22-5783fd389267",
+            "document_id": "79085500-ca37-4030-a0b7-29688aaf16d2",
+            "document_name": "acme-handbook.pdf",
+            "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+            "locator": {
+              "page": 1,
+              "char_start": 0,
+              "char_end": 602,
+              "tokens": 126
+            },
+            "score": 0.6384,
+            "vector_similarity": 0.6384,
+            "rank_score": 0.04918
+          }
+        ],
+        "refused": false,
+        "latency_ms": 9.71,
+        "retrieval_latency_ms": 9.3,
+        "generation_latency_ms": 0.41,
+        "conversation_id": null,
+        "generation_provider": "extractive",
+        "embedding_provider": "semantic",
+        "embedding_model": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077",
+        "answer_kind": "source_extract"
+      }
+    },
+    {
+      "question": "Who won the Martian election in 2050?",
+      "result": {
+        "answer": "I couldn't find enough supporting evidence in the indexed documents to answer that question. Try a more specific question or add a relevant document.",
+        "citations": [],
+        "retrieved": [],
+        "refused": true,
+        "latency_ms": 8.6,
+        "retrieval_latency_ms": 8.6,
+        "generation_latency_ms": 0.0,
+        "conversation_id": null,
+        "generation_provider": "extractive",
+        "embedding_provider": "semantic",
+        "embedding_model": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077",
+        "answer_kind": "refused"
+      }
+    }
+  ],
+  "export_wall_ms": 2118.55,
+  "generation_ms": 11.36,
+  "archive_bytes": 51733,
+  "archive_sha256": "d47818a23af7508706a720bf540d2da9e304b4c47abf40d3136867c31cc4c8af",
+  "source_project_id": "468fabbc-2217-45ec-b874-2c6a640d7035",
+  "before": [
+    {
+      "question": "What is the refund period?",
+      "result": {
+        "answer": "Refunds are returned to the original payment\nmethod within seven business days. [1]\n\nAcme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. [2]\n\nTo request a refund, email\nsupport@acme.example with your invoice number. [3]",
+        "citations": [
+          {
+            "chunk_id": "5f0df7ba-7958-4009-be62-a0d3a5605483",
+            "document_id": "35db7d80-c6ba-469c-afda-7f0cd431285e",
+            "document_name": "acme-handbook.pdf",
+            "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+            "locator": {
+              "page": 1,
+              "char_start": 0,
+              "char_end": 602,
+              "tokens": 126
+            },
+            "score": 0.5992,
+            "vector_similarity": 0.5992,
+            "rank_score": 0.04918,
+            "number": 1,
+            "quote": "Refunds are returned to the original payment\nmethod within seven business days."
+          },
+          {
+            "chunk_id": "5f0df7ba-7958-4009-be62-a0d3a5605483",
+            "document_id": "35db7d80-c6ba-469c-afda-7f0cd431285e",
+            "document_name": "acme-handbook.pdf",
+            "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+            "locator": {
+              "page": 1,
+              "char_start": 0,
+              "char_end": 602,
+              "tokens": 126
+            },
+            "score": 0.5992,
+            "vector_similarity": 0.5992,
+            "rank_score": 0.04918,
+            "number": 2,
+            "quote": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions."
+          },
+          {
+            "chunk_id": "5f0df7ba-7958-4009-be62-a0d3a5605483",
+            "document_id": "35db7d80-c6ba-469c-afda-7f0cd431285e",
+            "document_name": "acme-handbook.pdf",
+            "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+            "locator": {
+              "page": 1,
+              "char_start": 0,
+              "char_end": 602,
+              "tokens": 126
+            },
+            "score": 0.5992,
+            "vector_similarity": 0.5992,
+            "rank_score": 0.04918,
+            "number": 3,
+            "quote": "To request a refund, email\nsupport@acme.example with your invoice number."
+          }
+        ],
+        "retrieved": [
+          {
+            "chunk_id": "5f0df7ba-7958-4009-be62-a0d3a5605483",
+            "document_id": "35db7d80-c6ba-469c-afda-7f0cd431285e",
+            "document_name": "acme-handbook.pdf",
+            "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+            "locator": {
+              "page": 1,
+              "char_start": 0,
+              "char_end": 602,
+              "tokens": 126
+            },
+            "score": 0.5992,
+            "vector_similarity": 0.5992,
+            "rank_score": 0.04918
+          }
+        ],
+        "refused": false,
+        "latency_ms": 327.15,
+        "retrieval_latency_ms": 301.97,
+        "generation_latency_ms": 25.18,
+        "conversation_id": "6c41f7ca-2341-42d6-b855-76608aed8800",
+        "generation_provider": "extractive",
+        "embedding_provider": "semantic",
+        "embedding_model": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077",
+        "answer_kind": "source_extract"
+      }
+    },
+    {
+      "question": "How long does a refund take?",
+      "result": {
+        "answer": "Refunds are returned to the original payment\nmethod within seven business days. [1]\n\nAcme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. [2]\n\nTo request a refund, email\nsupport@acme.example with your invoice number. [3]",
+        "citations": [
+          {
+            "chunk_id": "5f0df7ba-7958-4009-be62-a0d3a5605483",
+            "document_id": "35db7d80-c6ba-469c-afda-7f0cd431285e",
+            "document_name": "acme-handbook.pdf",
+            "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+            "locator": {
+              "page": 1,
+              "char_start": 0,
+              "char_end": 602,
+              "tokens": 126
+            },
+            "score": 0.6384,
+            "vector_similarity": 0.6384,
+            "rank_score": 0.04918,
+            "number": 1,
+            "quote": "Refunds are returned to the original payment\nmethod within seven business days."
+          },
+          {
+            "chunk_id": "5f0df7ba-7958-4009-be62-a0d3a5605483",
+            "document_id": "35db7d80-c6ba-469c-afda-7f0cd431285e",
+            "document_name": "acme-handbook.pdf",
+            "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+            "locator": {
+              "page": 1,
+              "char_start": 0,
+              "char_end": 602,
+              "tokens": 126
+            },
+            "score": 0.6384,
+            "vector_similarity": 0.6384,
+            "rank_score": 0.04918,
+            "number": 2,
+            "quote": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions."
+          },
+          {
+            "chunk_id": "5f0df7ba-7958-4009-be62-a0d3a5605483",
+            "document_id": "35db7d80-c6ba-469c-afda-7f0cd431285e",
+            "document_name": "acme-handbook.pdf",
+            "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+            "locator": {
+              "page": 1,
+              "char_start": 0,
+              "char_end": 602,
+              "tokens": 126
+            },
+            "score": 0.6384,
+            "vector_similarity": 0.6384,
+            "rank_score": 0.04918,
+            "number": 3,
+            "quote": "To request a refund, email\nsupport@acme.example with your invoice number."
+          }
+        ],
+        "retrieved": [
+          {
+            "chunk_id": "5f0df7ba-7958-4009-be62-a0d3a5605483",
+            "document_id": "35db7d80-c6ba-469c-afda-7f0cd431285e",
+            "document_name": "acme-handbook.pdf",
+            "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+            "locator": {
+              "page": 1,
+              "char_start": 0,
+              "char_end": 602,
+              "tokens": 126
+            },
+            "score": 0.6384,
+            "vector_similarity": 0.6384,
+            "rank_score": 0.04918
+          }
+        ],
+        "refused": false,
+        "latency_ms": 9.91,
+        "retrieval_latency_ms": 9.48,
+        "generation_latency_ms": 0.43,
+        "conversation_id": "1bc1f465-58fe-404d-8ddf-eb644bc97e69",
+        "generation_provider": "extractive",
+        "embedding_provider": "semantic",
+        "embedding_model": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077",
+        "answer_kind": "source_extract"
+      }
+    },
+    {
+      "question": "Who won the Martian election in 2050?",
+      "result": {
+        "answer": "I couldn't find enough supporting evidence in the indexed documents to answer that question. Try a more specific question or add a relevant document.",
+        "citations": [],
+        "retrieved": [],
+        "refused": true,
+        "latency_ms": 10.63,
+        "retrieval_latency_ms": 10.63,
+        "generation_latency_ms": 0.0,
+        "conversation_id": "bf0a7f3a-9db8-46f7-aa9f-a95e71b12d69",
+        "generation_provider": "extractive",
+        "embedding_provider": "semantic",
+        "embedding_model": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077",
+        "answer_kind": "refused"
+      }
+    }
+  ],
+  "extracted_directory": "/home/runner/work/RagForge/RagForge/artifacts/standalone-9lbimlun",
+  "compose_build_start_seconds": 46.234,
+  "prefetch_or_cached_init_seconds": 3.632,
+  "initial_ready_status": {
+    "index": {
+      "state": "ready",
+      "compatible": true,
+      "query_ready": true,
+      "active_profile": {
+        "provider": "semantic",
+        "model": "sentence-transformers/all-MiniLM-L6-v2",
+        "repository": "Qdrant/all-MiniLM-L6-v2-onnx",
+        "revision": "d13954661f83248295ba75c1ed411eef3b7b936e",
+        "files": {
+          "model.onnx": "bbd7b466f6d58e646fdc2bd5fd67b2f5e93c0b687011bd4548c420f7bd46f0c5",
+          "tokenizer.json": "851ca67100d372ca3ae031a6abd168f53489eebfd7d89523f35c5c9b4d372c3c"
+        },
+        "dimensions": 384,
+        "max_tokens": 256,
+        "pooling": "attention-mask-mean",
+        "normalization": "l2",
+        "implementation": "minilm-onnx-v1",
+        "semantic": true,
+        "license": "Apache-2.0",
+        "id": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077"
+      },
+      "indexed_profiles": [
+        "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077"
+      ],
+      "target_profile": {
+        "dimensions": 384,
+        "files": {
+          "model.onnx": "bbd7b466f6d58e646fdc2bd5fd67b2f5e93c0b687011bd4548c420f7bd46f0c5",
+          "tokenizer.json": "851ca67100d372ca3ae031a6abd168f53489eebfd7d89523f35c5c9b4d372c3c"
+        },
+        "id": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077",
+        "implementation": "minilm-onnx-v1",
+        "license": "Apache-2.0",
+        "max_tokens": 256,
+        "model": "sentence-transformers/all-MiniLM-L6-v2",
+        "normalization": "l2",
+        "pooling": "attention-mask-mean",
+        "provider": "semantic",
+        "repository": "Qdrant/all-MiniLM-L6-v2-onnx",
+        "revision": "d13954661f83248295ba75c1ed411eef3b7b936e",
+        "semantic": true
+      },
+      "index_generation": 0,
+      "pending_document_ids": [],
+      "storage_dimensions": 384,
+      "dimension_mismatch": false,
+      "message": "Index matches the active embedding configuration."
+    },
+    "embedding_runtime": {
+      "loads": 0,
+      "cache_hits": 0,
+      "computed_texts": 0,
+      "embedding_ms": 0.0,
+      "load_ms": 0.0,
+      "cached_vectors": 0,
+      "loaded": false,
+      "threads": 2,
+      "batch_size": 32,
+      "cache_capacity": 2048
+    },
+    "documents": [
+      {
+        "id": "79085500-ca37-4030-a0b7-29688aaf16d2",
+        "name": "acme-handbook.pdf",
+        "status": "ready",
+        "chunk_count": 1,
+        "error": null,
+        "metadata": {
+          "pages": 1,
+          "parser": "pypdf",
+          "characters": 603,
+          "parser_containment": {
+            "landlock_abi": 8,
+            "filesystem": "landlock",
+            "network_process": "seccomp"
+          },
+          "embedding_profile": {
+            "provider": "semantic",
+            "model": "sentence-transformers/all-MiniLM-L6-v2",
+            "repository": "Qdrant/all-MiniLM-L6-v2-onnx",
+            "revision": "d13954661f83248295ba75c1ed411eef3b7b936e",
+            "files": {
+              "model.onnx": "bbd7b466f6d58e646fdc2bd5fd67b2f5e93c0b687011bd4548c420f7bd46f0c5",
+              "tokenizer.json": "851ca67100d372ca3ae031a6abd168f53489eebfd7d89523f35c5c9b4d372c3c"
+            },
+            "dimensions": 384,
+            "max_tokens": 256,
+            "pooling": "attention-mask-mean",
+            "normalization": "l2",
+            "implementation": "minilm-onnx-v1",
+            "semantic": true,
+            "license": "Apache-2.0",
+            "id": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077"
+          },
+          "index_generation": 0,
+          "embedding_ms": 41.52,
+          "indexing_ms": 509.28,
+          "chunking": "token-budget-aware"
+        }
+      }
+    ]
+  },
+  "source_stopped_query": {
+    "answer": "Refunds are returned to the original payment\nmethod within seven business days. [1]\n\nAcme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. [2]\n\nTo request a refund, email\nsupport@acme.example with your invoice number. [3]",
+    "citations": [
+      {
+        "chunk_id": "8e15f67d-86ec-4ba2-9f22-5783fd389267",
+        "document_id": "79085500-ca37-4030-a0b7-29688aaf16d2",
+        "document_name": "acme-handbook.pdf",
+        "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+        "locator": {
+          "page": 1,
+          "char_start": 0,
+          "char_end": 602,
+          "tokens": 126
+        },
+        "score": 0.5992,
+        "vector_similarity": 0.5992,
+        "rank_score": 0.04918,
+        "number": 1,
+        "quote": "Refunds are returned to the original payment\nmethod within seven business days."
+      },
+      {
+        "chunk_id": "8e15f67d-86ec-4ba2-9f22-5783fd389267",
+        "document_id": "79085500-ca37-4030-a0b7-29688aaf16d2",
+        "document_name": "acme-handbook.pdf",
+        "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+        "locator": {
+          "page": 1,
+          "char_start": 0,
+          "char_end": 602,
+          "tokens": 126
+        },
+        "score": 0.5992,
+        "vector_similarity": 0.5992,
+        "rank_score": 0.04918,
+        "number": 2,
+        "quote": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions."
+      },
+      {
+        "chunk_id": "8e15f67d-86ec-4ba2-9f22-5783fd389267",
+        "document_id": "79085500-ca37-4030-a0b7-29688aaf16d2",
+        "document_name": "acme-handbook.pdf",
+        "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+        "locator": {
+          "page": 1,
+          "char_start": 0,
+          "char_end": 602,
+          "tokens": 126
+        },
+        "score": 0.5992,
+        "vector_similarity": 0.5992,
+        "rank_score": 0.04918,
+        "number": 3,
+        "quote": "To request a refund, email\nsupport@acme.example with your invoice number."
+      }
+    ],
+    "retrieved": [
+      {
+        "chunk_id": "8e15f67d-86ec-4ba2-9f22-5783fd389267",
+        "document_id": "79085500-ca37-4030-a0b7-29688aaf16d2",
+        "document_name": "acme-handbook.pdf",
+        "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+        "locator": {
+          "page": 1,
+          "char_start": 0,
+          "char_end": 602,
+          "tokens": 126
+        },
+        "score": 0.5992,
+        "vector_similarity": 0.5992,
+        "rank_score": 0.04918
+      }
+    ],
+    "refused": false,
+    "latency_ms": 4.63,
+    "retrieval_latency_ms": 4.26,
+    "generation_latency_ms": 0.37,
+    "conversation_id": null,
+    "generation_provider": "extractive",
+    "embedding_provider": "semantic",
+    "embedding_model": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077",
+    "answer_kind": "source_extract"
+  },
+  "restart_status": {
+    "index": {
+      "state": "ready",
+      "compatible": true,
+      "query_ready": true,
+      "active_profile": {
+        "provider": "semantic",
+        "model": "sentence-transformers/all-MiniLM-L6-v2",
+        "repository": "Qdrant/all-MiniLM-L6-v2-onnx",
+        "revision": "d13954661f83248295ba75c1ed411eef3b7b936e",
+        "files": {
+          "model.onnx": "bbd7b466f6d58e646fdc2bd5fd67b2f5e93c0b687011bd4548c420f7bd46f0c5",
+          "tokenizer.json": "851ca67100d372ca3ae031a6abd168f53489eebfd7d89523f35c5c9b4d372c3c"
+        },
+        "dimensions": 384,
+        "max_tokens": 256,
+        "pooling": "attention-mask-mean",
+        "normalization": "l2",
+        "implementation": "minilm-onnx-v1",
+        "semantic": true,
+        "license": "Apache-2.0",
+        "id": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077"
+      },
+      "indexed_profiles": [
+        "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077"
+      ],
+      "target_profile": {
+        "dimensions": 384,
+        "files": {
+          "model.onnx": "bbd7b466f6d58e646fdc2bd5fd67b2f5e93c0b687011bd4548c420f7bd46f0c5",
+          "tokenizer.json": "851ca67100d372ca3ae031a6abd168f53489eebfd7d89523f35c5c9b4d372c3c"
+        },
+        "id": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077",
+        "implementation": "minilm-onnx-v1",
+        "license": "Apache-2.0",
+        "max_tokens": 256,
+        "model": "sentence-transformers/all-MiniLM-L6-v2",
+        "normalization": "l2",
+        "pooling": "attention-mask-mean",
+        "provider": "semantic",
+        "repository": "Qdrant/all-MiniLM-L6-v2-onnx",
+        "revision": "d13954661f83248295ba75c1ed411eef3b7b936e",
+        "semantic": true
+      },
+      "index_generation": 0,
+      "pending_document_ids": [],
+      "storage_dimensions": 384,
+      "dimension_mismatch": false,
+      "message": "Index matches the active embedding configuration."
+    },
+    "embedding_runtime": {
+      "loads": 0,
+      "cache_hits": 0,
+      "computed_texts": 0,
+      "embedding_ms": 0.0,
+      "load_ms": 0.0,
+      "cached_vectors": 0,
+      "loaded": false,
+      "threads": 2,
+      "batch_size": 32,
+      "cache_capacity": 2048
+    },
+    "documents": [
+      {
+        "id": "79085500-ca37-4030-a0b7-29688aaf16d2",
+        "name": "acme-handbook.pdf",
+        "status": "ready",
+        "chunk_count": 1,
+        "error": null,
+        "metadata": {
+          "pages": 1,
+          "parser": "pypdf",
+          "characters": 603,
+          "parser_containment": {
+            "landlock_abi": 8,
+            "filesystem": "landlock",
+            "network_process": "seccomp"
+          },
+          "embedding_profile": {
+            "provider": "semantic",
+            "model": "sentence-transformers/all-MiniLM-L6-v2",
+            "repository": "Qdrant/all-MiniLM-L6-v2-onnx",
+            "revision": "d13954661f83248295ba75c1ed411eef3b7b936e",
+            "files": {
+              "model.onnx": "bbd7b466f6d58e646fdc2bd5fd67b2f5e93c0b687011bd4548c420f7bd46f0c5",
+              "tokenizer.json": "851ca67100d372ca3ae031a6abd168f53489eebfd7d89523f35c5c9b4d372c3c"
+            },
+            "dimensions": 384,
+            "max_tokens": 256,
+            "pooling": "attention-mask-mean",
+            "normalization": "l2",
+            "implementation": "minilm-onnx-v1",
+            "semantic": true,
+            "license": "Apache-2.0",
+            "id": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077"
+          },
+          "index_generation": 0,
+          "embedding_ms": 41.52,
+          "indexing_ms": 509.28,
+          "chunking": "token-budget-aware"
+        }
+      }
+    ]
+  },
+  "restart_query": {
+    "answer": "Refunds are returned to the original payment\nmethod within seven business days. [1]\n\nAcme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. [2]\n\nTo request a refund, email\nsupport@acme.example with your invoice number. [3]",
+    "citations": [
+      {
+        "chunk_id": "8e15f67d-86ec-4ba2-9f22-5783fd389267",
+        "document_id": "79085500-ca37-4030-a0b7-29688aaf16d2",
+        "document_name": "acme-handbook.pdf",
+        "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+        "locator": {
+          "page": 1,
+          "char_start": 0,
+          "char_end": 602,
+          "tokens": 126
+        },
+        "score": 0.5992,
+        "vector_similarity": 0.5992,
+        "rank_score": 0.04918,
+        "number": 1,
+        "quote": "Refunds are returned to the original payment\nmethod within seven business days."
+      },
+      {
+        "chunk_id": "8e15f67d-86ec-4ba2-9f22-5783fd389267",
+        "document_id": "79085500-ca37-4030-a0b7-29688aaf16d2",
+        "document_name": "acme-handbook.pdf",
+        "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+        "locator": {
+          "page": 1,
+          "char_start": 0,
+          "char_end": 602,
+          "tokens": 126
+        },
+        "score": 0.5992,
+        "vector_similarity": 0.5992,
+        "rank_score": 0.04918,
+        "number": 2,
+        "quote": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions."
+      },
+      {
+        "chunk_id": "8e15f67d-86ec-4ba2-9f22-5783fd389267",
+        "document_id": "79085500-ca37-4030-a0b7-29688aaf16d2",
+        "document_name": "acme-handbook.pdf",
+        "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+        "locator": {
+          "page": 1,
+          "char_start": 0,
+          "char_end": 602,
+          "tokens": 126
+        },
+        "score": 0.5992,
+        "vector_similarity": 0.5992,
+        "rank_score": 0.04918,
+        "number": 3,
+        "quote": "To request a refund, email\nsupport@acme.example with your invoice number."
+      }
+    ],
+    "retrieved": [
+      {
+        "chunk_id": "8e15f67d-86ec-4ba2-9f22-5783fd389267",
+        "document_id": "79085500-ca37-4030-a0b7-29688aaf16d2",
+        "document_name": "acme-handbook.pdf",
+        "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+        "locator": {
+          "page": 1,
+          "char_start": 0,
+          "char_end": 602,
+          "tokens": 126
+        },
+        "score": 0.5992,
+        "vector_similarity": 0.5992,
+        "rank_score": 0.04918
+      }
+    ],
+    "refused": false,
+    "latency_ms": 406.62,
+    "retrieval_latency_ms": 381.44,
+    "generation_latency_ms": 25.18,
+    "conversation_id": null,
+    "generation_provider": "extractive",
+    "embedding_provider": "semantic",
+    "embedding_model": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077",
+    "answer_kind": "source_extract"
+  },
+  "runtime_status": {
+    "index": {
+      "state": "ready",
+      "compatible": true,
+      "query_ready": true,
+      "active_profile": {
+        "provider": "semantic",
+        "model": "sentence-transformers/all-MiniLM-L6-v2",
+        "repository": "Qdrant/all-MiniLM-L6-v2-onnx",
+        "revision": "d13954661f83248295ba75c1ed411eef3b7b936e",
+        "files": {
+          "model.onnx": "bbd7b466f6d58e646fdc2bd5fd67b2f5e93c0b687011bd4548c420f7bd46f0c5",
+          "tokenizer.json": "851ca67100d372ca3ae031a6abd168f53489eebfd7d89523f35c5c9b4d372c3c"
+        },
+        "dimensions": 384,
+        "max_tokens": 256,
+        "pooling": "attention-mask-mean",
+        "normalization": "l2",
+        "implementation": "minilm-onnx-v1",
+        "semantic": true,
+        "license": "Apache-2.0",
+        "id": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077"
+      },
+      "indexed_profiles": [
+        "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077"
+      ],
+      "target_profile": {
+        "dimensions": 384,
+        "files": {
+          "model.onnx": "bbd7b466f6d58e646fdc2bd5fd67b2f5e93c0b687011bd4548c420f7bd46f0c5",
+          "tokenizer.json": "851ca67100d372ca3ae031a6abd168f53489eebfd7d89523f35c5c9b4d372c3c"
+        },
+        "id": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077",
+        "implementation": "minilm-onnx-v1",
+        "license": "Apache-2.0",
+        "max_tokens": 256,
+        "model": "sentence-transformers/all-MiniLM-L6-v2",
+        "normalization": "l2",
+        "pooling": "attention-mask-mean",
+        "provider": "semantic",
+        "repository": "Qdrant/all-MiniLM-L6-v2-onnx",
+        "revision": "d13954661f83248295ba75c1ed411eef3b7b936e",
+        "semantic": true
+      },
+      "index_generation": 0,
+      "pending_document_ids": [],
+      "storage_dimensions": 384,
+      "dimension_mismatch": false,
+      "message": "Index matches the active embedding configuration."
+    },
+    "embedding_runtime": {
+      "loads": 1,
+      "cache_hits": 1,
+      "computed_texts": 9,
+      "embedding_ms": 27.504017999945063,
+      "load_ms": 367.67,
+      "cached_vectors": 9,
+      "loaded": true,
+      "threads": 2,
+      "batch_size": 32,
+      "cache_capacity": 2048
+    },
+    "documents": [
+      {
+        "id": "79085500-ca37-4030-a0b7-29688aaf16d2",
+        "name": "acme-handbook.pdf",
+        "status": "ready",
+        "chunk_count": 1,
+        "error": null,
+        "metadata": {
+          "pages": 1,
+          "parser": "pypdf",
+          "characters": 603,
+          "parser_containment": {
+            "landlock_abi": 8,
+            "filesystem": "landlock",
+            "network_process": "seccomp"
+          },
+          "embedding_profile": {
+            "provider": "semantic",
+            "model": "sentence-transformers/all-MiniLM-L6-v2",
+            "repository": "Qdrant/all-MiniLM-L6-v2-onnx",
+            "revision": "d13954661f83248295ba75c1ed411eef3b7b936e",
+            "files": {
+              "model.onnx": "bbd7b466f6d58e646fdc2bd5fd67b2f5e93c0b687011bd4548c420f7bd46f0c5",
+              "tokenizer.json": "851ca67100d372ca3ae031a6abd168f53489eebfd7d89523f35c5c9b4d372c3c"
+            },
+            "dimensions": 384,
+            "max_tokens": 256,
+            "pooling": "attention-mask-mean",
+            "normalization": "l2",
+            "implementation": "minilm-onnx-v1",
+            "semantic": true,
+            "license": "Apache-2.0",
+            "id": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077"
+          },
+          "index_generation": 0,
+          "embedding_ms": 41.52,
+          "indexing_ms": 509.28,
+          "chunking": "token-budget-aware"
+        }
+      }
+    ]
+  },
+  "curl_client": "passed",
+  "database_evidence": "standalone|1|1",
+  "containers": "{\"Command\":\"\\\"sh -c 'python -m ap\u2026\\\"\",\"CreatedAt\":\"2026-11-22 12:26:39 +0000 UTC\",\"ExitCode\":0,\"Health\":\"starting\",\"ID\":\"ecb982bb0921\",\"Image\":\"rag-20455fa11e-api\",\"Labels\":\"com.docker.compose.config-hash=724041c171c23c673d69c37e09a575761a34f5564a1cf47cc4e47204236c749f,com.docker.compose.container-number=1,com.docker.compose.depends_on=db:service_healthy:false,com.docker.compose.service=api,com.docker.compose.image=sha256:ab8d8471d87fe88280e1e2a4698a35b794f73c0dcfff6606037c7c7f7bfcd87d,com.docker.compose.oneoff=False,com.docker.compose.project=rag-20455fa11e,com.docker.compose.project.config_files=/home/runner/work/RagForge/RagForge/artifacts/standalone-9lbimlun/compose.yaml,com.docker.compose.project.working_dir=/home/runner/work/RagForge/RagForge/artifacts/standalone-9lbimlun,com.docker.compose.version=5.1.3\",\"LocalVolumes\":\"1\",\"Mounts\":\"rag-20455fa11e\u2026\",\"Name\":\"rag-20455fa11e-api-1\",\"Names\":\"rag-20455fa11e-api-1\",\"Networks\":\"rag-20455fa11e_default\",\"Ports\":\"127.0.0.1:8020-\\u003e8000/tcp\",\"Project\":\"rag-20455fa11e\",\"Publishers\":[{\"URL\":\"127.0.0.1\",\"TargetPort\":8000,\"PublishedPort\":8020,\"Protocol\":\"tcp\"}],\"RunningFor\":\"About a minute ago\",\"Service\":\"api\",\"Size\":\"0B\",\"State\":\"running\",\"Status\":\"Up 2 seconds (health: starting)\"}\n{\"Command\":\"\\\"docker-entrypoint.s\u2026\\\"\",\"CreatedAt\":\"2026-11-22 12:26:36 +0000 UTC\",\"ExitCode\":0,\"Health\":\"healthy\",\"ID\":\"c52e4e8fceb3\",\"Image\":\"pgvector/pgvector:pg17@sha256:b513c48566e4777cd3370451400000c78eda6a08131d68f4c31d4a76f27bd8fd\",\"Labels\":\"com.docker.compose.oneoff=False,com.docker.compose.project=rag-20455fa11e,com.docker.compose.project.config_files=/home/runner/work/RagForge/RagForge/artifacts/standalone-9lbimlun/compose.yaml,com.docker.compose.project.working_dir=/home/runner/work/RagForge/RagForge/artifacts/standalone-9lbimlun,com.docker.compose.service=db,com.docker.compose.config-hash=017f53e27182077e3c4b4a527414172ac5cf1f2c78837bea4a99afbd56eb7d1c,com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.image=sha256:b513c48566e4777cd3370451400000c78eda6a08131d68f4c31d4a76f27bd8fd,com.docker.compose.version=5.1.3\",\"LocalVolumes\":\"1\",\"Mounts\":\"rag-20455fa11e\u2026\",\"Name\":\"rag-20455fa11e-db-1\",\"Names\":\"rag-20455fa11e-db-1\",\"Networks\":\"rag-20455fa11e_default\",\"Ports\":\"5432/tcp\",\"Project\":\"rag-20455fa11e\",\"Publishers\":[{\"URL\":\"\",\"TargetPort\":5432,\"PublishedPort\":0,\"Protocol\":\"tcp\"}],\"RunningFor\":\"About a minute ago\",\"Service\":\"db\",\"Size\":\"0B\",\"State\":\"running\",\"Status\":\"Up 13 seconds (healthy)\"}\n{\"Command\":\"\\\"python -m app.worker\\\"\",\"CreatedAt\":\"2026-11-22 12:26:39 +0000 UTC\",\"ExitCode\":0,\"Health\":\"\",\"ID\":\"003817efd37c\",\"Image\":\"rag-20455fa11e-worker\",\"Labels\":\"com.docker.compose.container-number=1,com.docker.compose.depends_on=api:service_healthy:false,com.docker.compose.image=sha256:c3b30ba9782af49f558cddebf03103273d7a1df3ee5bdd09b7cb26d5431a7bef,com.docker.compose.config-hash=3b25564a0a50882b75f387c4dd50e03b0a00b4410df32f613c633548117c2c38,com.docker.compose.oneoff=False,com.docker.compose.project=rag-20455fa11e,com.docker.compose.project.config_files=/home/runner/work/RagForge/RagForge/artifacts/standalone-9lbimlun/compose.yaml,com.docker.compose.project.working_dir=/home/runner/work/RagForge/RagForge/artifacts/standalone-9lbimlun,com.docker.compose.service=worker,com.docker.compose.version=5.1.3\",\"LocalVolumes\":\"1\",\"Mounts\":\"rag-20455fa11e\u2026\",\"Name\":\"rag-20455fa11e-worker-1\",\"Names\":\"rag-20455fa11e-worker-1\",\"Networks\":\"rag-20455fa11e_default\",\"Ports\":\"8000/tcp\",\"Project\":\"rag-20455fa11e\",\"Publishers\":[{\"URL\":\"\",\"TargetPort\":8000,\"PublishedPort\":0,\"Protocol\":\"tcp\"}],\"RunningFor\":\"About a minute ago\",\"Service\":\"worker\",\"Size\":\"0B\",\"State\":\"running\",\"Status\":\"Up 12 seconds\"}\n",
+  "resources": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.14%\",\"Container\":\"ecb982bb0921e6a02b9c88a4d4524618a1eecade66eca9d0e9b2e10dec36ac70\",\"ID\":\"ecb982bb0921\",\"MemPerc\":\"24.79%\",\"MemUsage\":\"190.4MiB / 768MiB\",\"Name\":\"rag-20455fa11e-api-1\",\"NetIO\":\"74.5kB / 77.5kB\",\"PIDs\":\"10\"}\n{\"BlockIO\":\"0B / 225kB\",\"CPUPerc\":\"0.09%\",\"Container\":\"c52e4e8fceb3b0f4a50f8eee677f66669d18ffed5b22c975d8db7b0f408e5df0\",\"ID\":\"c52e4e8fceb3\",\"MemPerc\":\"5.75%\",\"MemUsage\":\"29.45MiB / 512MiB\",\"Name\":\"rag-20455fa11e-db-1\",\"NetIO\":\"81.2kB / 88.2kB\",\"PIDs\":\"9\"}\n{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.20%\",\"Container\":\"003817efd37ce8b4906a8ea27dfaa49c4c7b290eb4abbcae053ffe0186421e76\",\"ID\":\"003817efd37c\",\"MemPerc\":\"17.13%\",\"MemUsage\":\"175.4MiB / 1GiB\",\"Name\":\"rag-20455fa11e-worker-1\",\"NetIO\":\"27.5kB / 28.8kB\",\"PIDs\":\"7\"}\n"
+}

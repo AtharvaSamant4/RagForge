@@ -10,6 +10,12 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
     },
   });
   if (!response.ok) {
+    if (
+      response.status === 401 &&
+      !path.startsWith("/v1/auth/") &&
+      typeof window !== "undefined"
+    )
+      window.dispatchEvent(new Event("ragforge-session-expired"));
     const body = await response.json().catch(() => ({}));
     throw new Error(
       typeof body.detail === "string"

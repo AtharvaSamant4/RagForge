@@ -1,0 +1,20 @@
+{
+  "browser": "Chromium",
+  "protocol": "Final complete HTTPS alpha run after streaming proxy, input redaction and private environment updates. Desktop 1440x1000/mobile 390x844 touch emulation; actual invitation, quota, session-expiry, source quote/composer-boundary assertions, export and publication prohibition. Both tests passed; no page errors/horizontal overflow.",
+  "tests": [
+    {
+      "project": "desktop",
+      "title": "invite-only alpha, quota errors, cited answers, export and expired session",
+      "status": "passed",
+      "duration_ms": 148128,
+      "start_time": "2026-11-22T11:37:41.504Z"
+    },
+    {
+      "project": "mobile",
+      "title": "invite-only alpha, quota errors, cited answers, export and expired session",
+      "status": "passed",
+      "duration_ms": 144081,
+      "start_time": "2026-11-22T11:40:14.070Z"
+    }
+  ]
+}

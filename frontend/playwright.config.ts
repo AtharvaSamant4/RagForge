@@ -12,9 +12,10 @@ export default defineConfig({
   ],
   outputDir: "../artifacts/browser/test-output",
   use: {
+    ignoreHTTPSErrors: Boolean(process.env.QA_ALPHA),
     actionTimeout: 15000,
     navigationTimeout: 30000,
-    baseURL: process.env.QA_BASE_URL || "http://localhost:3030",
+    baseURL: process.env.QA_BASE_URL || "http://localhost:3031",
     browserName: "chromium",
     trace: "retain-on-failure",
     screenshot: "only-on-failure",

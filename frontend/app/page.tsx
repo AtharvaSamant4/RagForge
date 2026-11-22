@@ -124,7 +124,10 @@ export default function Dashboard() {
     [boot, setBoot] = useState(true),
     [register, setRegister] = useState(true),
     [email, setEmail] = useState(""),
-    [password, setPassword] = useState("");
+    [password, setPassword] = useState(""),
+    [inviteToken, setInviteToken] = useState(""),
+    [registrationMode, setRegistrationMode] = useState("development"),
+    [registrationEnabled, setRegistrationEnabled] = useState(true);
   const [brand, setBrand] = useState("RAGForge"),
     [provider, setProvider] = useState("local"),
     [generation, setGeneration] = useState("extractive");
@@ -228,16 +231,37 @@ export default function Dashboard() {
         brand: string;
         embedding_provider: string;
         generation_provider: string;
+        registration_enabled: boolean;
+        registration_mode?: string;
       }>("/health")
         .then((h) => {
           setBrand(h.brand);
           setProvider(h.embedding_provider);
           setGeneration(h.generation_provider);
+          setRegistrationMode(h.registration_mode || "development");
+          setRegistrationEnabled(h.registration_enabled);
+          if (!h.registration_enabled) setRegister(false);
         })
         .catch(() =>
           setError("The API is unavailable. Start the backend and database."),
         ),
     ]).finally(() => setBoot(false));
+  }, []);
+  useEffect(() => {
+    const expired = () => {
+      setUser(null);
+      setSelected("");
+      setProjects([]);
+      setDocs([]);
+      setMessages([]);
+      setHistory([]);
+      setPassword("");
+      setRegister(false);
+      setError("Your session expired or was revoked. Sign in again.");
+    };
+    window.addEventListener("ragforge-session-expired", expired);
+    return () =>
+      window.removeEventListener("ragforge-session-expired", expired);
   }, []);
   useEffect(() => {
     if (user)
@@ -346,10 +370,20 @@ export default function Dashboard() {
     void task("Signing in", async () => {
       const u = await api<{ email: string }>(
         `/v1/auth/${register ? "register" : "login"}`,
-        { method: "POST", body: JSON.stringify({ email, password }) },
+        {
+          method: "POST",
+          body: JSON.stringify({
+            email,
+            password,
+            ...(register && registrationMode === "invite"
+              ? { invite_token: inviteToken }
+              : {}),
+          }),
+        },
       );
       setUser(u);
       setPassword("");
+      setInviteToken("");
     });
   };
   const addProject = (e: FormEvent) => {
@@ -503,6 +537,19 @@ export default function Dashboard() {
                 placeholder="At least 12 characters"
               />
             </label>
+            {register && registrationMode === "invite" && (
+              <label>
+                Invitation code
+                <input
+                  type="password"
+                  autoComplete="off"
+                  required
+                  maxLength={200}
+                  value={inviteToken}
+                  onChange={(e) => setInviteToken(e.target.value)}
+                />
+              </label>
+            )}
             {error && (
               <p className="alert error" role="alert">
                 {error}
@@ -513,17 +560,23 @@ export default function Dashboard() {
               {register ? "Create account" : "Sign in"}
             </button>
           </form>
-          <p className="auth-switch">
-            {register ? "Already have an account?" : "New here?"}{" "}
-            <button
-              onClick={() => {
-                setRegister(!register);
-                setError("");
-              }}
-            >
-              {register ? "Sign in" : "Create account"}
-            </button>
-          </p>
+          {registrationEnabled ? (
+            <p className="auth-switch">
+              {register ? "Already have an account?" : "New here?"}{" "}
+              <button
+                onClick={() => {
+                  setRegister(!register);
+                  setError("");
+                }}
+              >
+                {register ? "Sign in" : "Create account"}
+              </button>
+            </p>
+          ) : (
+            <p className="auth-switch">
+              Registration is controlled by your private-alpha operator.
+            </p>
+          )}
           <div className="mode-note">
             <Zap size={18} />
             <div>
@@ -2114,7 +2167,11 @@ export default function Dashboard() {
                     )}
                   </section>
                   <div className="stack">
-                    <StandaloneExport key={selected} base={base} documents={docs} />
+                    <StandaloneExport
+                      key={selected}
+                      base={base}
+                      documents={docs}
+                    />
                     <section className="panel form-panel">
                       <h2>Deployment foundation</h2>
                       <div className="deployment-state">

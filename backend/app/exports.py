@@ -20,6 +20,7 @@ from .schemas import PipelineInput
 from .security import access
 from .indexing import require_compatible
 from .export_compiler import VERSION, ExportError, compile_archive, template_digest
+from .quotas import lock_owner, allocate
 
 router=APIRouter(prefix="/v1/projects/{project_id}/exports",tags=["Application export"])
 
@@ -90,6 +91,7 @@ def serialize(job):
 @router.post("",status_code=202)
 def create_export(project_id:str,body:ExportInput,request:Request,db=Depends(get_db)):
     project=access(project_id,request,db,owner_only=True).project
+    lock_owner(db,project.owner_id)
     active=profile()
     if active["dimensions"]!=384:raise HTTPException(422,"Standalone schema v1 supports 384-dimensional embeddings")
     pipeline=PipelineInput.model_validate(project.pipeline).model_dump()
@@ -107,6 +109,8 @@ def create_export(project_id:str,body:ExportInput,request:Request,db=Depends(get
     sources=[{"document_id":d.id,"storage_name":d.storage_name,"path":f"data/knowledge/{i+1:03d}-{d.sha256[:12]}.{d.kind}","name":d.name,"kind":d.kind,"sha256":d.sha256,"size_bytes":d.size_bytes} for i,d in enumerate(selected)]
     manifest={"schema_version":"1.0","generator_version":VERSION,"template_sha256":template_digest(),"name":project.name,"pipeline":pipeline,"embedding":active,"generation":{"provider":settings().generation_provider,"model":settings().openai_model if settings().generation_provider=="openai" else "exact-sentence extraction"},"mode":body.mode,"allow_imports":body.allow_imports,"sources":[{k:v for k,v in source.items() if k not in ("storage_name","document_id")} for source in sources]}
     lock_storage(db);cleanup(db)
+    db.flush()
+    allocate(db,project.owner_id,incoming=settings().export_max_archive_mb*1024**2,export=1)
     jobs=list(db.scalars(select(ExportJob).order_by(ExportJob.created_at)))
     if any(j.project_id==project_id and j.status in ("queued","generating") for j in jobs):
         db.commit()
@@ -175,22 +179,25 @@ def download_export(project_id:str,job_id:str,request:Request,db=Depends(get_db)
 
 
 def run_once():
+    from .observability import metric
     now=time.time()
     with SessionLocal() as db:
         job=db.scalar(select(ExportJob).where(ExportJob.expires_at>now,or_(ExportJob.status=="queued",(ExportJob.status=="generating")&(ExportJob.lease_until<now))).order_by(ExportJob.created_at).with_for_update(skip_locked=True).limit(1))
         if not job:return False
         if job.attempts>=2:
             job.status,job.error="failed","Export worker lease expired twice; generate a new application"
-            db.commit();return True
+            db.commit();metric('export_failed');return True
         token=str(uuid.uuid4());job_id=job.id
         job.status,job.lease_token,job.lease_until,job.attempts="generating",token,now+600,job.attempts+1
+        recovered=job.attempts>1
         config=job.config
         for source in config["sources"]:
             doc=db.scalar(select(Document).where(Document.id==source["document_id"],Document.project_id==job.project_id))
             if not doc or doc.status!="ready" or doc.sha256!=source["sha256"]:
                 job.status,job.error="failed","A selected source changed or was deleted; generate a new export"
-                db.commit();return True
+                db.commit();metric('export_failed');return True
         db.commit()
+    if recovered:metric('export_retry')
     part=None
     try:
         started=time.perf_counter()
@@ -205,7 +212,10 @@ def run_once():
             job.status,job.size_bytes,job.sha256,job.lease_until="ready",result["size_bytes"],result["sha256"],None
             job.config={**job.config,"generation_ms":round((time.perf_counter()-started)*1000,2)}
             db.commit()
+        metric('export_succeeded',(time.perf_counter()-started)*1000)
     except Exception as exc:
+        metric('export_failed')
+        __import__('logging').getLogger('ragforge.exports').warning('export_failed',extra={'job_id':job_id,'error_type':type(exc).__name__})
         with SessionLocal() as db:
             job=db.get(ExportJob,job_id)
             if job and job.lease_token==token:

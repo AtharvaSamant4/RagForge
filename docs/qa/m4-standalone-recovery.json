@@ -1,0 +1,81 @@
+{
+  "created_at_utc": "2026-11-22T10:41:43Z",
+  "generator_version": "1.1.0",
+  "source_project": "rag-6c231b9a65",
+  "target_project": "rag-84c7300fae",
+  "empty_separate_target": true,
+  "encrypted_bytes": 61502,
+  "encrypted_sha256": "e657afe2c391043a11a34503d07e6def6f596bb503a164f0bd4ecb0c8d4fd475",
+  "create_seconds": 81.969,
+  "restore_seconds": 35.271,
+  "source_integrity": [
+    {
+      "id": "0b96cff1-0a23-4b8e-9dfa-1455c92e7582",
+      "sha256": "8b2de6d04f3f3d2ab3e3c6b064674e2afbb23081a901f27db0dbb84098591735",
+      "source_matches": true
+    }
+  ],
+  "citation_identity_and_quotes_match": true,
+  "independent_target_credentials": true,
+  "restored_documents": [
+    {
+      "id": "0b96cff1-0a23-4b8e-9dfa-1455c92e7582",
+      "name": "acme-handbook.pdf",
+      "status": "ready",
+      "chunk_count": 1,
+      "error": null,
+      "metadata": {
+        "pages": 1,
+        "parser": "pypdf",
+        "characters": 603,
+        "parser_containment": {
+          "landlock_abi": 1,
+          "filesystem": "landlock",
+          "network_process": "seccomp"
+        },
+        "embedding_profile": {
+          "provider": "semantic",
+          "model": "sentence-transformers/all-MiniLM-L6-v2",
+          "repository": "Qdrant/all-MiniLM-L6-v2-onnx",
+          "revision": "d13954661f83248295ba75c1ed411eef3b7b936e",
+          "files": {
+            "model.onnx": "bbd7b466f6d58e646fdc2bd5fd67b2f5e93c0b687011bd4548c420f7bd46f0c5",
+            "tokenizer.json": "851ca67100d372ca3ae031a6abd168f53489eebfd7d89523f35c5c9b4d372c3c"
+          },
+          "dimensions": 384,
+          "max_tokens": 256,
+          "pooling": "attention-mask-mean",
+          "normalization": "l2",
+          "implementation": "minilm-onnx-v1",
+          "semantic": true,
+          "license": "Apache-2.0",
+          "id": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077"
+        },
+        "index_generation": 0,
+        "embedding_ms": 61.88,
+        "indexing_ms": 886.0,
+        "chunking": "token-budget-aware"
+      }
+    }
+  ],
+  "old_exports": [
+    {
+      "port": 8020,
+      "generator_version": "1.0.0",
+      "authenticated_status": 200,
+      "anonymous_status": 401,
+      "query_status": 200,
+      "documents": 1,
+      "cited_or_refused": true
+    },
+    {
+      "port": 8021,
+      "generator_version": "1.0.0",
+      "authenticated_status": 200,
+      "anonymous_status": 401,
+      "query_status": 200,
+      "documents": 1,
+      "cited_or_refused": true
+    }
+  ]
+}

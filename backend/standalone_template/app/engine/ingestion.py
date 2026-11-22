@@ -2,10 +2,9 @@ import csv
 import io
 import re
 import zipfile
-from pathlib import Path
+import struct
+from pathlib import Path, PurePosixPath
 
-from docx import Document as DocxDocument
-from pypdf import PdfReader
 
 from .config import settings
 
@@ -28,12 +27,22 @@ def validate_file(name: str, content: bytes) -> tuple[str, str]:
     if kind == ".pdf" and not content.startswith(b"%PDF-"):
         raise ExtractionError("The file does not have a valid PDF signature")
     if kind == ".docx":
+        # Bound central-directory allocation before zipfile constructs ZipInfo objects.
+        eocd=content.rfind(b"PK\x05\x06",max(0,len(content)-65557))
+        if eocd<0 or eocd+22>len(content):raise ExtractionError("The file is not a valid DOCX archive")
+        disk,central_disk,disk_entries,entries,central_bytes=struct.unpack_from("<HHHHI",content,eocd+4)
+        if disk or central_disk or disk_entries!=entries or entries>2000 or central_bytes>1024*1024:
+            raise ExtractionError("DOCX archive directory exceeds the safe limit")
         try:
             with zipfile.ZipFile(io.BytesIO(content)) as archive:
                 if "word/document.xml" not in archive.namelist():
                     raise ExtractionError("The file is not a DOCX document")
                 if sum(x.file_size for x in archive.infolist()) > 50_000_000:
                     raise ExtractionError("DOCX expands beyond the safe extraction limit")
+                if len(archive.infolist())>2000 or any(x.file_size>1_000_000 and x.file_size>200*max(x.compress_size,1) for x in archive.infolist()):
+                    raise ExtractionError("DOCX compression ratio or entry count exceeds the safe limit")
+                if any(PurePosixPath(x.filename.replace('\\','/')).is_absolute() or '..' in PurePosixPath(x.filename.replace('\\','/')).parts or (x.external_attr>>16)&0o170000==0o120000 for x in archive.infolist()):
+                    raise ExtractionError("DOCX contains unsafe archive entries")
                 if any(x.flag_bits & 1 for x in archive.infolist()):
                     raise ExtractionError("Encrypted DOCX files are not supported")
         except zipfile.BadZipFile:
@@ -48,64 +57,9 @@ def validate_file(name: str, content: bytes) -> tuple[str, str]:
     return safe, kind.lstrip(".")
 
 
-def extract(path: Path, kind: str) -> tuple[list[tuple[str, dict]], dict]:
-    sections = []
-    if kind == "pdf":
-        reader = PdfReader(path)
-        if reader.is_encrypted:
-            raise ExtractionError("Encrypted PDFs are not supported")
-        if len(reader.pages) > 500:
-            raise ExtractionError("PDF exceeds the 500-page limit")
-        total = 0
-        for i, page in enumerate(reader.pages):
-            text = page.extract_text() or ""
-            total += len(text)
-            if total > settings().max_extracted_chars:
-                raise ExtractionError("Extracted content exceeds the configured limit")
-            sections.append((text, {"page": i + 1}))
-        metadata = {"pages": len(reader.pages), "parser": "pypdf"}
-    elif kind == "docx":
-        # Recheck archive expansion in worker as a defense in depth.
-        validate_file("source.docx", path.read_bytes())
-        doc = DocxDocument(path)
-        for i, paragraph in enumerate(doc.paragraphs):
-            if paragraph.text.strip():
-                sections.append((paragraph.text, {"paragraph": i + 1}))
-        for t, table in enumerate(doc.tables):
-            for r, row in enumerate(table.rows):
-                sections.append((" | ".join(cell.text for cell in row.cells), {"table": t + 1, "row": r + 1}))
-        metadata = {"parser": "python-docx", "paragraphs": len(doc.paragraphs)}
-    elif kind == "csv":
-        reader = csv.DictReader(io.StringIO(path.read_text(encoding="utf-8-sig")))
-        if not reader.fieldnames or len(reader.fieldnames) > 100:
-            raise ExtractionError("CSV needs a header and at most 100 columns")
-        numeric, textual = 0, 0
-        for i, row in enumerate(reader):
-            if i >= 20_000:
-                raise ExtractionError("CSV exceeds the 20,000-row limit")
-            for value in row.values():
-                if not isinstance(value, str) or not value.strip():
-                    continue
-                try:
-                    float(value.replace(",", ""))
-                    numeric += 1
-                except ValueError:
-                    textual += 1
-            sections.append(("; ".join(f"{k}: {v}" for k, v in row.items() if k and isinstance(v, str) and v.strip()), {"row": i + 2}))
-        if numeric > textual:
-            raise ExtractionError("This CSV is mainly numeric. RAG supports textual/FAQ CSV, not analytical calculations.")
-        metadata = {"parser": "csv", "columns": reader.fieldnames, "limitation": "Text retrieval only; no aggregation or analytical queries"}
-    else:
-        text = path.read_text(encoding="utf-8-sig")
-        sections = [(text, {"section": "document"})]
-        metadata = {"parser": "utf8"}
-    total = sum(len(text) for text, _ in sections)
-    if total > settings().max_extracted_chars:
-        raise ExtractionError("Extracted content exceeds the configured limit")
-    if not any(text.strip() for text, _ in sections):
-        raise ExtractionError("No selectable text found. Scanned PDFs require OCR, which is not supported yet.")
-    metadata["characters"] = total
-    return sections, metadata
+def extract(path: Path, kind: str):
+    from .parse_isolation import parse_document
+    return parse_document(path, kind)
 
 
 def chunk_sections(sections: list[tuple[str, dict]], size: int, overlap: int, count_tokens=None, max_tokens: int = 256) -> list[tuple[str, dict]]:

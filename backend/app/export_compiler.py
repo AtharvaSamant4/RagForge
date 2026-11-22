@@ -9,7 +9,7 @@ import zipfile
 
 from .config import settings
 
-VERSION="1.0.0"
+VERSION="1.1.0"
 TEMPLATE=Path(__file__).resolve().parents[1]/"standalone_template"
 
 

@@ -19,7 +19,7 @@ services:
       context: .
       dockerfile: backend/Dockerfile
     env_file:
-      - path: .env
+      - path: ${RAGFORGE_ENV_FILE:-.env}
         required: false
     environment:
       DATABASE_URL: postgresql+psycopg://ragforge:${POSTGRES_PASSWORD:-local-ragforge-change-me}@db:5432/ragforge
@@ -27,6 +27,12 @@ services:
       EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-semantic}
       MODEL_CACHE_DIR: /app/data/models
       EXPORT_DIR: /app/data/exports
+      REGISTRATION_MODE: ${REGISTRATION_MODE:-development}
+      ALLOW_REGISTRATION: ${ALLOW_REGISTRATION:-true}
+      ALLOW_PUBLIC_WIDGETS: ${ALLOW_PUBLIC_WIDGETS:-true}
+      HOSTED_DAILY_REQUESTS: ${HOSTED_DAILY_REQUESTS:-100}
+      HOSTED_DAILY_INPUT_CHARS: ${HOSTED_DAILY_INPUT_CHARS:-200000}
+      HOSTED_CALL_INPUT_CHARS: ${HOSTED_CALL_INPUT_CHARS:-64000}
       APP_ORIGINS: ${APP_ORIGINS:-http://localhost:3000}
     ports:
       - "127.0.0.1:${API_PORT:-8000}:8000"
@@ -49,7 +55,7 @@ services:
       dockerfile: backend/Dockerfile
     command: ["python", "-m", "app.worker"]
     env_file:
-      - path: .env
+      - path: ${RAGFORGE_ENV_FILE:-.env}
         required: false
     environment:
       DATABASE_URL: postgresql+psycopg://ragforge:${POSTGRES_PASSWORD:-local-ragforge-change-me}@db:5432/ragforge
@@ -57,6 +63,12 @@ services:
       EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-semantic}
       MODEL_CACHE_DIR: /app/data/models
       EXPORT_DIR: /app/data/exports
+      REGISTRATION_MODE: ${REGISTRATION_MODE:-development}
+      ALLOW_REGISTRATION: ${ALLOW_REGISTRATION:-true}
+      ALLOW_PUBLIC_WIDGETS: ${ALLOW_PUBLIC_WIDGETS:-true}
+      HOSTED_DAILY_REQUESTS: ${HOSTED_DAILY_REQUESTS:-100}
+      HOSTED_DAILY_INPUT_CHARS: ${HOSTED_DAILY_INPUT_CHARS:-200000}
+      HOSTED_CALL_INPUT_CHARS: ${HOSTED_CALL_INPUT_CHARS:-64000}
     volumes:
       - uploads:/app/data/uploads
       - model_cache:/app/data/models

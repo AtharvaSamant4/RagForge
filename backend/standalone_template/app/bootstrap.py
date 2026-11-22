@@ -5,7 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = json.loads((ROOT / "config/manifest.json").read_text(encoding="utf-8"))
-if MANIFEST.get("schema_version") != "1.0" or MANIFEST.get("generator_version") != "1.0.0":
+if MANIFEST.get("schema_version") != "1.0" or MANIFEST.get("generator_version") != "1.1.0":
     raise RuntimeError("Unsupported standalone manifest/template version")
 embedding = MANIFEST["embedding"]
 for key, value in {

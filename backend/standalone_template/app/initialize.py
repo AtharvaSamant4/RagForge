@@ -21,14 +21,17 @@ def initialize():
         connection.execute(text("CREATE TABLE IF NOT EXISTS standalone_schema (version INTEGER PRIMARY KEY)"))
         connection.execute(text("CREATE TABLE IF NOT EXISTS standalone_removed_sources (sha256 VARCHAR(64) PRIMARY KEY)"))
         versions = connection.execute(text("SELECT version FROM standalone_schema")).scalars().all()
-        if versions and versions != [1]:
+        if versions and versions not in ([1],[2]):
             raise RuntimeError("Unsupported standalone schema; apply a reviewed migration before startup")
         Base.metadata.create_all(connection)
         if engine.dialect.name == "postgresql":
             connection.execute(text("CREATE INDEX IF NOT EXISTS standalone_chunks_vector ON chunks USING hnsw (embedding vector_cosine_ops)"))
             connection.execute(text("CREATE INDEX IF NOT EXISTS standalone_chunks_fts ON chunks USING gin (to_tsvector('english', text))"))
         if not versions:
-            connection.execute(text("INSERT INTO standalone_schema VALUES (1)"))
+            connection.execute(text("INSERT INTO standalone_schema VALUES (2)"))
+        elif versions==[1]:
+            # Reviewed additive v1→v2 migration: metrics/budgets/worker tables only.
+            connection.execute(text("UPDATE standalone_schema SET version=2 WHERE version=1"))
     settings().storage_dir.mkdir(parents=True, exist_ok=True)
     with SessionLocal() as db:
         if not db.get(User, "standalone-owner"):

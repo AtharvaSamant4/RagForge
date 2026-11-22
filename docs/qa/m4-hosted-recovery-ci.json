@@ -1,0 +1,131 @@
+{
+  "created_at_utc": "2026-11-22T12:26:37Z",
+  "source": "ragforge-m4-alpha",
+  "restore_target": "ragforge-m4-restore",
+  "scope": "Isolated local CPU MiniLM/extractive; no paid provider, public service or external testers.",
+  "backup": {
+    "create_seconds": 28.587,
+    "encrypted_bytes": 61502,
+    "sha256": "e4a197bb8d46de36b805ee7b265c9e61a6b6e680ff59a408ab9a6c4a71d0db3d",
+    "ciphertext_contains_sample": false,
+    "restore_start_seconds": 8.785,
+    "wrong_passphrase_before_writes": "passed",
+    "nonempty_target_refused": "passed",
+    "sessions_excluded": "passed",
+    "restored_project": "2e1b4c66-459a-4f39-939b-7b99a9d950df",
+    "source_sha256": "8b2de6d04f3f3d2ab3e3c6b064674e2afbb23081a901f27db0dbb84098591735",
+    "citations_after_restore": [
+      {
+        "chunk_id": "b1a6d52b-08cf-47fb-8119-937db1604229",
+        "document_id": "a45b38e7-98ad-4b94-8504-c700fbf1f109",
+        "document_name": "acme-handbook.pdf",
+        "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+        "locator": {
+          "page": 1,
+          "char_start": 0,
+          "char_end": 602,
+          "tokens": 126
+        },
+        "score": 0.5992,
+        "vector_similarity": 0.5992,
+        "rank_score": 0.04918,
+        "number": 1,
+        "quote": "Refunds are returned to the original payment\nmethod within seven business days."
+      },
+      {
+        "chunk_id": "b1a6d52b-08cf-47fb-8119-937db1604229",
+        "document_id": "a45b38e7-98ad-4b94-8504-c700fbf1f109",
+        "document_name": "acme-handbook.pdf",
+        "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+        "locator": {
+          "page": 1,
+          "char_start": 0,
+          "char_end": 602,
+          "tokens": 126
+        },
+        "score": 0.5992,
+        "vector_similarity": 0.5992,
+        "rank_score": 0.04918,
+        "number": 2,
+        "quote": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions."
+      },
+      {
+        "chunk_id": "b1a6d52b-08cf-47fb-8119-937db1604229",
+        "document_id": "a45b38e7-98ad-4b94-8504-c700fbf1f109",
+        "document_name": "acme-handbook.pdf",
+        "text": "Acme customer handbook\nRefund policy\nAcme offers a 30 day refund period for all annual subscriptions. To request a refund, email\nsupport@acme.example with your invoice number. Refunds are returned to the original payment\nmethod within seven business days.\nSupport hours\nAcme support is available Monday through Friday from 09:00 to 18:00 UTC. Customers on the\nEnterprise plan receive a response within four business hours.\nData retention\nAcme retains uploaded customer documents until the customer deletes them. Deleting a document\nremoves its retrieval index entries. Backups expire after thirty days.",
+        "locator": {
+          "page": 1,
+          "char_start": 0,
+          "char_end": 602,
+          "tokens": 126
+        },
+        "score": 0.5992,
+        "vector_similarity": 0.5992,
+        "rank_score": 0.04918,
+        "number": 3,
+        "quote": "To request a refund, email\nsupport@acme.example with your invoice number."
+      }
+    ],
+    "api_key_hash_restored": "passed"
+  },
+  "readiness": {
+    "ready": true,
+    "checks": {
+      "database": true,
+      "schema": true,
+      "worker": true,
+      "secure_alpha_config": true,
+      "parser": true,
+      "model": true,
+      "storage": true
+    }
+  },
+  "load": {
+    "platform": "Linux-7.0.0-1016-aws-x86_64-with-glibc2.43",
+    "cpu_logical_count": 4,
+    "model": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077",
+    "workload": "60 warm requests, 3 sample questions, real semantic retrieval/extractive generation, shared project key, no streaming; sequential stages. Other development stacks remained running; host contention was not controlled. No deliberate competing load. HTTP includes auth, durable query storage and metric overhead.",
+    "runs": [
+      {
+        "concurrency": 1,
+        "requests": 12,
+        "seconds": 0.303,
+        "requests_per_second": 39.644,
+        "median_ms": 23.18,
+        "p95_ms": 34.04,
+        "status_counts": {
+          "200": 12
+        },
+        "sampled_cited_or_refused": true
+      },
+      {
+        "concurrency": 4,
+        "requests": 24,
+        "seconds": 0.377,
+        "requests_per_second": 63.63,
+        "median_ms": 56.57,
+        "p95_ms": 83.58,
+        "status_counts": {
+          "200": 24
+        },
+        "sampled_cited_or_refused": true
+      },
+      {
+        "concurrency": 8,
+        "requests": 24,
+        "seconds": 0.304,
+        "requests_per_second": 78.878,
+        "median_ms": 99.08,
+        "p95_ms": 148.54,
+        "status_counts": {
+          "200": 21,
+          "429": 3
+        },
+        "sampled_cited_or_refused": false
+      }
+    ],
+    "resources": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.17%\",\"Container\":\"ragforge-m4-alpha-api-1\",\"ID\":\"9b877357ea2c\",\"MemPerc\":\"19.56%\",\"MemUsage\":\"200.3MiB / 1GiB\",\"Name\":\"ragforge-m4-alpha-api-1\",\"NetIO\":\"1.08MB / 1.39MB\",\"PIDs\":\"18\"}\n{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.25%\",\"Container\":\"ragforge-m4-alpha-worker-1\",\"ID\":\"78b59748b1c0\",\"MemPerc\":\"17.87%\",\"MemUsage\":\"182.9MiB / 1GiB\",\"Name\":\"ragforge-m4-alpha-worker-1\",\"NetIO\":\"92.5kB / 125kB\",\"PIDs\":\"7\"}\n{\"BlockIO\":\"0B / 119MB\",\"CPUPerc\":\"0.16%\",\"Container\":\"ragforge-m4-alpha-db-1\",\"ID\":\"1782be9ebd1a\",\"MemPerc\":\"10.57%\",\"MemUsage\":\"54.12MiB / 512MiB\",\"Name\":\"ragforge-m4-alpha-db-1\",\"NetIO\":\"1.51MB / 1.28MB\",\"PIDs\":\"13\"}\n",
+    "protocol_context_note": "Executed on a fresh GitHub-hosted runner with source and separate recovery Compose projects. The retained original workload wording about historical development stacks describes the local run, not this CI environment; the QA script wording is corrected for future runs."
+  }
+}

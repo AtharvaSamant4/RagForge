@@ -151,3 +151,25 @@ class RateBucket(Base):
 
 
 Index("ix_jobs_claim", Job.status, Job.available_at)
+
+
+class ProviderUsage(Base):
+    __tablename__ = "provider_usage"
+    day: Mapped[str] = mapped_column(String(10), primary_key=True)
+    requests: Mapped[int] = mapped_column(Integer, default=0)
+    input_chars: Mapped[int] = mapped_column(Integer, default=0)
+
+
+class OperationalMetric(Base):
+    __tablename__ = "operational_metrics"
+    key: Mapped[str] = mapped_column(String(220), primary_key=True)
+    count: Mapped[int] = mapped_column(Integer, default=0)
+    total_ms: Mapped[float] = mapped_column(Float, default=0)
+    max_ms: Mapped[float] = mapped_column(Float, default=0)
+
+
+class WorkerHeartbeat(Base):
+    __tablename__ = "worker_heartbeats"
+    instance: Mapped[str] = mapped_column(String(100), primary_key=True)
+    updated_at: Mapped[float] = mapped_column(Float)
+    details: Mapped[dict] = mapped_column(JSON)
