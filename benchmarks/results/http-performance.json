@@ -1,0 +1,273 @@
+{
+  "schema_version": "1.0",
+  "concurrency": 8,
+  "requests": 24,
+  "wall_seconds": 2.5981,
+  "requests_per_second": 9.238,
+  "http_p50_ms": 427.93,
+  "http_p95_ms": 2331.93,
+  "processing_observed_before_health_load": true,
+  "health_during_indexing": [
+    {
+      "status": 200,
+      "ms": 12.4
+    },
+    {
+      "status": 200,
+      "ms": 2068.14
+    },
+    {
+      "status": 200,
+      "ms": 2071.07
+    },
+    {
+      "status": 200,
+      "ms": 2087.42
+    },
+    {
+      "status": 200,
+      "ms": 9.19
+    },
+    {
+      "status": 200,
+      "ms": 10.13
+    },
+    {
+      "status": 200,
+      "ms": 8.78
+    },
+    {
+      "status": 200,
+      "ms": 12.47
+    },
+    {
+      "status": 200,
+      "ms": 11.06
+    },
+    {
+      "status": 200,
+      "ms": 8.85
+    },
+    {
+      "status": 200,
+      "ms": 9.81
+    },
+    {
+      "status": 200,
+      "ms": 8.66
+    },
+    {
+      "status": 200,
+      "ms": 8.21
+    },
+    {
+      "status": 200,
+      "ms": 9.91
+    },
+    {
+      "status": 200,
+      "ms": 7.84
+    },
+    {
+      "status": 200,
+      "ms": 7.89
+    }
+  ],
+  "indexing_metadata": {
+    "parser": "utf8",
+    "characters": 140004,
+    "embedding_profile": {
+      "provider": "semantic",
+      "model": "sentence-transformers/all-MiniLM-L6-v2",
+      "repository": "Qdrant/all-MiniLM-L6-v2-onnx",
+      "revision": "d13954661f83248295ba75c1ed411eef3b7b936e",
+      "files": {
+        "model.onnx": "bbd7b466f6d58e646fdc2bd5fd67b2f5e93c0b687011bd4548c420f7bd46f0c5",
+        "tokenizer.json": "851ca67100d372ca3ae031a6abd168f53489eebfd7d89523f35c5c9b4d372c3c"
+      },
+      "dimensions": 384,
+      "max_tokens": 256,
+      "pooling": "attention-mask-mean",
+      "normalization": "l2",
+      "implementation": "minilm-onnx-v1",
+      "semantic": true,
+      "license": "Apache-2.0",
+      "id": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077"
+    },
+    "index_generation": 0,
+    "embedding_ms": 48.54,
+    "indexing_ms": 1371.33,
+    "chunking": "token-budget-aware"
+  },
+  "query_results": [
+    {
+      "status": 200,
+      "ms": 701.42,
+      "retrieval_ms": 590.49,
+      "refused": false,
+      "citations": 3
+    },
+    {
+      "status": 200,
+      "ms": 418.61,
+      "retrieval_ms": 139.25,
+      "refused": false,
+      "citations": 2
+    },
+    {
+      "status": 200,
+      "ms": 437.25,
+      "retrieval_ms": 163.6,
+      "refused": false,
+      "citations": 3
+    },
+    {
+      "status": 200,
+      "ms": 674.24,
+      "retrieval_ms": 561.45,
+      "refused": false,
+      "citations": 3
+    },
+    {
+      "status": 200,
+      "ms": 2328.43,
+      "retrieval_ms": 158.8,
+      "refused": false,
+      "citations": 2
+    },
+    {
+      "status": 200,
+      "ms": 2331.93,
+      "retrieval_ms": 158.72,
+      "refused": false,
+      "citations": 3
+    },
+    {
+      "status": 200,
+      "ms": 2584.11,
+      "retrieval_ms": 404.76,
+      "refused": false,
+      "citations": 3
+    },
+    {
+      "status": 200,
+      "ms": 2317.83,
+      "retrieval_ms": 146.44,
+      "refused": false,
+      "citations": 2
+    },
+    {
+      "status": 200,
+      "ms": 187.3,
+      "retrieval_ms": 136.94,
+      "refused": false,
+      "citations": 3
+    },
+    {
+      "status": 200,
+      "ms": 600.81,
+      "retrieval_ms": 535.52,
+      "refused": false,
+      "citations": 3
+    },
+    {
+      "status": 200,
+      "ms": 321.7,
+      "retrieval_ms": 191.42,
+      "refused": false,
+      "citations": 2
+    },
+    {
+      "status": 200,
+      "ms": 273.68,
+      "retrieval_ms": 157.6,
+      "refused": false,
+      "citations": 3
+    },
+    {
+      "status": 200,
+      "ms": 730.57,
+      "retrieval_ms": 607.96,
+      "refused": false,
+      "citations": 3
+    },
+    {
+      "status": 200,
+      "ms": 233.61,
+      "retrieval_ms": 134.45,
+      "refused": false,
+      "citations": 2
+    },
+    {
+      "status": 200,
+      "ms": 239.5,
+      "retrieval_ms": 157.78,
+      "refused": false,
+      "citations": 3
+    },
+    {
+      "status": 200,
+      "ms": 675.91,
+      "retrieval_ms": 584.87,
+      "refused": false,
+      "citations": 3
+    },
+    {
+      "status": 200,
+      "ms": 252.02,
+      "retrieval_ms": 158.09,
+      "refused": false,
+      "citations": 2
+    },
+    {
+      "status": 200,
+      "ms": 255.16,
+      "retrieval_ms": 166.79,
+      "refused": false,
+      "citations": 3
+    },
+    {
+      "status": 200,
+      "ms": 721.12,
+      "retrieval_ms": 569.95,
+      "refused": false,
+      "citations": 3
+    },
+    {
+      "status": 200,
+      "ms": 249.31,
+      "retrieval_ms": 152.15,
+      "refused": false,
+      "citations": 2
+    },
+    {
+      "status": 200,
+      "ms": 314.48,
+      "retrieval_ms": 218.12,
+      "refused": false,
+      "citations": 3
+    },
+    {
+      "status": 200,
+      "ms": 600.67,
+      "retrieval_ms": 483.01,
+      "refused": false,
+      "citations": 3
+    },
+    {
+      "status": 200,
+      "ms": 262.49,
+      "retrieval_ms": 124.04,
+      "refused": false,
+      "citations": 2
+    },
+    {
+      "status": 200,
+      "ms": 220.25,
+      "retrieval_ms": 133.18,
+      "refused": false,
+      "citations": 3
+    }
+  ],
+  "notes": "Same three questions repeat across 24 requests; the bounded model cache is enabled. Health requests began immediately after processing was observed, but indexing may finish during that burst. This is a local measurement, not a production capacity claim."
+}

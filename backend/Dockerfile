@@ -2,10 +2,13 @@ FROM python:3.12-slim
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 WORKDIR /app
 COPY backend/requirements.lock.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt && useradd --create-home --uid 10001 ragforge
+RUN --mount=type=secret,id=pip_config,target=/etc/pip.conf pip install --no-cache-dir -r requirements.txt && useradd --create-home --uid 10001 ragforge
 COPY backend /app/backend
+COPY pytest.ini /app/pytest.ini
 COPY samples /app/samples
-RUN mkdir -p /app/data/uploads && chown -R ragforge:ragforge /app
+COPY benchmarks /app/benchmarks
+COPY scripts /app/scripts
+RUN mkdir -p /app/data/uploads /app/data/models /app/data/exports && chown -R ragforge:ragforge /app
 USER ragforge
 ENV PYTHONPATH=/app/backend
 EXPOSE 8000

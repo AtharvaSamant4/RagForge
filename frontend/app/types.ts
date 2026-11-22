@@ -4,6 +4,7 @@ export type Pipeline = {
   overlap: number;
   top_k: number;
   min_score: number;
+  semantic_min_score?: number;
   auto: boolean;
 };
 export type Project = {
@@ -44,6 +45,9 @@ export type Result = {
   retrieved: Source[];
   refused: boolean;
   latency_ms: number;
+  retrieval_latency_ms?: number;
+  generation_latency_ms?: number;
+  answer_kind?: string;
   conversation_id: string | null;
   generation_provider: string;
 };

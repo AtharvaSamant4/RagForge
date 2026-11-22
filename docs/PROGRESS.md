@@ -1,34 +1,32 @@
 # Implementation progress
 
-## Completed
+## Current milestone
 
-* Isolated accounts/projects; project CRUD; scoped, hashed and revocable API credentials.
-* Selectable-text PDF, DOCX, UTF-8 TXT/Markdown and textual CSV; metadata, offsets, validation and random storage paths.
-* Durable leased jobs, bounded retries, explicit failure recovery and transactional chunk publication; deletion and index cleanup.
-* Vector/keyword/hybrid retrieval, documented automatic defaults, chunk controls, conservative refusals, exact source citations, persisted conversations and SSE delivery endpoint.
-* Responsive Next.js dashboard: uploads, processing/error states, chunk inspection, pipeline edits/reindex, playground, measured evaluation, API keys/examples, widget controls, manifests and settings.
-* Explicit public query capabilities, origin-constrained iframe CSP, revocation and appearance controls. Private management keys never appear in widgets.
-* Verified vs synthetic evaluation cases, real document recall, citation provenance, lexical overlap, refusal agreement and latency; semantic faithfulness explicitly unassessed.
-* Environment configuration, frozen initial Alembic migration, Docker Compose, PostgreSQL vector/FTS indexes, local Windows helper, sample documents, API/security/architecture docs and CI matrix.
+Milestone 3 is implemented on `feat/standalone-rag-export`, based on verified Milestone 2 commit `f574709`. It is not merged into main. The original MVP and Milestone 2 services/data remain separate. The export QA source stack is `ragforge-m3`, dashboard 3030/API 8030; generated applications use independent Compose projects and ports 8020/8021.
+
+## Completed functionality
+
+* Preserved semantic/lexical/hosted adapters, retrieval/evaluation framework, accounts, project isolation, keys, uploads/jobs, citations, widgets and existing regression coverage.
+* Versioned deterministic application compiler, approved trusted-template catalog, frozen self-contained retrieval components, validated manifests, pinned dependencies/base images and model revision. No LLM-generated executable code.
+* Configuration-only default and explicitly approved selected-source snapshots. No hosted account/session/key/history/vector data or provider secrets are copied. Generated apps initialize their own database/index and fresh credentials.
+* Owner-only durable export jobs, progress/status/download, source/hash/symlink/path protections, secret-pattern checks, archive/source/storage/concurrency bounds, retention and interrupted-job/orphan cleanup.
+* Deployment UI with mode/selection/disclosure/configuration summaries, job recovery, progress, download/checksum and startup instructions; desktop/mobile screenshots inspected.
+* Independent PostgreSQL/pgvector API/worker runtime, loopback binding, health checks, persistent volumes, resource limits, authenticated query/config/status/import/reindex/retry/delete, durable ingestion and restart-safe snapshot import/deletion.
+* Generated README plus Python, JavaScript, cURL and PowerShell examples; setup/security/architecture/export documentation and independent startup CI coverage.
 
 ## Executed verification
 
-* Windows/Python 3.12 + SQLite: 33 automated tests passed; the PostgreSQL-only multi-worker test was correctly skipped. Coverage includes real PDF/DOCX extraction, all three retrieval modes, tenant boundaries, API key scopes/revocation, retries, expired lease recovery, deletion, evaluation and widget permissions. One upstream Starlette TestClient deprecation warning remains; it does not fail tests.
-* Real local HTTP API + independent durable worker: full `scripts/smoke.py` workflow passed (PDF upload, indexing, cited answer, external Bearer API, refusal, evaluation and deletion).
-* TypeScript check and Next.js production build passed. Local dashboard HTTP response: 200.
-* Browser QA attempted, but the browser access host was unavailable. Visual rendering, interactive clicks and responsive layout have **not** been browser-verified.
-* PostgreSQL 17 + pgvector: the frozen migration applied and all 34 tests passed against an isolated disposable PostgreSQL database (including vector, keyword and hybrid query paths, concurrent job claims and deletion during processing).
-* `scripts/check-web.py` passed against the running Next.js proxy: web routes/assets, real PDF processing, JavaScript and cURL API clients, widget CSP/configuration escaping, public queries and revocation.
-* SQLite migration upgrade, downgrade and re-upgrade passed. The updated TypeScript check and production build passed.
-* Docker Compose: API, worker and production Next.js images built successfully. All four services started with the documented default ports; database and API health checks passed.
-* Linux/Python 3.12 inside the actual API image: the frozen migration applied to a new disposable PostgreSQL database and all 34 tests passed (14 seconds).
-* Both `scripts/smoke.py` and `scripts/check-web.py` passed against the final containerized stack on ports 8000/3000, including Python/JavaScript/cURL clients, cited answers, measured evaluation, proxy OpenAPI, widget CSP/public query/revocation and deletion cleanup.
-* The implementation and verification records are committed and pushed to `https://github.com/AtharvaSamant4/RagForge`, branch `main`. No public deployment or paid model calls were performed.
+* Hosted backend on Docker PostgreSQL: **72 passed**. Windows SQLite: **70 passed, 2 expected PostgreSQL-only skips**.
+* Export/compiler/compiled-runtime cases cover deterministic bytes, selection/tenant/credential boundaries, malformed input, malicious filenames/paths/symlinks, missing/changed source/cache, size/retention/reservation limits, lease recovery, model incompatibility, new credential initialization/rotation, disabled imports and persistent snapshot deletion.
+* Frontend TypeScript and optimized production builds passed, including real Docker images.
+* Real Chromium desktop/mobile full workflows both passed, including both export modes and actual ZIP downloads: `qa/export-browser-results.json`. Four archives passed CRC checks and matched the current template fingerprint.
+* The initial real snapshot Docker acceptance passed: valid sample-PDF citations with the isolated source stack stopped, wrong/missing credential rejection, three known before/after cases, persistent citations after restart, separate database/vector index and Python/JavaScript/cURL clients. The final browser-downloaded snapshot also passed against the current template: `qa/standalone-runtime.json`.
+* The browser-downloaded configuration-only app starts empty, refuses unsupported questions, removes failed PDFs, imports/queries a new source, preserves its index/citations after restart and owns its own PostgreSQL database. Evidence: `qa/standalone-imports.json`.
+* Initial browser/PostgreSQL attempts overlapping an image replacement were discarded and rerun after startup. Docker test discovery was corrected to include repository pytest configuration. One upstream Starlette TestClient deprecation remains; ONNX may emit a nonfatal device-ID persistence warning in read-only containers.
+* No public deployment, paid model calls or merge into main occurred. The requirement audit is in MILESTONE3_AUDIT.md. Delivery is restricted to the feature branch.
 
-## Known limitations
+## Limits and next priority
 
-Local embeddings are lexical feature hashing; local answers extract source sentences. Synonyms and conversational follow-ups are limited. Hosted adapters have contract tests but no paid live API verification. Exact quote validation does not establish semantic entailment. Evaluations run synchronously with at most 50 cases. No OCR, multimodal data, numerical CSV analytics, standalone source export, password recovery/SSO or public deployment. Production security work is enumerated in SECURITY.md.
+Generated deployments are single-collection APIs, without hosted accounts/dashboard/history/widget/evaluation UI. Source copies cannot be revoked after download. Initial dependencies/images/model downloads require network access; no fully offline fresh installation is claimed. Credential scans are not general DLP; review source content. Exact quotes and a three-question regression do not establish entailment, general semantic equivalence or customer-data accuracy. Hosted adapters have no live paid-provider verification.
 
-## Next priority
-
-The local MVP foundation is implemented and verified. Next: browser visual/interaction QA when browser access is available, parser isolation and storage/spend quotas before internet exposure, broader manually labeled retrieval benchmarks, provider-native streaming and standalone Docker source export. Hosted adapters still need an explicitly authorized live provider test.
+Public exposure still needs HTTPS, parser isolation, monitoring, backups/restore drills, stronger quotas and managed secrets. No Kubernetes/cloud provisioning, billing, OCR, multimedia, analytics, fine-tuning or agent framework was added. Existing Milestone 2 benchmark evidence remains at its verified baseline, with unverified candidate labels explicitly separate. Next priorities are human benchmark review, production hardening and explicit reviewed template/dependency upgrades.

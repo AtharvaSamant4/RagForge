@@ -36,6 +36,8 @@ class Project(Base):
     description: Mapped[str] = mapped_column(String(500), default="")
     pipeline: Mapped[dict] = mapped_column(JSON, default=lambda: {"strategy": "hybrid", "chunk_size": 180, "overlap": 30, "top_k": 5, "min_score": 0.12, "auto": True})
     pipeline_version: Mapped[int] = mapped_column(Integer, default=1)
+    index_profile: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    index_generation: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
     widget: Mapped[dict] = mapped_column(JSON, default=dict)
     widget_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
     created_at: Mapped[float] = mapped_column(Float, default=time.time)
@@ -146,6 +148,22 @@ class RateBucket(Base):
     key: Mapped[str] = mapped_column(String(100), primary_key=True)
     window: Mapped[int] = mapped_column(Integer)
     count: Mapped[int] = mapped_column(Integer, default=0)
+
+
+class ExportJob(Base):
+    __tablename__ = "exports"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uid)
+    project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE"), index=True)
+    status: Mapped[str] = mapped_column(String(20), default="queued", index=True)
+    config: Mapped[dict] = mapped_column(JSON)
+    attempts: Mapped[int] = mapped_column(Integer, default=0)
+    lease_token: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    lease_until: Mapped[float | None] = mapped_column(Float, nullable=True)
+    error: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    size_bytes: Mapped[int] = mapped_column(Integer, default=0)
+    sha256: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    created_at: Mapped[float] = mapped_column(Float, default=time.time)
+    expires_at: Mapped[float] = mapped_column(Float)
 
 
 Index("ix_jobs_claim", Job.status, Job.available_at)

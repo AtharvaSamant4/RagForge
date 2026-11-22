@@ -1,0 +1,46 @@
+{
+  "tool": "Playwright Chromium",
+  "tests": [
+    {
+      "project": "desktop",
+      "name": "complete knowledge workspace and public widget workflow",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 21038
+        }
+      ]
+    },
+    {
+      "project": "mobile",
+      "name": "complete knowledge workspace and public widget workflow",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration_ms": 18754
+        }
+      ]
+    }
+  ],
+  "stats": {
+    "startTime": "2026-11-21T17:06:14.061Z",
+    "duration": 43072.928,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "viewports": {
+    "desktop": {
+      "width": 1440,
+      "height": 1000
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844
+    }
+  },
+  "scope": "Real frontend, backend and worker. External widget host is a real local HTTP test fixture. No app API or model inference is mocked."
+}

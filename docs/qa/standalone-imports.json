@@ -1,0 +1,277 @@
+{
+  "created_at_utc": "2026-11-21T18:43:15Z",
+  "extracted_directory": "D:\\ATHARVA_DATA\\Automatic RAG for Devs\\artifacts\\standalone-empty-mfo1ksvl",
+  "port": 8021,
+  "manifest": {
+    "allow_imports": true,
+    "embedding": {
+      "dimensions": 384,
+      "files": {
+        "model.onnx": "bbd7b466f6d58e646fdc2bd5fd67b2f5e93c0b687011bd4548c420f7bd46f0c5",
+        "tokenizer.json": "851ca67100d372ca3ae031a6abd168f53489eebfd7d89523f35c5c9b4d372c3c"
+      },
+      "id": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077",
+      "implementation": "minilm-onnx-v1",
+      "license": "Apache-2.0",
+      "max_tokens": 256,
+      "model": "sentence-transformers/all-MiniLM-L6-v2",
+      "normalization": "l2",
+      "pooling": "attention-mask-mean",
+      "provider": "semantic",
+      "repository": "Qdrant/all-MiniLM-L6-v2-onnx",
+      "revision": "d13954661f83248295ba75c1ed411eef3b7b936e",
+      "semantic": true
+    },
+    "generation": {
+      "model": "exact-sentence extraction",
+      "provider": "extractive"
+    },
+    "generator_version": "1.0.0",
+    "mode": "configuration",
+    "name": "Browser mobile knowledge",
+    "pipeline": {
+      "auto": false,
+      "chunk_size": 140,
+      "min_score": 0.12,
+      "overlap": 30,
+      "semantic_min_score": 0.32,
+      "strategy": "hybrid",
+      "top_k": 5
+    },
+    "schema_version": "1.0",
+    "sources": [],
+    "template_sha256": "db4cad2e696017356325c44cd83d58b1beea9770c311185d7f9d64ff1a883d11"
+  },
+  "archive_sha256": "9d64360e971e6ba48f31bbf61cffc2e4d323a0a783a77e846c8a87fe19b12ce1",
+  "compose_build_start_seconds": 88.811,
+  "prefetch_seconds": 57.782,
+  "document": {
+    "id": "dee572cd-fd2f-4bda-9242-6913b7de99f7",
+    "name": "team.txt",
+    "status": "ready",
+    "chunk_count": 1,
+    "error": null,
+    "metadata": {
+      "parser": "utf8",
+      "characters": 47,
+      "embedding_profile": {
+        "provider": "semantic",
+        "model": "sentence-transformers/all-MiniLM-L6-v2",
+        "repository": "Qdrant/all-MiniLM-L6-v2-onnx",
+        "revision": "d13954661f83248295ba75c1ed411eef3b7b936e",
+        "files": {
+          "model.onnx": "bbd7b466f6d58e646fdc2bd5fd67b2f5e93c0b687011bd4548c420f7bd46f0c5",
+          "tokenizer.json": "851ca67100d372ca3ae031a6abd168f53489eebfd7d89523f35c5c9b4d372c3c"
+        },
+        "dimensions": 384,
+        "max_tokens": 256,
+        "pooling": "attention-mask-mean",
+        "normalization": "l2",
+        "implementation": "minilm-onnx-v1",
+        "semantic": true,
+        "license": "Apache-2.0",
+        "id": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077"
+      },
+      "index_generation": 0,
+      "embedding_ms": 232.88,
+      "indexing_ms": 266.82,
+      "chunking": "token-budget-aware"
+    }
+  },
+  "query": {
+    "answer": "Engineers receive 25 paid leave days each year. [1]",
+    "citations": [
+      {
+        "chunk_id": "44f8713c-a460-4a13-a856-fb1f90edd2d9",
+        "document_id": "dee572cd-fd2f-4bda-9242-6913b7de99f7",
+        "document_name": "team.txt",
+        "text": "Engineers receive 25 paid leave days each year.",
+        "locator": {
+          "section": "document",
+          "char_start": 0,
+          "char_end": 47,
+          "tokens": 11
+        },
+        "score": 0.9136,
+        "vector_similarity": 0.9136,
+        "rank_score": 0.04918,
+        "number": 1,
+        "quote": "Engineers receive 25 paid leave days each year."
+      }
+    ],
+    "retrieved": [
+      {
+        "chunk_id": "44f8713c-a460-4a13-a856-fb1f90edd2d9",
+        "document_id": "dee572cd-fd2f-4bda-9242-6913b7de99f7",
+        "document_name": "team.txt",
+        "text": "Engineers receive 25 paid leave days each year.",
+        "locator": {
+          "section": "document",
+          "char_start": 0,
+          "char_end": 47,
+          "tokens": 11
+        },
+        "score": 0.9136,
+        "vector_similarity": 0.9136,
+        "rank_score": 0.04918
+      }
+    ],
+    "refused": false,
+    "latency_ms": 274.18,
+    "retrieval_latency_ms": 163.66,
+    "generation_latency_ms": 110.52,
+    "conversation_id": null,
+    "generation_provider": "extractive",
+    "embedding_provider": "semantic",
+    "embedding_model": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077",
+    "answer_kind": "source_extract"
+  },
+  "restart_query": {
+    "answer": "Engineers receive 25 paid leave days each year. [1]",
+    "citations": [
+      {
+        "chunk_id": "44f8713c-a460-4a13-a856-fb1f90edd2d9",
+        "document_id": "dee572cd-fd2f-4bda-9242-6913b7de99f7",
+        "document_name": "team.txt",
+        "text": "Engineers receive 25 paid leave days each year.",
+        "locator": {
+          "section": "document",
+          "char_start": 0,
+          "char_end": 47,
+          "tokens": 11
+        },
+        "score": 0.9136,
+        "vector_similarity": 0.9136,
+        "rank_score": 0.04918,
+        "number": 1,
+        "quote": "Engineers receive 25 paid leave days each year."
+      }
+    ],
+    "retrieved": [
+      {
+        "chunk_id": "44f8713c-a460-4a13-a856-fb1f90edd2d9",
+        "document_id": "dee572cd-fd2f-4bda-9242-6913b7de99f7",
+        "document_name": "team.txt",
+        "text": "Engineers receive 25 paid leave days each year.",
+        "locator": {
+          "section": "document",
+          "char_start": 0,
+          "char_end": 47,
+          "tokens": 11
+        },
+        "score": 0.9136,
+        "vector_similarity": 0.9136,
+        "rank_score": 0.04918
+      }
+    ],
+    "refused": false,
+    "latency_ms": 5283.86,
+    "retrieval_latency_ms": 5017.34,
+    "generation_latency_ms": 266.52,
+    "conversation_id": null,
+    "generation_provider": "extractive",
+    "embedding_provider": "semantic",
+    "embedding_model": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077",
+    "answer_kind": "source_extract"
+  },
+  "status": {
+    "index": {
+      "state": "ready",
+      "compatible": true,
+      "query_ready": true,
+      "active_profile": {
+        "provider": "semantic",
+        "model": "sentence-transformers/all-MiniLM-L6-v2",
+        "repository": "Qdrant/all-MiniLM-L6-v2-onnx",
+        "revision": "d13954661f83248295ba75c1ed411eef3b7b936e",
+        "files": {
+          "model.onnx": "bbd7b466f6d58e646fdc2bd5fd67b2f5e93c0b687011bd4548c420f7bd46f0c5",
+          "tokenizer.json": "851ca67100d372ca3ae031a6abd168f53489eebfd7d89523f35c5c9b4d372c3c"
+        },
+        "dimensions": 384,
+        "max_tokens": 256,
+        "pooling": "attention-mask-mean",
+        "normalization": "l2",
+        "implementation": "minilm-onnx-v1",
+        "semantic": true,
+        "license": "Apache-2.0",
+        "id": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077"
+      },
+      "indexed_profiles": [
+        "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077"
+      ],
+      "target_profile": {
+        "dimensions": 384,
+        "files": {
+          "model.onnx": "bbd7b466f6d58e646fdc2bd5fd67b2f5e93c0b687011bd4548c420f7bd46f0c5",
+          "tokenizer.json": "851ca67100d372ca3ae031a6abd168f53489eebfd7d89523f35c5c9b4d372c3c"
+        },
+        "id": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077",
+        "implementation": "minilm-onnx-v1",
+        "license": "Apache-2.0",
+        "max_tokens": 256,
+        "model": "sentence-transformers/all-MiniLM-L6-v2",
+        "normalization": "l2",
+        "pooling": "attention-mask-mean",
+        "provider": "semantic",
+        "repository": "Qdrant/all-MiniLM-L6-v2-onnx",
+        "revision": "d13954661f83248295ba75c1ed411eef3b7b936e",
+        "semantic": true
+      },
+      "index_generation": 0,
+      "pending_document_ids": [],
+      "storage_dimensions": 384,
+      "dimension_mismatch": false,
+      "message": "Index matches the active embedding configuration."
+    },
+    "embedding_runtime": {
+      "loads": 1,
+      "cache_hits": 1,
+      "computed_texts": 2,
+      "embedding_ms": 515.2388800051995,
+      "load_ms": 4379.67,
+      "cached_vectors": 2,
+      "loaded": true,
+      "threads": 2,
+      "batch_size": 32,
+      "cache_capacity": 2048
+    },
+    "documents": [
+      {
+        "id": "dee572cd-fd2f-4bda-9242-6913b7de99f7",
+        "name": "team.txt",
+        "status": "ready",
+        "chunk_count": 1,
+        "error": null,
+        "metadata": {
+          "parser": "utf8",
+          "characters": 47,
+          "embedding_profile": {
+            "provider": "semantic",
+            "model": "sentence-transformers/all-MiniLM-L6-v2",
+            "repository": "Qdrant/all-MiniLM-L6-v2-onnx",
+            "revision": "d13954661f83248295ba75c1ed411eef3b7b936e",
+            "files": {
+              "model.onnx": "bbd7b466f6d58e646fdc2bd5fd67b2f5e93c0b687011bd4548c420f7bd46f0c5",
+              "tokenizer.json": "851ca67100d372ca3ae031a6abd168f53489eebfd7d89523f35c5c9b4d372c3c"
+            },
+            "dimensions": 384,
+            "max_tokens": 256,
+            "pooling": "attention-mask-mean",
+            "normalization": "l2",
+            "implementation": "minilm-onnx-v1",
+            "semantic": true,
+            "license": "Apache-2.0",
+            "id": "semantic:minilm-onnx-v1:9131732b36b0ed8fe305b7d321dee077"
+          },
+          "index_generation": 0,
+          "embedding_ms": 232.88,
+          "indexing_ms": 266.82,
+          "chunking": "token-budget-aware"
+        }
+      }
+    ]
+  },
+  "database_evidence": "standalone|1|1",
+  "resources": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.27%\",\"Container\":\"895a2b66c8eab2ae08a084162ef06396febf0a634dd4a20213a3abdc0d780a50\",\"ID\":\"895a2b66c8ea\",\"MemPerc\":\"26.48%\",\"MemUsage\":\"203.4MiB / 768MiB\",\"Name\":\"rag-43f3b4423e-api-1\",\"NetIO\":\"50.1kB / 43kB\",\"PIDs\":\"10\"}\n{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"3.80%\",\"Container\":\"58872ba223080488d5cfef65abf33fc5803cba2b3235cabfc26b741e4df3d2f8\",\"ID\":\"58872ba22308\",\"MemPerc\":\"8.34%\",\"MemUsage\":\"42.68MiB / 512MiB\",\"Name\":\"rag-43f3b4423e-db-1\",\"NetIO\":\"209kB / 175kB\",\"PIDs\":\"10\"}\n{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"1.42%\",\"Container\":\"badae71b2322c32cd9e6b65b71d690e1072c823e6e3f3d281609166749dee70f\",\"ID\":\"badae71b2322\",\"MemPerc\":\"18.46%\",\"MemUsage\":\"189MiB / 1GiB\",\"Name\":\"rag-43f3b4423e-worker-1\",\"NetIO\":\"40.5kB / 43.1kB\",\"PIDs\":\"6\"}\n"
+}

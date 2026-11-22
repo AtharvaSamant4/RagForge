@@ -1,0 +1,28 @@
+{
+  "observed_at_utc": "2026-11-21T16:53:50Z",
+  "scope": "Point-in-time Docker resource observation after semantic indexing and queries; not a memory ceiling or peak guarantee.",
+  "containers": [
+    {
+      "BlockIO": "0B / 0B",
+      "CPUPerc": "85.40%",
+      "Container": "ragforge-m2-api-1",
+      "ID": "265393506beb",
+      "MemPerc": "3.18%",
+      "MemUsage": "306.8MiB / 9.432GiB",
+      "Name": "ragforge-m2-api-1",
+      "NetIO": "366kB / 396kB",
+      "PIDs": "17"
+    },
+    {
+      "BlockIO": "0B / 0B",
+      "CPUPerc": "7.46%",
+      "Container": "ragforge-m2-worker-1",
+      "ID": "60cfc69becf7",
+      "MemPerc": "1.96%",
+      "MemUsage": "189.5MiB / 9.432GiB",
+      "Name": "ragforge-m2-worker-1",
+      "NetIO": "71.3kB / 90.6kB",
+      "PIDs": "10"
+    }
+  ]
+}

@@ -108,18 +108,31 @@ def extract(path: Path, kind: str) -> tuple[list[tuple[str, dict]], dict]:
     return sections, metadata
 
 
-def chunk_sections(sections: list[tuple[str, dict]], size: int, overlap: int) -> list[tuple[str, dict]]:
+def chunk_sections(sections: list[tuple[str, dict]], size: int, overlap: int, count_tokens=None, max_tokens: int = 256) -> list[tuple[str, dict]]:
     if size <= 0 or overlap < 0 or overlap >= size:
         raise ValueError("Invalid chunk boundaries")
     result = []
     for text, location in sections:
         words = list(re.finditer(r"\S+", text))
-        for start in range(0, len(words), size - overlap):
+        start = 0
+        while start < len(words):
             end = min(start + size, len(words))
+            if count_tokens:
+                low, high = start + 1, end
+                while low <= high:
+                    middle = (low + high) // 2
+                    if count_tokens(text[words[start].start():words[middle-1].end()]) <= max_tokens:
+                        low = middle + 1
+                    else:
+                        high = middle - 1
+                end = max(start + 1, high)
+                if count_tokens(text[words[start].start():words[end-1].end()]) > max_tokens:
+                    raise ExtractionError("A single token sequence exceeds the embedding budget. Split the source into shorter words or identifiers.")
             left, right = words[start].start(), words[end - 1].end()
-            result.append((text[left:right], {**location, "char_start": left, "char_end": right}))
+            result.append((text[left:right], {**location, "char_start": left, "char_end": right, **({"tokens": count_tokens(text[left:right])} if count_tokens else {})}))
             if end == len(words):
                 break
+            start = max(start + 1, end - min(overlap, max(0, (end - start)//3))) if count_tokens else end - overlap
     if len(result) > 10_000:
         raise ExtractionError("Document exceeds the 10,000-chunk limit")
     return result

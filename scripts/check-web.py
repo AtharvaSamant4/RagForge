@@ -6,11 +6,16 @@ import json
 import subprocess
 import time
 import uuid
+import argparse
 from pathlib import Path
 
 import httpx
 
-origin = "http://localhost:3000"
+parser=argparse.ArgumentParser()
+parser.add_argument("--url",default="http://localhost:3000")
+parser.add_argument("--api-url",default="http://localhost:8000")
+args=parser.parse_args()
+origin = args.url.rstrip("/")
 web = httpx.Client(base_url=origin, headers={"Origin": origin}, timeout=120)
 assert web.get("/").status_code == 200
 assert web.get("/widget.js").status_code == 200
@@ -36,7 +41,7 @@ try:
         time.sleep(1)
     assert state["status"] == "ready", state
     key = web.post(base + "/keys", json={"name": "Integration clients"}).json()["secret"]
-    url = "http://localhost:8000/v1/projects/" + p["id"] + "/query"
+    url = args.api_url.rstrip("/") + "/v1/projects/" + p["id"] + "/query"
     data = {"question": "What is the refund period?"}
     # Pass credentials via stdin to child clients, never in command arguments or output.
     import os

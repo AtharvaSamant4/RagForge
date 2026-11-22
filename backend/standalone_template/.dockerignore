@@ -1,0 +1,8 @@
+.env
+.standalone-key
+runtime
+.git
+.venv
+**/__pycache__
+.pytest_cache
+*.log

@@ -9,6 +9,7 @@ TEST_DIR = tempfile.TemporaryDirectory(prefix="ragforge-tests-")
 root = Path(TEST_DIR.name)
 os.environ["DATABASE_URL"] = os.environ.get("TEST_DATABASE_URL", f"sqlite:///{(root / 'test.db').as_posix()}")
 os.environ["STORAGE_DIR"] = str(root / "uploads")
+os.environ["EXPORT_DIR"] = str(root / "exports")
 os.environ["EMBEDDING_PROVIDER"] = "local"
 os.environ["GENERATION_PROVIDER"] = "extractive"
 os.environ["RATE_LIMIT_PER_MINUTE"] = "10000"
