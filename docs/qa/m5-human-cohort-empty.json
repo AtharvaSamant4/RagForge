@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "cohort": "human",
+  "technical_events": {},
+  "activated_participants": 0,
+  "operator_attested_real_trials": 0,
+  "query_latency_ms": {
+    "count": 0,
+    "median": null,
+    "p95": null,
+    "scope": "Answer service before API response/transport overhead"
+  },
+  "reported_problems": {},
+  "issues": [],
+  "participants": [],
+  "redaction": "Pseudonymous IDs and numeric/enum outcomes only. No email, authorization reference, content, questions, credentials or free-text feedback. Engineering QA excluded from human cohort. Never publish without authorization."
+}

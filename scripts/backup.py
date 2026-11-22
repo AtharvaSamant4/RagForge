@@ -43,7 +43,9 @@ if action=='config':
   print(json.dumps(MANIFEST,sort_keys=True))
  else:
   from app.embeddings import profile
-  print(json.dumps({'embedding_profile':profile(),'schema':'0004'},sort_keys=True))
+  from sqlalchemy import text
+  with SessionLocal() as db: schema=db.scalar(text('SELECT version_num FROM alembic_version'))
+  print(json.dumps({'embedding_profile':profile(),'schema':schema},sort_keys=True))
 elif action=='empty':
  if any(root.iterdir()):raise SystemExit('Restore target storage is not empty')
 elif action=='dump':
@@ -120,12 +122,14 @@ def cli():
             if restore_services:run(['stop',*restore_services])
             if args.action=='create':
                 with (work/'database.dump').open('xb') as out:
-                    run(['exec','-T','db','pg_dump','-U',role,'-d',role,'-Fc','--no-owner','--no-acl','--exclude-table-data=sessions','--exclude-table-data=rate_buckets','--exclude-table-data=worker_heartbeats'],stdout=out)
+                    exclusions=['sessions','rate_buckets','worker_heartbeats']
+                    if args.kind=='hosted':exclusions+=['exports','pilot_participants','pilot_events','pilot_tasks','pilot_issues','pilot_deployments','pilot_operator_state']
+                    run(['exec','-T','db','pg_dump','-U',role,'-d',role,'-Fc','--no-owner','--no-acl',*['--exclude-table-data='+table for table in exclusions]],stdout=out)
                 with (work/'sources.tar').open('xb') as out:
                     run(['run','--rm','--no-deps','-T','--entrypoint','python','api','-c',STORAGE_CODE,args.kind,'dump'],stdout=out)
                 runtime_config=json.loads(run(['run','--rm','--no-deps','-T','--entrypoint','python','api','-c',STORAGE_CODE,args.kind,'config'],capture_output=True,text=True).stdout)
                 images=run(['images','--format','json'],capture_output=True,text=True).stdout.strip()
-                manifest={'runtime_config':runtime_config,'compose_images':images,'schema':'1','source_project':args.project,'kind':args.kind,'created_at_utc':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'sha256':{name:sha256(work/name) for name in ('database.dump','sources.tar')},'excluded':['raw API keys','session credentials','environment/provider/database secrets','model cache','ephemeral exports','TLS/backup encryption keys']}
+                manifest={'runtime_config':runtime_config,'compose_images':images,'schema':'1','source_project':args.project,'kind':args.kind,'created_at_utc':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'sha256':{name:sha256(work/name) for name in ('database.dump','sources.tar')},'excluded':['raw API keys','session credentials','environment/provider/database secrets','model cache','ephemeral exports','hosted pilot study/consent/operator records (re-enroll/re-consent after recovery)','TLS/backup encryption keys']}
                 (work/'manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
                 with tarfile.open(work/'bundle.tar','w:') as archive:
                     for name in ('database.dump','sources.tar','manifest.json'):archive.add(work/name,arcname=name,recursive=False)

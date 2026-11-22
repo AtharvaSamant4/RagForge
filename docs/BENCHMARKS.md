@@ -177,3 +177,43 @@ Final deployed rate-counter/proxy measurement: [m4-query-load-final.json](qa/m4-
 | 8 | 24 | 21 successful, 3 quota rejections | 8.302 including rejections | 375.77 | 2813.87 |
 
 Nearest-rank P95 includes TLS/frontend proxy, auth, retrieval/generation, durable query storage and metrics. Cache effects, scheduling and tiny samples mean results need not vary monotonically. The last stage crosses 60 requests/key/minute after warmups. Its throughput includes 429 responses and is **not successful-query capacity**. End resource snapshots: API 200.7 MiB, worker 186.8 MiB, DB 50.57 MiB; these are not peaks. Actual worker interruption and four-document ingestion throughput are in [m4-worker-recovery-ingestion.json](qa/m4-worker-recovery-ingestion.json). No production capacity is extrapolated from this local test.
+
+## Milestone 5 latency investigation
+
+The [initial controlled reproduction](qa/m5-query-profiling-initial.json) used fresh, equally limited M4 and M5 database/source/model volumes, the same public PDF, pinned CPU MiniLM, hybrid retrieval, extractive answers and HTTPS proxy. Cold process startup, warmed question caches, concurrency 1/4/8, actual concurrent ingestion, PostgreSQL waits/WAL timing, cgroup resource counters and an unchanged 60-request/key/minute quota were measured separately. All ordinary 24-request stages returned 200; quota probes retain their 429 responses separately. This is a small shared Windows/Docker host experiment, not a capacity certification.
+
+The multi-second tail was reproduced before changing the retrieval implementation. A [matched transport experiment](qa/m5-latency-paths-ipv4.json) isolated Windows `localhost` resolution against Docker's IPv4-only loopback publishing: connection refusal on `::1` took **2134.83 ms**, compared with **0.41 ms** to IPv4. New pooled connections were the slow requests; corresponding API logs finished milliseconds before the client received the response. Container clients and direct/proxied paths were also compared.
+
+| Same warm M5 workload, C4, 24 requests | Median ms | P95 ms |
+|---|---:|---:|
+| Windows HTTPS proxy, default address selection | 210.74 | 2501.83 |
+| Windows HTTPS proxy, explicit IPv4 transport retaining HTTPS hostname | 282.44 | 481.84 |
+| Windows direct HTTP API, localhost | 75.14 | 2333.06 |
+| Windows direct HTTP API, 127.0.0.1 | 288.95 | 380.68 |
+
+Median did not improve uniformly. The supported change is to default generated **local HTTP** clients to `127.0.0.1` and read their initialized port; HTTPS keeps the approved hostname and normal certificate verification. The isolated localhost QA probe uses its development certificate exception explicitly. No production TLS validation, grounding threshold, model or quota was relaxed. Under consent, profiling also identified participant-row serialization; one redundant post-lock SELECT was removed using `UPDATE RETURNING` with a refreshed ORM identity, retaining exact-cap/deduplication concurrency tests.
+
+Cold model load, PostgreSQL WAL sync and transaction/tuple waits, worker activity and shared-host scheduling remain separate contributors. Service timings omit auth, durable metric finalization, proxy and transport; they must not be presented as HTTP timings. `scripts/profile-query-latency.py --repeats 3 --transport ipv4` completed the final equivalent-version comparison in [the profiling receipt](qa/m5-query-profiling.json). Each default-off row below pools three 24-request runs; nearest-rank P95 uses all 72 successful observations, rather than averaging percentiles. Versions alternated order across repeats. All **504 ordinary warm requests** across default-off and the separate consent-on pass returned 200 with cited/refused results.
+
+| Version, consent off | Concurrency | Successful requests | Pooled median ms | Pooled P95 ms | Individual-run P95 range ms |
+|---|---:|---:|---:|---:|---:|
+| Verified M4 | 1 | 72 | 111.29 | 236.61 | 218.71–322.84 |
+| M5 | 1 | 72 | 147.24 | 314.58 | 272.54–447.23 |
+| Verified M4 | 4 | 72 | 393.50 | 742.94 | 630.40–1186.87 |
+| M5 | 4 | 72 | 402.71 | 1219.47 | 351.85–1357.16 |
+| Verified M4 | 8 | 72 | 685.98 | 1663.73 | 602.32–1716.71 |
+| M5 | 8 | 72 | 531.88 | 929.40 | 663.05–940.77 |
+
+M5 is not uniformly faster: default-off P95 increased at concurrency 1/4 and decreased at 8. The single later consent-on pass (24 requests per level) measured P95 477.94/645.11/620.68 ms at concurrency 1/4/8. Its lower later tails do not prove telemetry improves performance; host/cache/storage conditions vary and this is not a causal overhead estimate.
+
+Cold **API-process** first queries, using already downloaded model files, ranged 1002–2447 ms for M4 and 1348–4618 ms for default-off M5; model load alone ranged 851–1509 / 1053–2588 ms respectively. Warm snapshots retained one model load, 11 cached vectors and 524 cache hits per pass. Separate warmed function profiles measured 20 answers in 0.412/0.370 seconds, excluding HTTP/auth/durable response metrics. PostgreSQL sampling observed WAL sync, WAL write and transaction/tuple waits; measured WAL sync totals per ordinary batch ranged 276–1064 ms for M4 and 337–1345 ms for default-off M5. These observations support separating storage/scheduling/transport from inference, not assigning all residual tails to one cause. EXPLAIN and cgroup/host snapshots are retained; the one-chunk sample does not validate large-index scaling.
+
+An actual 779,889-byte ingestion remained processing during each separate C4 query burst; all 24 queries succeeded, with P95 276.18 ms for M4 and 349.14 ms for M5. Both documents later indexed successfully (807 chunks). Each separate fixed-minute quota probe used three warmups plus 60 measured requests: 57 successful responses and exactly three 429s, no 5xx, under the unchanged 60/key/minute cap. Worker/probe timings are separate observations, not subtracted from primary query timings.
+
+[Image-source verification](qa/m5-image-source-verification.json) matched API/worker code to M4 `04f6ef2` and M5 `5beded4`, with identical database image and unchanged query-proxy source. Normalization covers UTF-8/BOM, line endings and empty EOF lines only; the baseline parser files differed solely in trailing blank lines. The profiled web image preceded the help-text-only port correction; query-proxy code was unchanged. An earlier attempt exhausted this host's Docker network pools before timed queries; only disposable profiling containers/networks were removed, with all 18 existing profiling volumes preserved, before the successful fresh run. No historical product stack was stopped for profiling cleanup.
+
+## Milestone 5 frozen evaluation
+
+The unchanged frozen hybrid/top-5/0.32 configuration was executed against 30 authored development fixtures with the pinned real MiniLM model, a dedicated SQLite database and extractive generation. Hit@5, passage recall@5, expected-quote coverage, citation provenance and refusal-contract match were 1.0 on these known fixtures; mean answer-service time was 86.12 ms and P95 164.64 ms. These fixture results do not establish human-verified accuracy, entailment or generalization. Full cases, source hashes and timings: [development receipt](../benchmarks/results/m5-frozen-development.json).
+
+The [human-approved](../benchmarks/results/m5-frozen-human-approved.json), [independent holdout](../benchmarks/results/m5-frozen-holdout.json) and [pilot-approved](../benchmarks/results/m5-frozen-pilot-approved.json) runs each report zero cases, `not_run_no_cases`, no runs and no score. All original 120 candidates remain unverified. Import permission, original/normalized source checksums, audited review, freeze provenance and split separation are described in [PILOT_METRICS.md](PILOT_METRICS.md).

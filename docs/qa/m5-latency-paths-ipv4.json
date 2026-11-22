@@ -1,0 +1,1515 @@
+{
+  "protocol": "Same existing candidate sample/key principal, warm cache, C4, 24 requests/path, Windows vs container and direct API vs frontend proxy. Actual API log time is after metric persistence; wall clocks share the host but are not a precision distributed clock. No quota changes; 3 warmups per fresh key. Engineering QA only.",
+  "runs": [
+    {
+      "mode": "windows_tls_proxy",
+      "concurrency": 4,
+      "requests": 24,
+      "median_ms": 210.73724999951082,
+      "p95_ms": 2501.8250000066473,
+      "rows": [
+        {
+          "status": 200,
+          "http_ms": 118.20869999792194,
+          "service_ms": 23.42,
+          "request_id": "6c6c4658-ba9d-47ef-b4c2-a05a359f13d3",
+          "wall_start": 1795367729.533324,
+          "wall_end": 1795367729.651675,
+          "api_pre_metric_ms": 78.53,
+          "post_api_log_ms": 9.93037223815918
+        },
+        {
+          "status": 200,
+          "http_ms": 2429.376499996579,
+          "service_ms": 33.68,
+          "request_id": "de5b13e4-770f-4a27-aa02-c35c1302d115",
+          "wall_start": 1795367729.5343661,
+          "wall_end": 1795367731.963222,
+          "api_pre_metric_ms": 253.3,
+          "post_api_log_ms": 8.524656295776367
+        },
+        {
+          "status": 200,
+          "http_ms": 2580.967999994755,
+          "service_ms": 104.22,
+          "request_id": "4658053d-b242-43f5-aebf-02f7e77dc739",
+          "wall_start": 1795367729.5349023,
+          "wall_end": 1795367732.1156552,
+          "api_pre_metric_ms": 404.01,
+          "post_api_log_ms": 7.51805305480957
+        },
+        {
+          "status": 200,
+          "http_ms": 2501.8250000066473,
+          "service_ms": 47.86,
+          "request_id": "d0416108-6cf1-42f3-8716-f16c0ae6805e",
+          "wall_start": 1795367729.5388527,
+          "wall_end": 1795367732.0404124,
+          "api_pre_metric_ms": 302.75,
+          "post_api_log_ms": 10.959386825561523
+        },
+        {
+          "status": 200,
+          "http_ms": 126.30129999888595,
+          "service_ms": 19.39,
+          "request_id": "92a390f1-2287-4781-b3c5-00fdffaa99be",
+          "wall_start": 1795367729.6517062,
+          "wall_end": 1795367729.7778983,
+          "api_pre_metric_ms": 92.55,
+          "post_api_log_ms": 5.608797073364258
+        },
+        {
+          "status": 200,
+          "http_ms": 74.33630000014091,
+          "service_ms": 10.72,
+          "request_id": "ec4e2ff9-5fbb-42f9-bd9d-4e682fc84646",
+          "wall_start": 1795367729.7778983,
+          "wall_end": 1795367729.851773,
+          "api_pre_metric_ms": 44.44,
+          "post_api_log_ms": 9.195089340209961
+        },
+        {
+          "status": 200,
+          "http_ms": 83.83499999763444,
+          "service_ms": 14.91,
+          "request_id": "0a2eb0d2-8d59-4b7c-89e7-3c7419a7da12",
+          "wall_start": 1795367729.8524408,
+          "wall_end": 1795367729.9360716,
+          "api_pre_metric_ms": 55.3,
+          "post_api_log_ms": 6.511926651000977
+        },
+        {
+          "status": 200,
+          "http_ms": 95.92039999552071,
+          "service_ms": 17.96,
+          "request_id": "b0b97d93-08a3-41a3-843f-a772c102b4fc",
+          "wall_start": 1795367729.9360716,
+          "wall_end": 1795367730.032004,
+          "api_pre_metric_ms": 64.37,
+          "post_api_log_ms": 11.049032211303711
+        },
+        {
+          "status": 200,
+          "http_ms": 93.93890000501415,
+          "service_ms": 9.65,
+          "request_id": "a455d60d-cc91-42a4-a807-49ccdfe4162e",
+          "wall_start": 1795367730.032004,
+          "wall_end": 1795367730.1259878,
+          "api_pre_metric_ms": 59.6,
+          "post_api_log_ms": 9.592294692993164
+        },
+        {
+          "status": 200,
+          "http_ms": 84.33300000615418,
+          "service_ms": 14.35,
+          "request_id": "84ae7979-c79b-45fb-8a1e-d6f2ab0330b7",
+          "wall_start": 1795367730.1259878,
+          "wall_end": 1795367730.2104723,
+          "api_pre_metric_ms": 54.47,
+          "post_api_log_ms": 7.847309112548828
+        },
+        {
+          "status": 200,
+          "http_ms": 84.01550000417046,
+          "service_ms": 16.86,
+          "request_id": "58d2041c-0789-4839-885c-4cfeee74029c",
+          "wall_start": 1795367730.2104723,
+          "wall_end": 1795367730.294308,
+          "api_pre_metric_ms": 57.9,
+          "post_api_log_ms": 6.562232971191406
+        },
+        {
+          "status": 200,
+          "http_ms": 94.58400000585243,
+          "service_ms": 13.44,
+          "request_id": "c63f1d71-18db-4e38-8c06-827d1a4c0db2",
+          "wall_start": 1795367730.294308,
+          "wall_end": 1795367730.3887687,
+          "api_pre_metric_ms": 56.13,
+          "post_api_log_ms": 7.3947906494140625
+        },
+        {
+          "status": 200,
+          "http_ms": 116.92259999836097,
+          "service_ms": 17.75,
+          "request_id": "f81b7b44-e46b-4a5b-a0b3-b302519ebc46",
+          "wall_start": 1795367730.3887687,
+          "wall_end": 1795367730.5059745,
+          "api_pre_metric_ms": 67.68,
+          "post_api_log_ms": 9.538888931274414
+        },
+        {
+          "status": 200,
+          "http_ms": 191.5339999977732,
+          "service_ms": 32.23,
+          "request_id": "2d0d3ae5-cd78-4c00-80e0-ad2bb04c169f",
+          "wall_start": 1795367730.5059745,
+          "wall_end": 1795367730.6969106,
+          "api_pre_metric_ms": 134.89,
+          "post_api_log_ms": 13.708829879760742
+        },
+        {
+          "status": 200,
+          "http_ms": 291.85100000177044,
+          "service_ms": 49.78,
+          "request_id": "380a5905-808d-4e12-83dd-b54d0bdb6c8f",
+          "wall_start": 1795367730.6969106,
+          "wall_end": 1795367730.9891355,
+          "api_pre_metric_ms": 226.35,
+          "post_api_log_ms": 18.331050872802734
+        },
+        {
+          "status": 200,
+          "http_ms": 401.41709999443265,
+          "service_ms": 114.59,
+          "request_id": "776f0c64-feef-4f23-b907-3cb3f8184297",
+          "wall_start": 1795367730.9891355,
+          "wall_end": 1795367731.3907986,
+          "api_pre_metric_ms": 333.17,
+          "post_api_log_ms": 8.879661560058594
+        },
+        {
+          "status": 200,
+          "http_ms": 481.11490000155754,
+          "service_ms": 47.59,
+          "request_id": "ab341a5e-d12a-4357-9093-c00949bff065",
+          "wall_start": 1795367731.3907986,
+          "wall_end": 1795367731.871385,
+          "api_pre_metric_ms": 274.23,
+          "post_api_log_ms": 6.59489631652832
+        },
+        {
+          "status": 200,
+          "http_ms": 310.3696999969543,
+          "service_ms": 88.2,
+          "request_id": "1f233d5d-36b4-400d-bfd3-646ae2671712",
+          "wall_start": 1795367731.871385,
+          "wall_end": 1795367732.1822271,
+          "api_pre_metric_ms": 227.11,
+          "post_api_log_ms": 16.67022705078125
+        },
+        {
+          "status": 200,
+          "http_ms": 243.07129999942845,
+          "service_ms": 54.51,
+          "request_id": "7c7f61a1-d026-4001-a026-3f474f861066",
+          "wall_start": 1795367731.963222,
+          "wall_end": 1795367732.2064161,
+          "api_pre_metric_ms": 165.71,
+          "post_api_log_ms": 17.18878746032715
+        },
+        {
+          "status": 200,
+          "http_ms": 309.5857000007527,
+          "service_ms": 73.44,
+          "request_id": "ecdf3f5b-8c28-4aea-8af2-009436222c59",
+          "wall_start": 1795367732.0404124,
+          "wall_end": 1795367732.3497827,
+          "api_pre_metric_ms": 188.58,
+          "post_api_log_ms": 11.72494888305664
+        },
+        {
+          "status": 200,
+          "http_ms": 254.6885000047041,
+          "service_ms": 48.28,
+          "request_id": "542ae2a8-86d5-47cc-aefb-36e065f5543b",
+          "wall_start": 1795367732.1156552,
+          "wall_end": 1795367732.370227,
+          "api_pre_metric_ms": 175.1,
+          "post_api_log_ms": 12.327432632446289
+        },
+        {
+          "status": 200,
+          "http_ms": 229.94050000124844,
+          "service_ms": 31.57,
+          "request_id": "8b6902dd-d9a8-40fd-9f54-719d11bcd1d6",
+          "wall_start": 1795367732.1822271,
+          "wall_end": 1795367732.4122834,
+          "api_pre_metric_ms": 145.72,
+          "post_api_log_ms": 8.02469253540039
+        },
+        {
+          "status": 200,
+          "http_ms": 252.5783000019146,
+          "service_ms": 50.97,
+          "request_id": "111c86ce-a255-4846-9fd8-5b7c8997be57",
+          "wall_start": 1795367732.2064161,
+          "wall_end": 1795367732.4589407,
+          "api_pre_metric_ms": 212.57,
+          "post_api_log_ms": 6.201982498168945
+        },
+        {
+          "status": 200,
+          "http_ms": 141.57999999588355,
+          "service_ms": 18.52,
+          "request_id": "5056180c-f53c-492d-8c49-8f9148e7237d",
+          "wall_start": 1795367732.3497827,
+          "wall_end": 1795367732.4915025,
+          "api_pre_metric_ms": 97.13,
+          "post_api_log_ms": 4.701137542724609
+        }
+      ]
+    },
+    {
+      "mode": "windows_ipv4_tls_proxy",
+      "concurrency": 4,
+      "requests": 24,
+      "median_ms": 282.44085000187624,
+      "p95_ms": 481.83650000282796,
+      "rows": [
+        {
+          "status": 200,
+          "http_ms": 204.5014999966952,
+          "service_ms": 30.58,
+          "request_id": "16eabf44-259c-452c-94b8-213092c88413",
+          "wall_start": 1795367735.2583406,
+          "wall_end": 1795367735.462876,
+          "api_pre_metric_ms": 154.85,
+          "post_api_log_ms": 7.130146026611328
+        },
+        {
+          "status": 200,
+          "http_ms": 218.69020000303863,
+          "service_ms": 43.0,
+          "request_id": "977ae18c-8c16-414f-8742-e01df3c6766f",
+          "wall_start": 1795367735.259436,
+          "wall_end": 1795367735.4778311,
+          "api_pre_metric_ms": 156.01,
+          "post_api_log_ms": 9.279727935791016
+        },
+        {
+          "status": 200,
+          "http_ms": 291.9326999981422,
+          "service_ms": 55.49,
+          "request_id": "d4100823-d46b-4b7c-9403-25392f74d53b",
+          "wall_start": 1795367735.2611942,
+          "wall_end": 1795367735.5526872,
+          "api_pre_metric_ms": 208.25,
+          "post_api_log_ms": 11.801481246948242
+        },
+        {
+          "status": 200,
+          "http_ms": 266.5612999990117,
+          "service_ms": 35.84,
+          "request_id": "172d6e77-880e-4572-b655-c9f917f9921b",
+          "wall_start": 1795367735.2623441,
+          "wall_end": 1795367735.5287473,
+          "api_pre_metric_ms": 178.92,
+          "post_api_log_ms": 6.653547286987305
+        },
+        {
+          "status": 200,
+          "http_ms": 186.93709999934072,
+          "service_ms": 28.18,
+          "request_id": "e26344f6-1de9-4f62-a535-de034e2cdeb6",
+          "wall_start": 1795367735.462876,
+          "wall_end": 1795367735.6501966,
+          "api_pre_metric_ms": 134.33,
+          "post_api_log_ms": 8.819103240966797
+        },
+        {
+          "status": 200,
+          "http_ms": 221.25990000495221,
+          "service_ms": 33.05,
+          "request_id": "66e7cafd-9a61-45d7-9572-0e872ca302aa",
+          "wall_start": 1795367735.4778311,
+          "wall_end": 1795367735.69889,
+          "api_pre_metric_ms": 160.56,
+          "post_api_log_ms": 6.450176239013672
+        },
+        {
+          "status": 200,
+          "http_ms": 211.01839999755612,
+          "service_ms": 24.93,
+          "request_id": "735b73bd-9872-43e3-bccd-8cd746cee5ee",
+          "wall_start": 1795367735.5287473,
+          "wall_end": 1795367735.74043,
+          "api_pre_metric_ms": 138.52,
+          "post_api_log_ms": 8.312463760375977
+        },
+        {
+          "status": 200,
+          "http_ms": 223.07879999425495,
+          "service_ms": 47.31,
+          "request_id": "e7125bce-c6e6-4fbf-a3fd-8601913448cb",
+          "wall_start": 1795367735.5526872,
+          "wall_end": 1795367735.7760458,
+          "api_pre_metric_ms": 167.94,
+          "post_api_log_ms": 6.72459602355957
+        },
+        {
+          "status": 200,
+          "http_ms": 190.59379999816883,
+          "service_ms": 32.45,
+          "request_id": "c0d8b8fc-580c-40ab-a5a1-b6f2fad90256",
+          "wall_start": 1795367735.6501966,
+          "wall_end": 1795367735.8404481,
+          "api_pre_metric_ms": 136.96,
+          "post_api_log_ms": 5.913019180297852
+        },
+        {
+          "status": 200,
+          "http_ms": 199.5085999951698,
+          "service_ms": 38.39,
+          "request_id": "ac8efeb8-5420-4511-a431-536da5567916",
+          "wall_start": 1795367735.69889,
+          "wall_end": 1795367735.899148,
+          "api_pre_metric_ms": 145.99,
+          "post_api_log_ms": 7.998466491699219
+        },
+        {
+          "status": 200,
+          "http_ms": 256.9239000004018,
+          "service_ms": 28.76,
+          "request_id": "35914816-0a97-4382-864a-392a8741c85b",
+          "wall_start": 1795367735.7404625,
+          "wall_end": 1795367735.9971774,
+          "api_pre_metric_ms": 176.59,
+          "post_api_log_ms": 8.440017700195312
+        },
+        {
+          "status": 200,
+          "http_ms": 237.2084000016912,
+          "service_ms": 33.79,
+          "request_id": "5bd45991-cd6f-43ba-b7b4-b8f91c528ee3",
+          "wall_start": 1795367735.7760458,
+          "wall_end": 1795367736.0134542,
+          "api_pre_metric_ms": 168.96,
+          "post_api_log_ms": 13.698101043701172
+        },
+        {
+          "status": 200,
+          "http_ms": 272.9490000056103,
+          "service_ms": 37.23,
+          "request_id": "02c9c15d-16bd-40bf-ac1a-3cd4d10b1e66",
+          "wall_start": 1795367735.8404481,
+          "wall_end": 1795367736.1135478,
+          "api_pre_metric_ms": 195.71,
+          "post_api_log_ms": 19.418954849243164
+        },
+        {
+          "status": 200,
+          "http_ms": 306.2153999999282,
+          "service_ms": 73.98,
+          "request_id": "8079a38c-e74c-4f94-9592-d823e1e5ef5d",
+          "wall_start": 1795367735.899148,
+          "wall_end": 1795367736.205199,
+          "api_pre_metric_ms": 172.26,
+          "post_api_log_ms": 12.296676635742188
+        },
+        {
+          "status": 200,
+          "http_ms": 340.35810000204947,
+          "service_ms": 61.94,
+          "request_id": "3bb7bf9e-a7f9-4e77-a702-ae13c12e6ee3",
+          "wall_start": 1795367735.9971774,
+          "wall_end": 1795367736.33759,
+          "api_pre_metric_ms": 274.62,
+          "post_api_log_ms": 7.555723190307617
+        },
+        {
+          "status": 200,
+          "http_ms": 371.5922999981558,
+          "service_ms": 59.29,
+          "request_id": "ef8bec83-1f9e-42ce-991a-c21db83ae643",
+          "wall_start": 1795367736.0134542,
+          "wall_end": 1795367736.384942,
+          "api_pre_metric_ms": 289.28,
+          "post_api_log_ms": 18.111705780029297
+        },
+        {
+          "status": 200,
+          "http_ms": 421.5639999965788,
+          "service_ms": 74.09,
+          "request_id": "ac6738c6-4b20-42e6-b838-44c240c0c8a3",
+          "wall_start": 1795367736.1135478,
+          "wall_end": 1795367736.5351067,
+          "api_pre_metric_ms": 332.2,
+          "post_api_log_ms": 9.403705596923828
+        },
+        {
+          "status": 200,
+          "http_ms": 365.82389999966836,
+          "service_ms": 44.89,
+          "request_id": "e83fcd5e-bbab-4311-aa55-55906032137b",
+          "wall_start": 1795367736.205199,
+          "wall_end": 1795367736.5711658,
+          "api_pre_metric_ms": 261.71,
+          "post_api_log_ms": 8.990049362182617
+        },
+        {
+          "status": 200,
+          "http_ms": 404.7452000013436,
+          "service_ms": 154.88,
+          "request_id": "9d5f4405-ac7b-4109-aadf-689ab4d533e0",
+          "wall_start": 1795367736.33759,
+          "wall_end": 1795367736.7425213,
+          "api_pre_metric_ms": 327.27,
+          "post_api_log_ms": 13.925790786743164
+        },
+        {
+          "status": 200,
+          "http_ms": 424.557400001504,
+          "service_ms": 80.74,
+          "request_id": "9f0bd338-309e-4e17-ae54-f8186173bd29",
+          "wall_start": 1795367736.384942,
+          "wall_end": 1795367736.8089569,
+          "api_pre_metric_ms": 299.13,
+          "post_api_log_ms": 16.923904418945312
+        },
+        {
+          "status": 200,
+          "http_ms": 504.76419999904465,
+          "service_ms": 61.21,
+          "request_id": "e1d5d9d5-34d1-4a57-8abc-30f4f3fd3794",
+          "wall_start": 1795367736.5351067,
+          "wall_end": 1795367737.0399876,
+          "api_pre_metric_ms": 375.68,
+          "post_api_log_ms": 10.86115837097168
+        },
+        {
+          "status": 200,
+          "http_ms": 442.65029999951366,
+          "service_ms": 47.85,
+          "request_id": "16a484b4-8e0d-4231-9078-d62229a81804",
+          "wall_start": 1795367736.5711658,
+          "wall_end": 1795367737.0130994,
+          "api_pre_metric_ms": 294.15,
+          "post_api_log_ms": 10.90240478515625
+        },
+        {
+          "status": 200,
+          "http_ms": 481.83650000282796,
+          "service_ms": 138.02,
+          "request_id": "8520a303-6de7-46e5-be07-30b5b81f967e",
+          "wall_start": 1795367736.742589,
+          "wall_end": 1795367737.2243133,
+          "api_pre_metric_ms": 408.28,
+          "post_api_log_ms": 8.762121200561523
+        },
+        {
+          "status": 200,
+          "http_ms": 387.60009999532485,
+          "service_ms": 99.06,
+          "request_id": "e0e8471f-ea95-4de0-a892-e45f0514b2d3",
+          "wall_start": 1795367736.8089569,
+          "wall_end": 1795367737.1971142,
+          "api_pre_metric_ms": 293.09,
+          "post_api_log_ms": 8.100748062133789
+        }
+      ]
+    },
+    {
+      "mode": "windows_direct_api",
+      "concurrency": 4,
+      "requests": 24,
+      "median_ms": 75.1383499991789,
+      "p95_ms": 2333.0590999976266,
+      "rows": [
+        {
+          "status": 200,
+          "http_ms": 92.97269999660784,
+          "service_ms": 19.57,
+          "request_id": "c97a8f55-2250-4d7d-bb88-a16e6bf2b057",
+          "wall_start": 1795367740.1563966,
+          "wall_end": 1795367740.2494771,
+          "api_pre_metric_ms": 63.76,
+          "post_api_log_ms": 3.155946731567383
+        },
+        {
+          "status": 200,
+          "http_ms": 2356.19100000622,
+          "service_ms": 36.59,
+          "request_id": "278559f3-ab46-448b-b4cf-28d07518a20b",
+          "wall_start": 1795367740.1574974,
+          "wall_end": 1795367742.5135536,
+          "api_pre_metric_ms": 268.45,
+          "post_api_log_ms": 3.0221939086914062
+        },
+        {
+          "status": 200,
+          "http_ms": 2267.559200001415,
+          "service_ms": 44.41,
+          "request_id": "aec63a6e-815c-4319-9f0b-72afbd349585",
+          "wall_start": 1795367740.1595213,
+          "wall_end": 1795367742.4271522,
+          "api_pre_metric_ms": 197.2,
+          "post_api_log_ms": 3.280162811279297
+        },
+        {
+          "status": 200,
+          "http_ms": 2333.0590999976266,
+          "service_ms": 33.34,
+          "request_id": "658f5c47-7fc8-4d5b-a54f-270bf13d1490",
+          "wall_start": 1795367740.1610143,
+          "wall_end": 1795367742.4936361,
+          "api_pre_metric_ms": 223.98,
+          "post_api_log_ms": 2.453327178955078
+        },
+        {
+          "status": 200,
+          "http_ms": 72.01169999461854,
+          "service_ms": 14.59,
+          "request_id": "89217d96-966c-48ee-812e-903f94124bf1",
+          "wall_start": 1795367740.2494771,
+          "wall_end": 1795367740.321274,
+          "api_pre_metric_ms": 54.41,
+          "post_api_log_ms": 1.8749237060546875
+        },
+        {
+          "status": 200,
+          "http_ms": 93.99480000138283,
+          "service_ms": 19.64,
+          "request_id": "7d8e400f-1323-4242-af1a-4d8a92993e56",
+          "wall_start": 1795367740.321274,
+          "wall_end": 1795367740.4153109,
+          "api_pre_metric_ms": 77.86,
+          "post_api_log_ms": 1.96075439453125
+        },
+        {
+          "status": 200,
+          "http_ms": 102.68649999488844,
+          "service_ms": 16.04,
+          "request_id": "159de7c6-ddb2-4fb6-ae9e-1efb2d2d9360",
+          "wall_start": 1795367740.4153109,
+          "wall_end": 1795367740.5182278,
+          "api_pre_metric_ms": 76.49,
+          "post_api_log_ms": 2.9764175415039062
+        },
+        {
+          "status": 200,
+          "http_ms": 75.37649999721907,
+          "service_ms": 14.61,
+          "request_id": "7a919649-8c6c-4da9-9889-fdd841977407",
+          "wall_start": 1795367740.5182278,
+          "wall_end": 1795367740.5935214,
+          "api_pre_metric_ms": 55.81,
+          "post_api_log_ms": 2.141714096069336
+        },
+        {
+          "status": 200,
+          "http_ms": 108.77459999755956,
+          "service_ms": 17.42,
+          "request_id": "3e4d0975-cbcb-4193-b878-3a7811a99233",
+          "wall_start": 1795367740.5935214,
+          "wall_end": 1795367740.7020404,
+          "api_pre_metric_ms": 82.6,
+          "post_api_log_ms": 2.765178680419922
+        },
+        {
+          "status": 200,
+          "http_ms": 86.65980000660056,
+          "service_ms": 22.15,
+          "request_id": "abc6d9c9-5e64-4423-88d7-094dfaa82b98",
+          "wall_start": 1795367740.7020404,
+          "wall_end": 1795367740.788927,
+          "api_pre_metric_ms": 69.63,
+          "post_api_log_ms": 2.304553985595703
+        },
+        {
+          "status": 200,
+          "http_ms": 67.83449999784352,
+          "service_ms": 14.25,
+          "request_id": "49d02f34-720b-4df6-a3e4-dc06d266003a",
+          "wall_start": 1795367740.788927,
+          "wall_end": 1795367740.8568048,
+          "api_pre_metric_ms": 51.48,
+          "post_api_log_ms": 1.9850730895996094
+        },
+        {
+          "status": 200,
+          "http_ms": 67.63530000171158,
+          "service_ms": 12.77,
+          "request_id": "755974a4-b64e-4f58-9669-390044c2b7f6",
+          "wall_start": 1795367740.8568048,
+          "wall_end": 1795367740.9242268,
+          "api_pre_metric_ms": 52.25,
+          "post_api_log_ms": 1.4796257019042969
+        },
+        {
+          "status": 200,
+          "http_ms": 78.50630000029923,
+          "service_ms": 11.26,
+          "request_id": "2f260d28-719c-436e-8373-1e2d06a415b9",
+          "wall_start": 1795367740.9247518,
+          "wall_end": 1795367741.0027497,
+          "api_pre_metric_ms": 49.72,
+          "post_api_log_ms": 1.5268325805664062
+        },
+        {
+          "status": 200,
+          "http_ms": 78.84259999991627,
+          "service_ms": 12.15,
+          "request_id": "ddf17913-fee2-4b34-8c3f-12e772d6437d",
+          "wall_start": 1795367741.0027497,
+          "wall_end": 1795367741.0821302,
+          "api_pre_metric_ms": 58.63,
+          "post_api_log_ms": 1.9669532775878906
+        },
+        {
+          "status": 200,
+          "http_ms": 73.72290000057546,
+          "service_ms": 10.17,
+          "request_id": "953ae771-547b-4bb3-8226-bc39029f0997",
+          "wall_start": 1795367741.0821302,
+          "wall_end": 1795367741.1557238,
+          "api_pre_metric_ms": 45.68,
+          "post_api_log_ms": 3.589630126953125
+        },
+        {
+          "status": 200,
+          "http_ms": 74.90020000113873,
+          "service_ms": 21.85,
+          "request_id": "6c2f2701-0dc0-41f1-860f-88e62279248a",
+          "wall_start": 1795367741.1557238,
+          "wall_end": 1795367741.2306015,
+          "api_pre_metric_ms": 59.08,
+          "post_api_log_ms": 2.0122528076171875
+        },
+        {
+          "status": 200,
+          "http_ms": 82.11730000039097,
+          "service_ms": 16.6,
+          "request_id": "221b4ada-5913-4d6d-9aaa-1a184cc08e62",
+          "wall_start": 1795367741.2306015,
+          "wall_end": 1795367741.312761,
+          "api_pre_metric_ms": 63.49,
+          "post_api_log_ms": 1.790761947631836
+        },
+        {
+          "status": 200,
+          "http_ms": 72.33850000193343,
+          "service_ms": 18.41,
+          "request_id": "8b87f22f-3a8b-460c-99ec-fdc6c8a45dcc",
+          "wall_start": 1795367741.312761,
+          "wall_end": 1795367741.3849094,
+          "api_pre_metric_ms": 58.65,
+          "post_api_log_ms": 1.3575553894042969
+        },
+        {
+          "status": 200,
+          "http_ms": 57.643399995868094,
+          "service_ms": 11.18,
+          "request_id": "099982f3-9a0a-4699-8473-877ea3ca79ad",
+          "wall_start": 1795367741.3849094,
+          "wall_end": 1795367741.4426441,
+          "api_pre_metric_ms": 43.18,
+          "post_api_log_ms": 1.317739486694336
+        },
+        {
+          "status": 200,
+          "http_ms": 60.29320000379812,
+          "service_ms": 9.47,
+          "request_id": "ada51b8a-84da-4152-8510-0a575af46d00",
+          "wall_start": 1795367741.4426441,
+          "wall_end": 1795367741.5030253,
+          "api_pre_metric_ms": 43.45,
+          "post_api_log_ms": 1.8963813781738281
+        },
+        {
+          "status": 200,
+          "http_ms": 64.0927999993437,
+          "service_ms": 12.16,
+          "request_id": "9213a6a1-e94b-4b37-aae8-132d7bc714e5",
+          "wall_start": 1795367741.5030253,
+          "wall_end": 1795367741.5670717,
+          "api_pre_metric_ms": 51.21,
+          "post_api_log_ms": 1.2660026550292969
+        },
+        {
+          "status": 200,
+          "http_ms": 65.48730000213254,
+          "service_ms": 14.66,
+          "request_id": "4a5e12c9-4766-4c5e-bf84-1229d048f0f1",
+          "wall_start": 1795367741.5670717,
+          "wall_end": 1795367741.6329257,
+          "api_pre_metric_ms": 47.74,
+          "post_api_log_ms": 5.54347038269043
+        },
+        {
+          "status": 200,
+          "http_ms": 73.38960000197403,
+          "service_ms": 15.01,
+          "request_id": "496e1982-fd0b-42fb-bc35-edb8f8e988d0",
+          "wall_start": 1795367741.6329257,
+          "wall_end": 1795367741.7062778,
+          "api_pre_metric_ms": 55.98,
+          "post_api_log_ms": 2.360105514526367
+        },
+        {
+          "status": 200,
+          "http_ms": 54.06349999975646,
+          "service_ms": 9.1,
+          "request_id": "23e7ab93-332f-4ee4-9c9b-4beba5924ffc",
+          "wall_start": 1795367741.7062778,
+          "wall_end": 1795367741.760041,
+          "api_pre_metric_ms": 39.88,
+          "post_api_log_ms": 1.3680458068847656
+        }
+      ]
+    },
+    {
+      "mode": "windows_ipv4_direct_api",
+      "concurrency": 4,
+      "requests": 24,
+      "median_ms": 288.9474000003247,
+      "p95_ms": 380.68299999576993,
+      "rows": [
+        {
+          "status": 200,
+          "http_ms": 215.45460000197636,
+          "service_ms": 46.28,
+          "request_id": "57b590ec-ec43-40d3-9ca8-cfc3ef0270e7",
+          "wall_start": 1795367747.3875375,
+          "wall_end": 1795367747.603227,
+          "api_pre_metric_ms": 179.96,
+          "post_api_log_ms": 3.3740997314453125
+        },
+        {
+          "status": 200,
+          "http_ms": 267.4159000016516,
+          "service_ms": 48.23,
+          "request_id": "38ea5b39-d0d1-4cce-914f-75b3e17ced49",
+          "wall_start": 1795367747.39075,
+          "wall_end": 1795367747.6582046,
+          "api_pre_metric_ms": 219.48,
+          "post_api_log_ms": 5.792856216430664
+        },
+        {
+          "status": 200,
+          "http_ms": 298.8841999977012,
+          "service_ms": 42.25,
+          "request_id": "1880c509-2ca2-4571-a4d7-faa1af89788c",
+          "wall_start": 1795367747.393544,
+          "wall_end": 1795367747.6924124,
+          "api_pre_metric_ms": 225.01,
+          "post_api_log_ms": 9.999752044677734
+        },
+        {
+          "status": 200,
+          "http_ms": 339.9206000030972,
+          "service_ms": 45.07,
+          "request_id": "3ccaa91e-3256-4885-9a15-b54c1e219191",
+          "wall_start": 1795367747.3955936,
+          "wall_end": 1795367747.7353082,
+          "api_pre_metric_ms": 264.19,
+          "post_api_log_ms": 4.502058029174805
+        },
+        {
+          "status": 200,
+          "http_ms": 209.66149999730987,
+          "service_ms": 53.91,
+          "request_id": "0d21d1ea-6efe-469d-953b-f4a0cb6f3fa0",
+          "wall_start": 1795367747.603227,
+          "wall_end": 1795367747.8127909,
+          "api_pre_metric_ms": 137.25,
+          "post_api_log_ms": 4.596233367919922
+        },
+        {
+          "status": 200,
+          "http_ms": 309.5912999997381,
+          "service_ms": 28.17,
+          "request_id": "c3a1a5b4-5365-47ed-bab6-b59118b8908f",
+          "wall_start": 1795367747.6582046,
+          "wall_end": 1795367747.9677005,
+          "api_pre_metric_ms": 228.99,
+          "post_api_log_ms": 3.27301025390625
+        },
+        {
+          "status": 200,
+          "http_ms": 380.600600001344,
+          "service_ms": 54.91,
+          "request_id": "fbbc3475-6f4f-4237-9e0c-13fe1e0c2cee",
+          "wall_start": 1795367747.6924124,
+          "wall_end": 1795367748.0726395,
+          "api_pre_metric_ms": 282.34,
+          "post_api_log_ms": 4.466772079467773
+        },
+        {
+          "status": 200,
+          "http_ms": 382.55510000453796,
+          "service_ms": 34.94,
+          "request_id": "663ff68b-feb3-4263-afa7-c79361d8e154",
+          "wall_start": 1795367747.7353082,
+          "wall_end": 1795367748.1182785,
+          "api_pre_metric_ms": 289.12,
+          "post_api_log_ms": 4.498958587646484
+        },
+        {
+          "status": 200,
+          "http_ms": 380.68299999576993,
+          "service_ms": 41.46,
+          "request_id": "115929de-ad9c-413a-9c3b-2d3f356ae51f",
+          "wall_start": 1795367747.8127909,
+          "wall_end": 1795367748.1933818,
+          "api_pre_metric_ms": 277.31,
+          "post_api_log_ms": 22.86529541015625
+        },
+        {
+          "status": 200,
+          "http_ms": 339.00520000315737,
+          "service_ms": 57.06,
+          "request_id": "7a7e2017-957a-43ac-8952-3b2ea56036e2",
+          "wall_start": 1795367747.9677005,
+          "wall_end": 1795367748.3068666,
+          "api_pre_metric_ms": 239.21,
+          "post_api_log_ms": 4.406452178955078
+        },
+        {
+          "status": 200,
+          "http_ms": 298.9618999999948,
+          "service_ms": 65.88,
+          "request_id": "f26c3ae1-7ca1-4182-a37c-b18c3213b0cf",
+          "wall_start": 1795367748.0726395,
+          "wall_end": 1795367748.3724494,
+          "api_pre_metric_ms": 211.63,
+          "post_api_log_ms": 6.9561004638671875
+        },
+        {
+          "status": 200,
+          "http_ms": 359.81209999590646,
+          "service_ms": 53.77,
+          "request_id": "d7617c94-d4e5-4f72-95b2-befe048588b5",
+          "wall_start": 1795367748.1182785,
+          "wall_end": 1795367748.4777522,
+          "api_pre_metric_ms": 280.23,
+          "post_api_log_ms": 14.643192291259766
+        },
+        {
+          "status": 200,
+          "http_ms": 320.64519999403274,
+          "service_ms": 44.16,
+          "request_id": "d71f5d88-1318-4cec-800c-2f1456167f6c",
+          "wall_start": 1795367748.1933818,
+          "wall_end": 1795367748.514318,
+          "api_pre_metric_ms": 239.37,
+          "post_api_log_ms": 4.549741744995117
+        },
+        {
+          "status": 200,
+          "http_ms": 304.99410000629723,
+          "service_ms": 34.92,
+          "request_id": "cf9b870a-0ed5-4723-b3e5-d85a85cdf482",
+          "wall_start": 1795367748.3068666,
+          "wall_end": 1795367748.611733,
+          "api_pre_metric_ms": 212.12,
+          "post_api_log_ms": 3.1614303588867188
+        },
+        {
+          "status": 200,
+          "http_ms": 281.29400000034366,
+          "service_ms": 52.88,
+          "request_id": "ac47b3ee-304c-484a-a7e4-e1dd3c8dc2d9",
+          "wall_start": 1795367748.3724494,
+          "wall_end": 1795367748.6538193,
+          "api_pre_metric_ms": 191.09,
+          "post_api_log_ms": 4.18400764465332
+        },
+        {
+          "status": 200,
+          "http_ms": 262.1763999995892,
+          "service_ms": 29.31,
+          "request_id": "a6c2a5a7-0528-4b17-a074-2824f39f07a6",
+          "wall_start": 1795367748.4777522,
+          "wall_end": 1795367748.740333,
+          "api_pre_metric_ms": 192.8,
+          "post_api_log_ms": 5.515336990356445
+        },
+        {
+          "status": 200,
+          "http_ms": 296.60080000030575,
+          "service_ms": 96.16,
+          "request_id": "45f09234-a667-4c56-95b4-439f2bd91d36",
+          "wall_start": 1795367748.514318,
+          "wall_end": 1795367748.8108547,
+          "api_pre_metric_ms": 255.71,
+          "post_api_log_ms": 6.129741668701172
+        },
+        {
+          "status": 200,
+          "http_ms": 250.8981999999378,
+          "service_ms": 42.44,
+          "request_id": "b060153d-b9b1-4673-823b-3d6fc98e0b29",
+          "wall_start": 1795367748.611733,
+          "wall_end": 1795367748.862925,
+          "api_pre_metric_ms": 182.62,
+          "post_api_log_ms": 4.372119903564453
+        },
+        {
+          "status": 200,
+          "http_ms": 239.76810000021942,
+          "service_ms": 29.03,
+          "request_id": "d9cd5306-f839-4e53-85f0-a065d5d64afa",
+          "wall_start": 1795367748.6538193,
+          "wall_end": 1795367748.8931825,
+          "api_pre_metric_ms": 186.71,
+          "post_api_log_ms": 4.573583602905273
+        },
+        {
+          "status": 200,
+          "http_ms": 213.95360000315122,
+          "service_ms": 29.93,
+          "request_id": "374d0d7b-d5bc-4744-9f12-ddf4d6d8f3b0",
+          "wall_start": 1795367748.740333,
+          "wall_end": 1795367748.9539518,
+          "api_pre_metric_ms": 171.09,
+          "post_api_log_ms": 2.6776790618896484
+        },
+        {
+          "status": 200,
+          "http_ms": 237.6189999995404,
+          "service_ms": 43.41,
+          "request_id": "4c724653-680e-4748-8723-2967d3ab3edd",
+          "wall_start": 1795367748.8108547,
+          "wall_end": 1795367749.0484595,
+          "api_pre_metric_ms": 163.58,
+          "post_api_log_ms": 10.834455490112305
+        },
+        {
+          "status": 200,
+          "http_ms": 273.0385000031674,
+          "service_ms": 40.12,
+          "request_id": "0793b7b3-fa76-40ff-a85a-31198fc46fdf",
+          "wall_start": 1795367748.862925,
+          "wall_end": 1795367749.135852,
+          "api_pre_metric_ms": 224.68,
+          "post_api_log_ms": 3.053426742553711
+        },
+        {
+          "status": 200,
+          "http_ms": 263.9283000025898,
+          "service_ms": 84.61,
+          "request_id": "3c893822-f509-4d7d-849c-567df75c59a6",
+          "wall_start": 1795367748.8931825,
+          "wall_end": 1795367749.157632,
+          "api_pre_metric_ms": 203.88,
+          "post_api_log_ms": 3.2999515533447266
+        },
+        {
+          "status": 200,
+          "http_ms": 214.87469999556197,
+          "service_ms": 39.79,
+          "request_id": "baa9c781-bf85-4a94-b781-fa62fd4f8762",
+          "wall_start": 1795367748.9539518,
+          "wall_end": 1795367749.1692004,
+          "api_pre_metric_ms": 184.65,
+          "post_api_log_ms": 3.0143260955810547
+        }
+      ]
+    },
+    {
+      "mode": "container_proxy",
+      "concurrency": 4,
+      "requests": 24,
+      "median_ms": 454.2345870013378,
+      "p95_ms": 978.2114320005348,
+      "rows": [
+        {
+          "status": 200,
+          "http_ms": 628.3661019988358,
+          "service_ms": 59.31,
+          "request_id": "30288c23-bc96-43d0-a611-e9b046f95b6a",
+          "wall_start": 1795367751.8776379,
+          "wall_end": 1795367752.5060198,
+          "api_pre_metric_ms": 447.61,
+          "post_api_log_ms": 20.982980728149414
+        },
+        {
+          "status": 200,
+          "http_ms": 797.7437530025782,
+          "service_ms": 232.88,
+          "request_id": "8c8c2821-dddd-4989-93d1-39799235f94f",
+          "wall_start": 1795367751.883306,
+          "wall_end": 1795367752.6810632,
+          "api_pre_metric_ms": 640.18,
+          "post_api_log_ms": 23.83112907409668
+        },
+        {
+          "status": 200,
+          "http_ms": 630.9843529998034,
+          "service_ms": 46.34,
+          "request_id": "536ca0a5-5b4e-43ef-b8ee-d85c0bef3954",
+          "wall_start": 1795367751.887905,
+          "wall_end": 1795367752.5189,
+          "api_pre_metric_ms": 468.32,
+          "post_api_log_ms": 18.12458038330078
+        },
+        {
+          "status": 200,
+          "http_ms": 751.2321769972914,
+          "service_ms": 203.38,
+          "request_id": "52bc628a-e114-4146-8733-5b956e328468",
+          "wall_start": 1795367751.9058883,
+          "wall_end": 1795367752.6571312,
+          "api_pre_metric_ms": 464.74,
+          "post_api_log_ms": 28.364896774291992
+        },
+        {
+          "status": 200,
+          "http_ms": 978.2114320005348,
+          "service_ms": 99.59,
+          "request_id": "b9a7ba2b-910f-47f2-96c3-e3c716aedc1b",
+          "wall_start": 1795367752.5060732,
+          "wall_end": 1795367753.4842942,
+          "api_pre_metric_ms": 827.11,
+          "post_api_log_ms": 10.46895980834961
+        },
+        {
+          "status": 200,
+          "http_ms": 909.6258800018404,
+          "service_ms": 129.91,
+          "request_id": "44750580-332e-494e-bfea-6b59cf2e750a",
+          "wall_start": 1795367752.5189314,
+          "wall_end": 1795367753.4285703,
+          "api_pre_metric_ms": 517.32,
+          "post_api_log_ms": 65.8712387084961
+        },
+        {
+          "status": 200,
+          "http_ms": 1083.9082210004563,
+          "service_ms": 73.99,
+          "request_id": "687ec7d9-15b1-4287-8003-3f7ef37a8a3f",
+          "wall_start": 1795367752.6571586,
+          "wall_end": 1795367753.741078,
+          "api_pre_metric_ms": 955.45,
+          "post_api_log_ms": 19.07038688659668
+        },
+        {
+          "status": 200,
+          "http_ms": 921.3603389980562,
+          "service_ms": 49.83,
+          "request_id": "d99a9cc9-6472-4a56-b17c-0d434f349089",
+          "wall_start": 1795367752.681111,
+          "wall_end": 1795367753.6024833,
+          "api_pre_metric_ms": 846.15,
+          "post_api_log_ms": 8.206367492675781
+        },
+        {
+          "status": 200,
+          "http_ms": 463.4665090015915,
+          "service_ms": 111.35,
+          "request_id": "78efd245-0aea-47f4-b2d1-811222c2e520",
+          "wall_start": 1795367753.4286423,
+          "wall_end": 1795367753.8921216,
+          "api_pre_metric_ms": 380.74,
+          "post_api_log_ms": 15.639066696166992
+        },
+        {
+          "status": 200,
+          "http_ms": 522.5550230024965,
+          "service_ms": 177.42,
+          "request_id": "690c479d-522a-4e25-8fd0-f7d3dee04edd",
+          "wall_start": 1795367753.4843585,
+          "wall_end": 1795367754.006925,
+          "api_pre_metric_ms": 371.77,
+          "post_api_log_ms": 7.965564727783203
+        },
+        {
+          "status": 200,
+          "http_ms": 601.7582429994945,
+          "service_ms": 85.01,
+          "request_id": "c728ecf1-e84f-40c9-b1e7-2932d83cadb1",
+          "wall_start": 1795367753.6025121,
+          "wall_end": 1795367754.2042835,
+          "api_pre_metric_ms": 454.52,
+          "post_api_log_ms": 12.93802261352539
+        },
+        {
+          "status": 200,
+          "http_ms": 381.5478180003993,
+          "service_ms": 63.62,
+          "request_id": "c52ab54e-1130-4e04-9220-4fac38d4f480",
+          "wall_start": 1795367753.7411506,
+          "wall_end": 1795367754.1227105,
+          "api_pre_metric_ms": 262.4,
+          "post_api_log_ms": 32.17029571533203
+        },
+        {
+          "status": 200,
+          "http_ms": 470.4226590001781,
+          "service_ms": 65.53,
+          "request_id": "6778ce88-94af-4145-963b-4af443e4f0eb",
+          "wall_start": 1795367753.8921614,
+          "wall_end": 1795367754.3625968,
+          "api_pre_metric_ms": 277.84,
+          "post_api_log_ms": 69.07129287719727
+        },
+        {
+          "status": 200,
+          "http_ms": 445.0026650010841,
+          "service_ms": 64.15,
+          "request_id": "85b4952b-a56b-42e1-8aa6-3bcab1d8f745",
+          "wall_start": 1795367754.006968,
+          "wall_end": 1795367754.4519818,
+          "api_pre_metric_ms": 318.64,
+          "post_api_log_ms": 7.029533386230469
+        },
+        {
+          "status": 200,
+          "http_ms": 389.9995229985507,
+          "service_ms": 83.09,
+          "request_id": "01162125-f41b-49b7-ab13-ec2ccd9c2020",
+          "wall_start": 1795367754.1227367,
+          "wall_end": 1795367754.5127478,
+          "api_pre_metric_ms": 317.86,
+          "post_api_log_ms": 11.74163818359375
+        },
+        {
+          "status": 200,
+          "http_ms": 382.5322690026951,
+          "service_ms": 34.69,
+          "request_id": "f8115e03-ebee-400a-b36e-82f5f35d264e",
+          "wall_start": 1795367754.2043285,
+          "wall_end": 1795367754.5868702,
+          "api_pre_metric_ms": 273.93,
+          "post_api_log_ms": 16.057968139648438
+        },
+        {
+          "status": 200,
+          "http_ms": 380.7499700014887,
+          "service_ms": 46.96,
+          "request_id": "71893484-f9a0-4ae4-b440-6129eac0e36a",
+          "wall_start": 1795367754.3626378,
+          "wall_end": 1795367754.7434015,
+          "api_pre_metric_ms": 312.81,
+          "post_api_log_ms": 6.070137023925781
+        },
+        {
+          "status": 200,
+          "http_ms": 219.05170300306054,
+          "service_ms": 31.04,
+          "request_id": "bc84f874-e63b-402a-b2b3-eb3fe32c89c4",
+          "wall_start": 1795367754.4520195,
+          "wall_end": 1795367754.671084,
+          "api_pre_metric_ms": 165.65,
+          "post_api_log_ms": 7.718563079833984
+        },
+        {
+          "status": 200,
+          "http_ms": 265.84186399850296,
+          "service_ms": 42.06,
+          "request_id": "65c88db3-cbfa-4e37-ba19-9a8b0ce22450",
+          "wall_start": 1795367754.5128374,
+          "wall_end": 1795367754.7786918,
+          "api_pre_metric_ms": 222.36,
+          "post_api_log_ms": 8.872032165527344
+        },
+        {
+          "status": 200,
+          "http_ms": 309.2464559995278,
+          "service_ms": 69.25,
+          "request_id": "ebe76388-2e8d-4899-beca-3be72743ff51",
+          "wall_start": 1795367754.5869107,
+          "wall_end": 1795367754.8961704,
+          "api_pre_metric_ms": 234.37,
+          "post_api_log_ms": 3.9777755737304688
+        },
+        {
+          "status": 200,
+          "http_ms": 275.7159229986428,
+          "service_ms": 26.86,
+          "request_id": "7b5641a3-607e-4902-a156-6484ff20ebf7",
+          "wall_start": 1795367754.671111,
+          "wall_end": 1795367754.9468405,
+          "api_pre_metric_ms": 194.38,
+          "post_api_log_ms": 5.631685256958008
+        },
+        {
+          "status": 200,
+          "http_ms": 222.42646899758256,
+          "service_ms": 37.94,
+          "request_id": "88bc4e69-020f-4e4c-b773-dea281104d11",
+          "wall_start": 1795367754.7434535,
+          "wall_end": 1795367754.9658911,
+          "api_pre_metric_ms": 165.09,
+          "post_api_log_ms": 7.143259048461914
+        },
+        {
+          "status": 200,
+          "http_ms": 227.4478130020725,
+          "service_ms": 39.16,
+          "request_id": "82530b70-5b4c-4c81-bcee-f43c39129291",
+          "wall_start": 1795367754.7787406,
+          "wall_end": 1795367755.006199,
+          "api_pre_metric_ms": 170.27,
+          "post_api_log_ms": 8.297920227050781
+        },
+        {
+          "status": 200,
+          "http_ms": 135.45145700118155,
+          "service_ms": 25.67,
+          "request_id": "ddb89ddc-244c-4745-8b24-1df692e8fce7",
+          "wall_start": 1795367754.8962908,
+          "wall_end": 1795367755.0317512,
+          "api_pre_metric_ms": 112.39,
+          "post_api_log_ms": 3.2846927642822266
+        }
+      ]
+    },
+    {
+      "mode": "container_direct_api",
+      "concurrency": 4,
+      "requests": 24,
+      "median_ms": 235.79085349956586,
+      "p95_ms": 285.20914999899105,
+      "rows": [
+        {
+          "status": 200,
+          "http_ms": 195.2321570024651,
+          "service_ms": 28.06,
+          "request_id": "c8e4aa37-ad2d-4e43-ab76-c4908f0c4e4e",
+          "wall_start": 1795367762.4764452,
+          "wall_end": 1795367762.6716902,
+          "api_pre_metric_ms": 152.59,
+          "post_api_log_ms": 12.656450271606445
+        },
+        {
+          "status": 200,
+          "http_ms": 254.54379500297364,
+          "service_ms": 49.03,
+          "request_id": "43bf99db-0241-406f-b89d-47dc545f6a47",
+          "wall_start": 1795367762.477792,
+          "wall_end": 1795367762.732355,
+          "api_pre_metric_ms": 176.55,
+          "post_api_log_ms": 1.4848709106445312
+        },
+        {
+          "status": 200,
+          "http_ms": 300.32859899802133,
+          "service_ms": 47.0,
+          "request_id": "b75103c8-3605-4e10-80d4-3e78e9d116a3",
+          "wall_start": 1795367762.4804928,
+          "wall_end": 1795367762.7808332,
+          "api_pre_metric_ms": 249.93,
+          "post_api_log_ms": 6.326913833618164
+        },
+        {
+          "status": 200,
+          "http_ms": 285.20914999899105,
+          "service_ms": 44.6,
+          "request_id": "db3d1219-ac61-45eb-ba2f-dc89c2afc312",
+          "wall_start": 1795367762.485489,
+          "wall_end": 1795367762.770709,
+          "api_pre_metric_ms": 203.1,
+          "post_api_log_ms": 2.4094581604003906
+        },
+        {
+          "status": 200,
+          "http_ms": 214.42015700085904,
+          "service_ms": 21.71,
+          "request_id": "bdc252fe-f9ea-43db-96cf-cd15db0be5bf",
+          "wall_start": 1795367762.6717517,
+          "wall_end": 1795367762.8861809,
+          "api_pre_metric_ms": 158.97,
+          "post_api_log_ms": 1.4486312866210938
+        },
+        {
+          "status": 200,
+          "http_ms": 197.55037099821493,
+          "service_ms": 43.67,
+          "request_id": "8023550d-ae92-4428-83e2-6a187a27bc0b",
+          "wall_start": 1795367762.7324429,
+          "wall_end": 1795367762.9300017,
+          "api_pre_metric_ms": 150.66,
+          "post_api_log_ms": 4.402399063110352
+        },
+        {
+          "status": 200,
+          "http_ms": 273.36614600062603,
+          "service_ms": 48.43,
+          "request_id": "872e6de3-5d09-4382-b91c-bb424f357891",
+          "wall_start": 1795367762.7707353,
+          "wall_end": 1795367763.0441117,
+          "api_pre_metric_ms": 219.23,
+          "post_api_log_ms": 2.0117759704589844
+        },
+        {
+          "status": 200,
+          "http_ms": 227.08407300160616,
+          "service_ms": 31.08,
+          "request_id": "7e685832-fe57-4f72-9b31-f916cb4b96e3",
+          "wall_start": 1795367762.780898,
+          "wall_end": 1795367763.0079906,
+          "api_pre_metric_ms": 158.57,
+          "post_api_log_ms": 3.3769607543945312
+        },
+        {
+          "status": 200,
+          "http_ms": 211.95822300069267,
+          "service_ms": 34.69,
+          "request_id": "5709522a-7b5d-4633-bcc8-bc3492f8753e",
+          "wall_start": 1795367762.8862472,
+          "wall_end": 1795367763.098212,
+          "api_pre_metric_ms": 169.27,
+          "post_api_log_ms": 1.657724380493164
+        },
+        {
+          "status": 200,
+          "http_ms": 196.99199599926942,
+          "service_ms": 22.13,
+          "request_id": "04034a4f-22b9-415d-9f09-fa52809549f5",
+          "wall_start": 1795367762.9300966,
+          "wall_end": 1795367763.1271,
+          "api_pre_metric_ms": 153.18,
+          "post_api_log_ms": 5.89442253112793
+        },
+        {
+          "status": 200,
+          "http_ms": 258.5481370006164,
+          "service_ms": 50.14,
+          "request_id": "21100440-ccdb-44d5-8e9a-9f1b452f7995",
+          "wall_start": 1795367763.0080128,
+          "wall_end": 1795367763.2665687,
+          "api_pre_metric_ms": 207.43,
+          "post_api_log_ms": 6.275177001953125
+        },
+        {
+          "status": 200,
+          "http_ms": 193.41251000150805,
+          "service_ms": 33.89,
+          "request_id": "f480bfd2-c52c-432c-aa88-609aa2ed0d68",
+          "wall_start": 1795367763.0441778,
+          "wall_end": 1795367763.2376149,
+          "api_pre_metric_ms": 139.5,
+          "post_api_log_ms": 4.710912704467773
+        },
+        {
+          "status": 200,
+          "http_ms": 203.7251080000715,
+          "service_ms": 29.81,
+          "request_id": "8bff011b-47db-4547-ab23-f66099b1b5c3",
+          "wall_start": 1795367763.0982711,
+          "wall_end": 1795367763.3020082,
+          "api_pre_metric_ms": 148.02,
+          "post_api_log_ms": 3.5920143127441406
+        },
+        {
+          "status": 200,
+          "http_ms": 206.97084800121957,
+          "service_ms": 22.7,
+          "request_id": "0150e9ae-48b9-498e-a854-4d56ad42aa34",
+          "wall_start": 1795367763.1271744,
+          "wall_end": 1795367763.3341558,
+          "api_pre_metric_ms": 147.02,
+          "post_api_log_ms": 3.021240234375
+        },
+        {
+          "status": 200,
+          "http_ms": 253.92391000059433,
+          "service_ms": 35.6,
+          "request_id": "d29efe56-756d-41f3-8295-234c61bd29a7",
+          "wall_start": 1795367763.23766,
+          "wall_end": 1795367763.4915967,
+          "api_pre_metric_ms": 166.8,
+          "post_api_log_ms": 4.243612289428711
+        },
+        {
+          "status": 200,
+          "http_ms": 251.20864199925563,
+          "service_ms": 39.55,
+          "request_id": "4483493d-bc9f-4c44-a22b-7313b4400896",
+          "wall_start": 1795367763.2666233,
+          "wall_end": 1795367763.5178401,
+          "api_pre_metric_ms": 184.17,
+          "post_api_log_ms": 15.12765884399414
+        },
+        {
+          "status": 200,
+          "http_ms": 267.81879299960565,
+          "service_ms": 38.55,
+          "request_id": "69f59867-40ab-4463-87de-43caf1750d08",
+          "wall_start": 1795367763.3020823,
+          "wall_end": 1795367763.5699108,
+          "api_pre_metric_ms": 225.23,
+          "post_api_log_ms": 3.1821727752685547
+        },
+        {
+          "status": 200,
+          "http_ms": 266.7775519985298,
+          "service_ms": 36.1,
+          "request_id": "394cdb60-3137-4a66-aa62-662450ef8523",
+          "wall_start": 1795367763.3342285,
+          "wall_end": 1795367763.6010177,
+          "api_pre_metric_ms": 210.72,
+          "post_api_log_ms": 2.1181106567382812
+        },
+        {
+          "status": 200,
+          "http_ms": 237.52868899828172,
+          "service_ms": 58.33,
+          "request_id": "64d50dbc-26b2-4826-9fd3-31d1de08b70c",
+          "wall_start": 1795367763.4916742,
+          "wall_end": 1795367763.7292137,
+          "api_pre_metric_ms": 170.71,
+          "post_api_log_ms": 2.1321773529052734
+        },
+        {
+          "status": 200,
+          "http_ms": 243.48449500030256,
+          "service_ms": 33.83,
+          "request_id": "7c6ca268-2508-4a08-9c0f-3d00d53ce44e",
+          "wall_start": 1795367763.517924,
+          "wall_end": 1795367763.7614195,
+          "api_pre_metric_ms": 192.54,
+          "post_api_log_ms": 2.8738975524902344
+        },
+        {
+          "status": 200,
+          "http_ms": 234.05301800085,
+          "service_ms": 34.36,
+          "request_id": "89c3ff95-763b-4e40-8531-8b32e2843107",
+          "wall_start": 1795367763.569976,
+          "wall_end": 1795367763.8040402,
+          "api_pre_metric_ms": 166.88,
+          "post_api_log_ms": 2.4766921997070312
+        },
+        {
+          "status": 200,
+          "http_ms": 262.9331319985795,
+          "service_ms": 36.94,
+          "request_id": "e77b5d51-54ba-40c0-8c33-e6a7e7f87976",
+          "wall_start": 1795367763.6011295,
+          "wall_end": 1795367763.8640692,
+          "api_pre_metric_ms": 210.64,
+          "post_api_log_ms": 2.6712417602539062
+        },
+        {
+          "status": 200,
+          "http_ms": 179.53332999968552,
+          "service_ms": 27.38,
+          "request_id": "5d8bbda6-1192-4261-8049-5c5087d2caae",
+          "wall_start": 1795367763.729302,
+          "wall_end": 1795367763.9088461,
+          "api_pre_metric_ms": 140.36,
+          "post_api_log_ms": 2.147197723388672
+        },
+        {
+          "status": 200,
+          "http_ms": 167.32767599751242,
+          "service_ms": 28.36,
+          "request_id": "25491314-04a1-4eef-a62b-a2e742986651",
+          "wall_start": 1795367763.76151,
+          "wall_end": 1795367763.9288511,
+          "api_pre_metric_ms": 138.76,
+          "post_api_log_ms": 1.6515254974365234
+        }
+      ]
+    }
+  ],
+  "tcp_connection_probes": [
+    {
+      "address": "::1",
+      "outcome": "ConnectionRefusedError",
+      "ms": 2134.826500005147
+    },
+    {
+      "address": "127.0.0.1",
+      "outcome": "connected",
+      "ms": 0.4105000043637119
+    }
+  ],
+  "localhost_addresses": [
+    "::1",
+    "127.0.0.1"
+  ]
+}

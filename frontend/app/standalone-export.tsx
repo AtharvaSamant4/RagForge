@@ -33,6 +33,8 @@ export function StandaloneExport({
     [selected, setSelected] = useState<string[]>([]),
     [consent, setConsent] = useState(false),
     [imports, setImports] = useState(true),
+    [pilotAllowed, setPilotAllowed] = useState(false),
+    [pilotEvidence, setPilotEvidence] = useState(false),
     [job, setJob] = useState<ExportJob | null>(null),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
@@ -46,11 +48,13 @@ export function StandaloneExport({
     Promise.all([
       api<typeof configuration>(base + "/pipeline"),
       api<ExportJob[]>(base + "/exports"),
+      api<{ consented_at?: number | null }>("/v1/pilot/me"),
     ])
-      .then(([configuration, jobs]) => {
+      .then(([configuration, jobs, pilot]) => {
         if (active) {
           setConfiguration(configuration);
           setJob(jobs[0] || null);
+          setPilotAllowed(!!pilot.consented_at);
         }
       })
       .catch((e) => {
@@ -94,6 +98,7 @@ export function StandaloneExport({
             document_ids: mode === "snapshot" ? selected : [],
             acknowledge_copy: consent,
             allow_imports: imports,
+            include_pilot_evidence: pilotEvidence,
           }),
         }),
       );
@@ -152,6 +157,17 @@ export function StandaloneExport({
         </div>
       )}
       <fieldset disabled={active}>
+        {pilotAllowed && (
+          <label className="checkbox">
+            <input
+              type="checkbox"
+              checked={pilotEvidence}
+              onChange={(e) => setPilotEvidence(e.target.checked)}
+            />
+            Include optional offline pilot evidence. No automatic callback;
+            explicitly import signed runtime proof after deployment.
+          </label>
+        )}
         <legend>Export mode</legend>
         <label className="checkbox">
           <input

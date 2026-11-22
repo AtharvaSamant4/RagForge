@@ -129,7 +129,7 @@ jobs:
 
   private-alpha:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -152,6 +152,16 @@ jobs:
           QA_ALPHA: "1"
           QA_BASE_URL: https://localhost:8443
         run: npm --prefix frontend run test:e2e -- alpha.spec.ts
+      - name: Prepare synthetic pilot fixtures with default-off study consent
+        run: python scripts/prepare-pilot-qa.py --project ragforge-m4-alpha --base-url https://localhost:8443 --env-file .env.alpha --admin-file artifacts/m4-private-credentials.json
+      - name: Actual independent runtime evidence with source offline
+        run: python scripts/verify-pilot-runtime.py
+      - name: Pilot consent, feedback, triage, privacy deletion and proof browser workflows
+        env:
+          QA_ALPHA: "1"
+          QA_PILOT: "1"
+          QA_BASE_URL: https://localhost:8443
+        run: npm --prefix frontend run test:e2e -- pilot.spec.ts
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -159,7 +169,34 @@ jobs:
           path: |
             docs/qa/m4-hosted-recovery-load.json
             docs/qa/screenshots/alpha-*.png
+            docs/qa/screenshots/m5
+            docs/qa/m5-pilot-runtime.json
+            docs/qa/m5-standalone-acceptance.json
+            artifacts/browser/results.json
       - if: always()
         run: |
           docker compose --env-file .env.alpha -p ragforge-m4-alpha -f compose.yaml -f compose.alpha.yaml down
           docker compose -p ragforge-m4-restore down
+
+  clean-install:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: python -m pip install httpx
+      - name: Exact remote clone, uncached dependencies and empty model/database volumes
+        run: python scripts/verify-clean-install.py --commit ${{ github.sha }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: clean-install-evidence
+          path: |
+            docs/qa/m5-clean-install.json
+            docs/qa/m5-clean-standalone-acceptance.json
+            artifacts/m5-clean-install-commands.log

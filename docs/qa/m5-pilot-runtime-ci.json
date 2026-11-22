@@ -1,0 +1,137 @@
+{
+  "cohort": "engineering_qa",
+  "human_participation": false,
+  "protocol": "Public sample only; explicit synthetic QA consent, actual hosted API-key query, opted-in ZIP, own Docker DB/key/model cache, source Compose stopped during independent acceptance, restart, authenticated offline proof, signature/ownership verification and idempotent import. Signed self-hosted evidence is not remote attestation.",
+  "before_runtime_funnel": {
+    "stages": [
+      {
+        "stage": "account_activation",
+        "completed": true,
+        "observed_at": 1795370940.756834
+      },
+      {
+        "stage": "project_created",
+        "completed": true,
+        "observed_at": 1795370941.0964332
+      },
+      {
+        "stage": "document_uploaded",
+        "completed": true,
+        "observed_at": 1795370941.1380298
+      },
+      {
+        "stage": "document_indexed",
+        "completed": true,
+        "observed_at": 1795370941.9290698
+      },
+      {
+        "stage": "first_cited_answer",
+        "completed": true,
+        "observed_at": 1795370942.2187326
+      },
+      {
+        "stage": "api_key_created",
+        "completed": true,
+        "observed_at": 1795370942.35513
+      },
+      {
+        "stage": "external_api_query",
+        "completed": true,
+        "observed_at": 1795370942.4193978
+      },
+      {
+        "stage": "standalone_exported",
+        "completed": true,
+        "observed_at": 1795370942.9640436
+      },
+      {
+        "stage": "independent_startup",
+        "completed": false,
+        "observed_at": null
+      },
+      {
+        "stage": "standalone_cited_query",
+        "completed": false,
+        "observed_at": null
+      }
+    ],
+    "time_to_first_cited_answer_seconds": 1.462,
+    "time_to_observed_standalone_deployment_seconds": null,
+    "time_from_account_creation_to_first_cited_answer_seconds": 1.512,
+    "time_from_account_creation_to_observed_deployment_seconds": null,
+    "time_basis": "Primary intervals start at opt-in study activation. Separate account-creation intervals use the existing server signup timestamp only after consent. Deployment includes offline evidence-import delay; other prior activity is not backfilled."
+  },
+  "source_unavailable_during_independent_query": true,
+  "independent_cited_answer": true,
+  "after_runtime_funnel": {
+    "stages": [
+      {
+        "stage": "account_activation",
+        "completed": true,
+        "observed_at": 1795370940.756834
+      },
+      {
+        "stage": "project_created",
+        "completed": true,
+        "observed_at": 1795370941.0964332
+      },
+      {
+        "stage": "document_uploaded",
+        "completed": true,
+        "observed_at": 1795370941.1380298
+      },
+      {
+        "stage": "document_indexed",
+        "completed": true,
+        "observed_at": 1795370941.9290698
+      },
+      {
+        "stage": "first_cited_answer",
+        "completed": true,
+        "observed_at": 1795370942.2187326
+      },
+      {
+        "stage": "api_key_created",
+        "completed": true,
+        "observed_at": 1795370942.35513
+      },
+      {
+        "stage": "external_api_query",
+        "completed": true,
+        "observed_at": 1795370942.4193978
+      },
+      {
+        "stage": "standalone_exported",
+        "completed": true,
+        "observed_at": 1795370942.9640436
+      },
+      {
+        "stage": "independent_startup",
+        "completed": true,
+        "observed_at": 1795371048.5172973
+      },
+      {
+        "stage": "standalone_cited_query",
+        "completed": true,
+        "observed_at": 1795371048.5240574
+      }
+    ],
+    "time_to_first_cited_answer_seconds": 1.462,
+    "time_to_observed_standalone_deployment_seconds": 107.76,
+    "time_from_account_creation_to_first_cited_answer_seconds": 1.512,
+    "time_from_account_creation_to_observed_deployment_seconds": 107.81,
+    "time_basis": "Primary intervals start at opt-in study activation. Separate account-creation intervals use the existing server signup timestamp only after consent. Deployment includes offline evidence-import delay; other prior activity is not backfilled."
+  },
+  "evidence_acceptance": {
+    "accepted": true,
+    "duplicate": false,
+    "startup_observed_at": 1795371048.5108697,
+    "cited_query_observed_at": 1795371048.5108697,
+    "evidence_class": "Signed self-hosted runtime evidence, not remote attestation or proof of human participation"
+  },
+  "duplicate_import_deduplicated": true,
+  "standalone_archive_sha256": "3ae4a7d45bbfc8c6ff82f92fa2177b1acb7f9f092bc3bc659b2a73111ec5ef28",
+  "standalone_generator": "1.2.0",
+  "source_project": "ragforge-m4-alpha",
+  "created_at_utc": "2026-11-22T18:10:48Z"
+}

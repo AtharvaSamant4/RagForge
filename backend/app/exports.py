@@ -31,6 +31,7 @@ class ExportInput(BaseModel):
     document_ids:list[str]=Field(default_factory=list,max_length=100)
     acknowledge_copy:bool=False
     allow_imports:bool=True
+    include_pilot_evidence:bool=False
 
     @model_validator(mode="after")
     def selection(self):
@@ -92,6 +93,10 @@ def serialize(job):
 def create_export(project_id:str,body:ExportInput,request:Request,db=Depends(get_db)):
     project=access(project_id,request,db,owner_only=True).project
     lock_owner(db,project.owner_id)
+    from .pilot import participant
+    member=participant(db,project.owner_id,require_consent=True,lock=True)
+    if body.include_pilot_evidence and not member:
+        raise HTTPException(403,'Current pilot consent is required for optional offline deployment evidence')
     active=profile()
     if active["dimensions"]!=384:raise HTTPException(422,"Standalone schema v1 supports 384-dimensional embeddings")
     pipeline=PipelineInput.model_validate(project.pipeline).model_dump()
@@ -108,6 +113,11 @@ def create_export(project_id:str,body:ExportInput,request:Request,db=Depends(get
         raise HTTPException(413,"Selected sources exceed the export size limit")
     sources=[{"document_id":d.id,"storage_name":d.storage_name,"path":f"data/knowledge/{i+1:03d}-{d.sha256[:12]}.{d.kind}","name":d.name,"kind":d.kind,"sha256":d.sha256,"size_bytes":d.size_bytes} for i,d in enumerate(selected)]
     manifest={"schema_version":"1.0","generator_version":VERSION,"template_sha256":template_digest(),"name":project.name,"pipeline":pipeline,"embedding":active,"generation":{"provider":settings().generation_provider,"model":settings().openai_model if settings().generation_provider=="openai" else "exact-sentence extraction"},"mode":body.mode,"allow_imports":body.allow_imports,"sources":[{k:v for k,v in source.items() if k not in ("storage_name","document_id")} for source in sources]}
+    job_id=str(uuid.uuid4())
+    evidence=None
+    if body.include_pilot_evidence:
+        from .pilot import deployment_ticket
+        evidence=deployment_ticket(db,project.owner_id,job_id,manifest['template_sha256'])
     lock_storage(db);cleanup(db)
     db.flush()
     allocate(db,project.owner_id,incoming=settings().export_max_archive_mb*1024**2,export=1)
@@ -133,7 +143,9 @@ def create_export(project_id:str,body:ExportInput,request:Request,db=Depends(get
     if used()+reserve>settings().export_storage_mb*1024**2:
         db.commit()
         raise HTTPException(429,"Export storage is reserved by active jobs; retry later")
-    job=ExportJob(project_id=project_id,config={"manifest":manifest,"sources":sources},expires_at=time.time()+settings().export_retention_seconds)
+    job=ExportJob(id=job_id,project_id=project_id,config={"manifest":manifest,"sources":sources},expires_at=time.time()+settings().export_retention_seconds)
+    if evidence:
+        job.config={**job.config,'pilot_evidence':evidence}
     db.add(job);db.commit()
     return serialize(job)
 
@@ -204,23 +216,35 @@ def run_once():
         destination=artifact(job_id)
         fd,temp=tempfile.mkstemp(prefix="build-",suffix=".part",dir=destination.parent)
         os.close(fd);part=destination.parent/temp.split(os.sep)[-1]
-        result=compile_archive(part,config["manifest"],config["sources"])
+        result=compile_archive(part,config["manifest"],config["sources"],config.get('pilot_evidence'))
         with SessionLocal() as db:
+            from .pilot import participant
+            owner_id=db.scalar(select(Project.owner_id).join(ExportJob,ExportJob.project_id==Project.id).where(ExportJob.id==job_id))
+            if owner_id: participant(db,owner_id,require_consent=True,lock=True)
             job=db.scalar(select(ExportJob).where(ExportJob.id==job_id).with_for_update())
             if not job or job.lease_token!=token or job.status!="generating" or job.expires_at<=time.time():return True
             os.replace(part,destination)
             job.status,job.size_bytes,job.sha256,job.lease_until="ready",result["size_bytes"],result["sha256"],None
             job.config={**job.config,"generation_ms":round((time.perf_counter()-started)*1000,2)}
+            from .pilot import emit
+            project=db.get(Project,job.project_id)
+            if project: emit(db,project.owner_id,'standalone_exported',job.id)
             db.commit()
         metric('export_succeeded',(time.perf_counter()-started)*1000)
     except Exception as exc:
         metric('export_failed')
         __import__('logging').getLogger('ragforge.exports').warning('export_failed',extra={'job_id':job_id,'error_type':type(exc).__name__})
         with SessionLocal() as db:
+            from .pilot import participant
+            owner_id=db.scalar(select(Project.owner_id).join(ExportJob,ExportJob.project_id==Project.id).where(ExportJob.id==job_id))
+            if owner_id: participant(db,owner_id,require_consent=True,lock=True)
             job=db.get(ExportJob,job_id)
             if job and job.lease_token==token:
                 job.status="failed"
                 job.error=str(exc)[:300] if isinstance(exc,ExportError) else "Export generation failed; verify sources and storage, then generate again"
+                from .pilot import emit
+                project=db.get(Project,job.project_id)
+                if project: emit(db,project.owner_id,'export_failed',job.id)
                 db.commit()
     finally:
         if part:part.unlink(missing_ok=True)

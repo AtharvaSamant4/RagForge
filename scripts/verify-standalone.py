@@ -38,7 +38,10 @@ def command(argv,cwd=ROOT):
     if cwd==ROOT:
         from urllib.parse import urlparse
         env.update(API_PORT=str(urlparse(args.source).port),WEB_PORT=str(urlparse(args.origin).port),APP_ORIGINS=args.origin)
-    else:env["STANDALONE_URL"]=f"http://localhost:{args.port}"
+    else:
+        env.pop('STANDALONE_URL',None)
+        version=json.loads((cwd/'config/manifest.json').read_text())['generator_version']
+        if tuple(map(int,version.split('.')))<(1,2,0):env['STANDALONE_URL']=f'http://127.0.0.1:{args.port}'
     subprocess.run(argv,cwd=cwd,env=env,check=True)
 
 
@@ -174,6 +177,10 @@ with httpx.Client(base_url=f"http://localhost:{args.port}",headers={"Authorizati
     report["restart_query"]=after
     report["runtime_status"]=client.get("/v1/status").json()
 command(["node","scripts/example.mjs"],directory)
+version=json.loads((directory/'config/manifest.json').read_text())['generator_version']
+if tuple(map(int,version.split('.')))>=(1,2,0):
+    command([sys.executable,'scripts/manage.py','query','What is the refund period?'],directory)
+    report['configured_port_client_defaults']='Python and JavaScript passed without URL overrides'
 curl_result=subprocess.check_output(["curl","--fail","--silent",f"http://localhost:{args.port}/v1/query","--header","@-","-H","Content-Type: application/json","--data",json.dumps({"question":"What is the refund period?"})],input="Authorization: Bearer "+key+"\n",text=True)
 assert "30 day" in json.loads(curl_result)["answer"]
 report["curl_client"]="passed"

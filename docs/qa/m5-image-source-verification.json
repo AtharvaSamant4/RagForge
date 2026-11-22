@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "scope": "Exact normalized source comparison after timed work, in network-disabled temporary containers. No old application modified.",
+  "source_normalization": "UTF-8 without BOM, LF endings and one final newline. Baseline hosted/template parser_core.py files differ from Git only by extra empty lines at EOF; their source statements are unchanged.",
+  "versions": {
+    "baseline": {
+      "source_revision": "04f6ef26420fe188aba93c30de5b07ac95ca31ad",
+      "images": {
+        "api": "sha256:92cc3efe3810f39cd760b9d0af0d39fce28639a903b35d783402b1bf21c02960",
+        "worker": "sha256:fd9f5b650c80a7d48a1dae141dd8b6b84fba92d3397963d2bdb8cdd3a1b259ec",
+        "web": "sha256:8ac2e8a553c5cb9453ec4b356adbf5e549d51365b4b43b46a3e0978b52b1f5ca",
+        "db": "sha256:8bce63b3aa8181e9c040468016e7df9c82fb9400c40df9e731752bed2965d8ef"
+      },
+      "source_comparison": {
+        "api": {
+          "files_checked": 68,
+          "mismatches": [],
+          "aggregate_sha256": "2ddbb5cd9ba987f1bb6f55d865958cf59f013294b82acbd1f19ad26df6b3bdc9"
+        },
+        "worker": {
+          "files_checked": 68,
+          "mismatches": [],
+          "aggregate_sha256": "2ddbb5cd9ba987f1bb6f55d865958cf59f013294b82acbd1f19ad26df6b3bdc9"
+        }
+      }
+    },
+    "candidate": {
+      "source_revision": "5beded422d0fa9a16f47734297fc395548085332",
+      "images": {
+        "api": "sha256:9de06cbee31beaa9eab8660659b4fae9b2417e3f0b750d7e146952087ce62979",
+        "worker": "sha256:a901a3028acfaf074bf83cb7ec18ce03ec8ca56daa7ee7a54ca73bd92779fac8",
+        "web": "sha256:79d8f3c9f8ae241b6a4f57a13ec6593d9fca08896dc9b7684d891f7d67c475f1",
+        "db": "sha256:8bce63b3aa8181e9c040468016e7df9c82fb9400c40df9e731752bed2965d8ef"
+      },
+      "source_comparison": {
+        "api": {
+          "files_checked": 72,
+          "mismatches": [],
+          "aggregate_sha256": "d950d0ab0dbf0ada66989e842d61a955ff747c1d22c0ef2d0820e5f788943590"
+        },
+        "worker": {
+          "files_checked": 72,
+          "mismatches": [],
+          "aggregate_sha256": "d950d0ab0dbf0ada66989e842d61a955ff747c1d22c0ef2d0820e5f788943590"
+        }
+      }
+    }
+  },
+  "same_database_image": true,
+  "frontend_query_proxy_source_unchanged": true,
+  "status": "passed"
+}

@@ -75,6 +75,15 @@ def answer(db, project, question: str, principal: str, conversation_id: str | No
         db.flush()
     result = {"answer": text, "citations": citations, "retrieved": sources, "refused": refused, "latency_ms": latency, "retrieval_latency_ms": retrieval_ms, "generation_latency_ms": round(latency-retrieval_ms, 2), "conversation_id": conversation.id if conversation else None, "generation_provider": settings().generation_provider, "embedding_provider": settings().embedding_provider, "embedding_model": embedding_id(), "answer_kind": "qualified" if refused and citations else "refused" if refused else "source_extract"}
     if save:
+        if not public:
+            from .pilot import emit_batch
+            operation = str(__import__('uuid').uuid4())
+            events = [('query_completed', operation, latency)]
+            if citations and not refused:
+                events.append(('first_cited_answer', 'first', None))
+            if principal.startswith('key:'):
+                events.append(('external_api_query', operation, None))
+            emit_batch(db, project.owner_id, events)
         db.add(QueryRecord(project_id=project.id, conversation_id=result["conversation_id"], question=question if not public else "[public widget query]", result=result if not public else {"refused": refused}, latency_ms=latency, refused=refused))
         db.commit()
     return result

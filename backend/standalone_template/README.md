@@ -73,3 +73,14 @@ Content is untrusted. Generator `1.1.0` adds a private parser subprocess with Li
 These controls are tested failure containment, not malware scanning, an independently certified sandbox, general prompt-injection protection or production certification. Use an approved Linux kernel/runtime and review dependencies. Schema state version 2 adds operational counters and provider-budget tables without dropping existing source/index tables. Retain this exact package/manifest, image identities and separate environment secrets with your encrypted backups. The repository's `scripts/backup.py --kind standalone` supports a consistent database/source backup and refuses restores except into another empty deployment of this package; see `docs/BACKUP_RESTORE.md` in RAGForge. Backup tools and encryption dependencies belong on the operator host. Generated apps do not require a running RAGForge server.
 
 Previously downloaded generator `1.0.0` packages remain independent and are not silently upgraded. Review template/dependency/model upgrades explicitly. This ZIP freezes its template hash and model revision; editing the manifest does not upgrade trusted engine code.
+## Optional offline pilot evidence (generator 1.2)
+
+Ordinary exports contain no pilot ticket and never call the hosted service. If you explicitly consented and enabled offline evidence while exporting, the package contains an export-specific signing key used only for evidence, not API authentication. Protect the package; its owner can inspect/modify the runtime and key. Signatures bind an issued challenge to self-hosted runtime observations, not remotely attested code or human participation.
+
+After starting this independent application and obtaining a cited answer, run:
+
+```sh
+python scripts/pilot-evidence.py --output runtime-evidence.json
+```
+
+The command authenticates only to your standalone API and writes metadata/signature without documents, questions or credentials. Upload that JSON explicitly in the original workspace's Pilot study screen. Importing is optional; this application works with the hosted platform unavailable. Tickets expire after at most seven days and withdrawal prevents hosted acceptance. Recorded deployment time is when the hosted server receives evidence, including import delay. Restarting creates a new boot observation; duplicate imports do not count twice. Human task feedback remains separate.

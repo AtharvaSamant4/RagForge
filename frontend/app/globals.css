@@ -2163,3 +2163,84 @@ dd {
 .standalone-export .checkbox {
   align-items: flex-start;
 }
+/* Small opt-in pilot forms reuse the workspace layout. */
+.pilot-panel {
+  display: grid;
+  gap: 24px;
+  min-width: 0;
+}
+.pilot-panel .form-panel {
+  display: grid;
+  gap: 14px;
+  max-width: 100%;
+}
+.pilot-panel label:not(.checkbox) {
+  display: grid;
+  gap: 7px;
+}
+.pilot-panel textarea {
+  min-height: 95px;
+  padding: 12px;
+  width: 100%;
+  max-width: 100%;
+  background: var(--surface);
+  color: inherit;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.pilot-panel p,
+.pilot-panel li,
+.pilot-panel code {
+  overflow-wrap: anywhere;
+}
+.pilot-panel ol,
+.pilot-panel ul {
+  padding-left: 22px;
+}
+.pilot-panel article {
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0;
+}
+.pilot-table {
+  overflow-x: auto;
+}
+.pilot-readiness {
+  max-height: 330px;
+  overflow: auto;
+  font-size: 12px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.pilot-panel button:not(.primary) {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 10px 14px;
+  min-height: 42px;
+  line-height: 1.4;
+  white-space: normal;
+}
+.pilot-panel button:not(.primary):hover:not(:disabled) {
+  border-color: var(--muted);
+}
+.pilot-panel .page-heading {
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.pilot-panel .page-heading > div {
+  min-width: 0;
+  flex: 1 1 260px;
+}
+.pilot-panel .page-heading > button {
+  flex: 0 0 auto;
+}
+.pilot-panel .form-panel > button {
+  width: fit-content;
+  max-width: 100%;
+}
+@media (max-width: 640px) {
+  .pilot-panel .form-panel > button {
+    width: 100%;
+  }
+}

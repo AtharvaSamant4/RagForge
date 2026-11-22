@@ -203,3 +203,86 @@ class WorkerHeartbeat(Base):
     instance: Mapped[str] = mapped_column(String(100), primary_key=True)
     updated_at: Mapped[float] = mapped_column(Float)
     details: Mapped[dict] = mapped_column(JSON)
+
+
+class PilotParticipant(Base):
+    __tablename__ = "pilot_participants"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uid)
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), unique=True)
+    cohort: Mapped[str] = mapped_column(String(20))
+    authorized_by: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    authorization_reference: Mapped[str] = mapped_column(String(100))
+    enrolled_at: Mapped[float] = mapped_column(Float, default=time.time)
+    consented_at: Mapped[float | None] = mapped_column(Float, nullable=True)
+    consent_version: Mapped[str | None] = mapped_column(String(30), nullable=True)
+    expires_at: Mapped[float] = mapped_column(Float, index=True)
+    event_count: Mapped[int] = mapped_column(Integer, default=0)
+    lock_epoch: Mapped[int] = mapped_column(Integer, default=0)
+    trial_reviewed_at: Mapped[float | None] = mapped_column(Float, nullable=True)
+    trial_reviewed_by: Mapped[str | None] = mapped_column(String(36), nullable=True)
+
+
+class PilotEvent(Base):
+    __tablename__ = "pilot_events"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uid)
+    participant_id: Mapped[str] = mapped_column(ForeignKey("pilot_participants.id", ondelete="CASCADE"), index=True)
+    kind: Mapped[str] = mapped_column(String(40))
+    entity_hash: Mapped[str] = mapped_column(String(64))
+    observed_at: Mapped[float] = mapped_column(Float, default=time.time)
+    elapsed_ms: Mapped[float | None] = mapped_column(Float, nullable=True)
+    __table_args__ = (UniqueConstraint("participant_id", "kind", "entity_hash"),)
+
+
+class PilotTask(Base):
+    __tablename__ = "pilot_tasks"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uid)
+    participant_id: Mapped[str] = mapped_column(ForeignKey("pilot_participants.id", ondelete="CASCADE"), index=True)
+    task_number: Mapped[int] = mapped_column(Integer)
+    status: Mapped[str] = mapped_column(String(20))
+    duration_seconds: Mapped[int] = mapped_column(Integer)
+    errors: Mapped[int] = mapped_column(Integer)
+    assistance: Mapped[int] = mapped_column(Integer)
+    difficulty: Mapped[int] = mapped_column(Integer)
+    feedback: Mapped[str] = mapped_column(String(2000), default="")
+    updated_at: Mapped[float] = mapped_column(Float, default=time.time)
+    __table_args__ = (UniqueConstraint("participant_id", "task_number"),)
+
+
+class PilotIssue(Base):
+    __tablename__ = "pilot_issues"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uid)
+    participant_id: Mapped[str] = mapped_column(ForeignKey("pilot_participants.id", ondelete="CASCADE"), index=True)
+    category: Mapped[str] = mapped_column(String(30))
+    severity: Mapped[str] = mapped_column(String(10), default="untriaged")
+    status: Mapped[str] = mapped_column(String(20), default="new")
+    description: Mapped[str] = mapped_column(String(2000))
+    sanitized_reproduction: Mapped[str] = mapped_column(String(2000), default="")
+    engineering_reference: Mapped[str] = mapped_column(String(150), default="")
+    reviewed_by: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    reviewed_at: Mapped[float | None] = mapped_column(Float, nullable=True)
+    export_approved: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[float] = mapped_column(Float, default=time.time)
+
+
+class PilotDeployment(Base):
+    __tablename__ = "pilot_deployments"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uid)
+    participant_id: Mapped[str] = mapped_column(ForeignKey("pilot_participants.id", ondelete="CASCADE"), index=True)
+    export_id: Mapped[str] = mapped_column(String(36), unique=True)
+    template_sha256: Mapped[str] = mapped_column(String(64))
+    public_key: Mapped[str] = mapped_column(String(64))
+    challenge: Mapped[str] = mapped_column(String(64))
+    issued_at: Mapped[float] = mapped_column(Float, default=time.time)
+    expires_at: Mapped[float] = mapped_column(Float)
+    received_at: Mapped[float | None] = mapped_column(Float, nullable=True)
+    query_received_at: Mapped[float | None] = mapped_column(Float, nullable=True)
+    proof_sha256: Mapped[str | None] = mapped_column(String(64), nullable=True)
+
+
+class PilotOperatorState(Base):
+    __tablename__ = "pilot_operator_state"
+    id: Mapped[str] = mapped_column(String(20), primary_key=True, default="pilot")
+    checklist: Mapped[dict] = mapped_column(JSON, default=dict)
+    incident_owner: Mapped[str] = mapped_column(String(100), default="")
+    updated_by: Mapped[str] = mapped_column(String(36))
+    updated_at: Mapped[float] = mapped_column(Float, default=time.time)
